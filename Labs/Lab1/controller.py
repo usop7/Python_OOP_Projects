@@ -52,13 +52,13 @@ class Controller:
         The movement must starts precisely on the second.
         :param seconds: an int
         """
+        micro_unit = 1000000
         i = 0
         while i < seconds:
-            #if datetime.now().microsecond < 100:
             for asteroid in self._asteroid_list:
                 asteroid.move()
                 print(asteroid)
-            time.sleep(1 - (1000000 - datetime.now().microsecond)/1000000)
+            time.sleep(1)
             i += 1
             print("--------------")
 
@@ -67,8 +67,8 @@ def main():
     """
     Creates a controller and simulates the asteroids' movements.
     """
-    c = Controller(100, 2, 1, 4, 5)
-    c.simulate(5)
+    controller_a = Controller(100, 100, 1, 4, 5)
+    controller_a.simulate(5)
 
 
 if __name__ == "__main__":
