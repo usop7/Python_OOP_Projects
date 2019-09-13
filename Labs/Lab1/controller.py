@@ -64,12 +64,17 @@ class Controller:
         micro_unit = 1000000
         i = 0
         while i < seconds:
+            # Pause a program until the current time reaches the exact start time.
+            now = datetime.now()
+            start_time = datetime(now.year, now.month, now.day, now.hour, now.minute, now.second + 1)
+            while datetime.now() < start_time:
+                time.sleep(1 / micro_unit)
+            # Moves asteroids on the second.
             for asteroid in self._asteroid_list:
                 asteroid.move()
                 print(asteroid)
-            time.sleep(1)
+            print("--------------------------------------------------")
             i += 1
-            print("--------------")
 
 
 def main():
@@ -77,6 +82,8 @@ def main():
     Creates a controller and simulates the asteroids' movements.
     """
     controller_a = Controller(100, 100, 1, 4, 5)
+
+    # Simulates for 5 seconds.
     controller_a.simulate(5)
 
 
