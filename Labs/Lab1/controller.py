@@ -9,9 +9,18 @@ class Controller:
     """This class embodies the basic functions and attributes of a controller"""
 
     @classmethod
-    def generate_vector(cls, max_):
+    def generate_position(cls, max_):
         """
-        Returns a Vector with random positions.
+        Returns a Vector with random positions whose numbers are between 0 and max.
+        :param max_: an int
+        :return: a Vector object
+        """
+        return Vector(random.randint(0, max_), random.randint(0, max_), random.randint(0, max_))
+
+    @classmethod
+    def generate_velocity(cls, max_):
+        """
+        Returns a Vector with random positions whose numbers are between -max and max.
         :param max_: an int
         :return: a Vector object
         """
@@ -41,8 +50,8 @@ class Controller:
         i = 0
         while i < num_of_asteroid:
             radius = Controller.generate_radius(min_radius, max_radius)
-            position = Controller.generate_vector(cube_size)
-            velocity = Controller.generate_vector(max_velocity)
+            position = Controller.generate_position(cube_size)
+            velocity = Controller.generate_velocity(max_velocity)
             self._asteroid_list.append(Asteroid(radius, position, velocity))
             i += 1
 
