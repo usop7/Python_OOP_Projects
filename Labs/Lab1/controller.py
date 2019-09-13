@@ -1,6 +1,5 @@
 import random
 from datetime import datetime
-from datetime import timedelta
 import time
 from asteroid import Asteroid
 from vector import Vector
