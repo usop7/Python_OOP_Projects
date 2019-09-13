@@ -1,5 +1,4 @@
-import time
-from .vector import Vector
+from datetime import datetime
 
 
 class Asteroid:
@@ -15,8 +14,9 @@ class Asteroid:
         self._radius = radius
         self._position = position
         self._velocity = velocity
-        self._timestamp = time.time()
+        self._timestamp = datetime.now()
         Asteroid.increase_id()
+        print(self)
 
     def get_radius(self):
         return self._radius
@@ -43,22 +43,14 @@ class Asteroid:
         self._timestamp = timestamp
 
     def __str__(self):
-        return f"Id: {self._id}, radius: {self._radius}, velocity: {self._velocity}, position: {self._position}, timestamp: {self._velocity}"
+        return f"ID: {self._id}, radius: {self._radius}, position: {self._position.__str__()}, velocity: {self._velocity.__str__()}, timestamp: {self._timestamp}"
 
     radius = property(get_radius, set_radius)
     position = property(get_position, set_position)
     velocity = property(get_velocity, set_velocity)
     timestamp = property(get_timestamp, set_timestamp)
 
-    def move(self, velocity):
-        new_position = velocity.add(self.position)
+    def move(self):
+        new_position = self.position.add(self.velocity)
         self.set_position(new_position)
         return new_position.vector
-
-
-def main():
-    print()
-
-
-if __name__ == "__main__":
-    main()
