@@ -16,7 +16,6 @@ class Asteroid:
         self._velocity = velocity
         self._timestamp = datetime.now()
         Asteroid.increase_id()
-        print(self)
 
     def get_radius(self):
         return self._radius
