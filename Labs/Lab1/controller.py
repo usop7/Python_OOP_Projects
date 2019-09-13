@@ -1,5 +1,6 @@
 import random
 from datetime import datetime
+from datetime import timedelta
 import time
 from asteroid import Asteroid
 from vector import Vector
@@ -66,14 +67,17 @@ class Controller:
         while i < seconds:
             # Pause a program until the current time reaches the exact start time.
             now = datetime.now()
-            start_time = datetime(now.year, now.month, now.day, now.hour, now.minute, now.second + 1)
+            if now.second == 59:
+                start_time = datetime(now.year, now.month, now.day, now.hour, now.minute + 1, 0, 0)
+            else:
+                start_time = datetime(now.year, now.month, now.day, now.hour, now.minute, now.second + 1, 0)
             while datetime.now() < start_time:
                 time.sleep(1 / micro_unit)
             # Moves asteroids on the second.
+            print(f"------------------------{datetime.now()}-------------------------")
             for asteroid in self._asteroid_list:
                 asteroid.move()
                 print(asteroid)
-            print("--------------------------------------------------")
             i += 1
 
 
