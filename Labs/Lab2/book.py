@@ -21,5 +21,6 @@ class Book:
         self._num_copies -= 1
 
     def __str__(self):
-        return f"title: {self._title}, call number: {self._call_number}, author: {self._author}, number of copies: {self._num_copies}"
-
+        description = (f"title: {self._title}, call number: {self._call_number},"
+                       f"author: {self._author}, number of copies: {self._num_copies}")
+        return description
