@@ -1,0 +1,39 @@
+from book import Book
+
+class Catalogue:
+    def __init__(self):
+        self.item_list = {}
+
+    def search(self, title):
+        count = 0
+        for item in self.item_list.values():
+            if item.title == title:
+                print(item)
+                count += 1
+        if count == 0:
+            print("No result found.")
+
+    def add_item(self, item):
+        if self.item_list.get(str(item.get_call_number())) is None:
+            self.item_list[item.get_call_number()] = item
+            print(f"Book({item.get_call_number()}) bas been added.")
+        else:
+            print("This book already exists.")
+
+    def remove_item(self, call_number):
+        if self.item_list.get(call_number) is not None:
+            del self.item_list[call_number]
+            print("The book is removed.")
+        else:
+            print("No matching call number found.")
+
+    def display_available_items(self):
+        count = 0
+        print("Available Items:")
+        for item in self.item_list.values():
+            count += 1
+            if item.check_availability():
+                print(item)
+        if count == 0:
+            print("No items are available")
+

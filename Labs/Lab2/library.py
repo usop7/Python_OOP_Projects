@@ -50,9 +50,14 @@ class Library:
             print("No matching call number found.")
 
     def display_available_books(self):
+        count = 0
+        print("Available books:")
         for book in self._book_list.values():
+            count += 1
             if book.check_availability():
                 print(book)
+        if count == 0:
+            print("No books are available")
 
     def give_options(self):
         options = [self.display_available_books, self.find_books ,self.check_out, self.return_book]
@@ -74,6 +79,7 @@ class Library:
 
 
 def main():
+    # checkout, return, access catalogue
 
     # Create a new library
     library = Library()
