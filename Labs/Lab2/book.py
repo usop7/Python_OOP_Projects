@@ -14,6 +14,12 @@ class Book:
     def get_call_number(self):
         return self._call_number
 
+    def increase_copy(self):
+        self._num_copies += 1
+
+    def decrease_copy(self):
+        self._num_copies -= 1
+
     def __str__(self):
         return f"title: {self._title}, call number: {self._call_number}, author: {self._author}, number of copies: {self._num_copies}"
 
