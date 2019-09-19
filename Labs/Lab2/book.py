@@ -8,7 +8,12 @@ class Book:
     def check_availability(self):
         return self._num_copies >= 1
 
+    def get_title(self):
+        return self._title
+
+    def get_call_number(self):
+        return self._call_number
+
     def __str__(self):
         return f"title: {self._title}, call number: {self._call_number}, author: {self._author}, number of copies: {self._num_copies}"
 
-    
