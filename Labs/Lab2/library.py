@@ -1,4 +1,3 @@
-import difflib
 from catalogue import Catalogue
 
 

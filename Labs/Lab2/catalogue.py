@@ -1,4 +1,4 @@
-from book import Book
+from difflib import get_close_matches
 from libraryItemGenerator import LibraryItemGenerator as LibGen
 
 
@@ -12,14 +12,26 @@ class Catalogue:
         # Item Dictionary (key: call number, value: Item object)
         self.item_list = {}
 
+    def get_close_matches_by_title(self, title):
+        """
+        Returns a list of close matches by an item's title.
+        :param title: a String
+        :return: a list of String
+        """
+        titles = []
+        for item in self.item_list.values():
+            titles.append(item.title)
+        return get_close_matches(title, titles)
+
     def search(self, title):
         """
         Search an item by a title and prints items that have similar titles.
         :param title: a String
         """
+        close_matches = self.get_close_matches_by_title(title)
         count = 0
         for item in self.item_list.values():
-            if item.get_title() == title:
+            if item.title in close_matches:
                 print(item)
                 count += 1
         if count == 0:

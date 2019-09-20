@@ -39,7 +39,7 @@ class Item(abc.ABC):
         """
         return self._call_number
 
-    title = property(get_call_number)
+    title = property(get_title)
     call_number = property(get_call_number)
 
     def increase_copy(self):
