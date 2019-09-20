@@ -3,39 +3,68 @@ from catalogue import Catalogue
 
 
 class Library:
+    """This class embodies the basic functions and attributes of a Library."""
+
     def __init__(self, catalogue):
+        """
+        Initialize a library with a catalogue.
+        :param catalogue: a catalogue object
+        """
         self.catalogue = catalogue
 
-    def access_item_list(self):
-        return self.catalogue.item_list
-
     def check_out(self, call_number):
-        item_list = self.access_item_list()
-        if item_list.get(call_number) is not None:
-            item = item_list.get(call_number)
-            title = item.get_title()
+        """
+        Check if there exists an item with the call number, and then,
+        1) If exists and available, decrease the number of copies.
+        2) If exists and not available, notify the user.
+        3) If not exists, notify the user.
+        :param call_number: a String
+        """
+        item = self.catalogue.get_item(call_number)
+        if item is not None:
             if item.check_availability() is True:
                 item.decrease_copy()
-                print(f"Item({title}) has been checked out.")
+                print(f"Item({call_number}) has been checked out.")
             else:
-                print("No copies available")
+                print("No copies are available")
         else:
             print("No matching call number found.")
 
     def return_item(self, call_number):
-        item_list = self.access_item_list()
-        if item_list.get(call_number) is not None:
-            item = item_list.get(call_number)
+        """
+        Check if there exists an item with the call number, and then,
+        1) If exists, increase the number of copies.
+        2) If not exists, notify the user.
+        :param call_number: a String
+        """
+        item = self.catalogue.get_item(call_number)
+        if item is not None:
             item.increase_copy()
             print(f"Item({call_number}) returned.")
         else:
             print("No matching call number found.")
 
     def give_options(self):
-        options = [self.catalogue.display_available_items, self.catalogue.search,
-                   self.check_out, self.return_item, self.catalogue.add_item, self.catalogue.remove_item]
+        """
+        Prompt the user with the choices.
+        """
+        options = [self.catalogue.display_available_items,
+                   self.catalogue.search,
+                   self.check_out,
+                   self.return_item,
+                   self.catalogue.add_item,
+                   self.catalogue.remove_item]
         answer = 0
-        while answer not in ["1", "2", "3", "4", "5", "6"]:
+
+        # Create a list of valid answers
+        valid_answers = []
+        i = 1
+        while i <= len(options):
+            valid_answers.append(str(i))
+            i += 1
+
+        # Repeat until the user enters the valid options (1~6)
+        while answer not in valid_answers:
             answer = input("-------------------------------\n"
                            "(1) Display available items \n"
                            "(2) Find an item\n"
@@ -45,6 +74,7 @@ class Library:
                            "(6) Remove an item\n"
                            "Please select: \n")
         answer = int(answer)
+        # Ask additional questions based on the choice, and call the corresponding method.
         if answer == 2:
             title = input("Enter the item title: ")
             options[answer-1](title)
@@ -56,12 +86,12 @@ class Library:
 
 
 def main():
+    """
+    Creates a library and prompts the user with options.
+    """
 
-    # Create a new catalogue
-    catalogue = Catalogue()
-
-    # Create a new library with the catalogue created
-    library = Library(catalogue)
+    # Create a new library with a new catalogue
+    library = Library(Catalogue())
 
     # User Prompt
     while True:
