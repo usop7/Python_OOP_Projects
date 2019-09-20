@@ -1,5 +1,8 @@
 from difflib import get_close_matches
 from libraryItemGenerator import LibraryItemGenerator as LibGen
+# import book and dvd modules in order to manually add to the item list for testing purposes.
+from book import Book
+from dvd import DVD
 
 
 class Catalogue:
@@ -11,6 +14,14 @@ class Catalogue:
         """
         # Item Dictionary (key: call number, value: Item object)
         self.item_list = {}
+
+        # Add some items manually for testing purposes.
+        book1 = Book("In praise of Idleness", "B-1", 3, "bertrand russell")
+        book2 = Book("Breaking the Code", "B-2", 1, "Pat Matter")
+        dvd = DVD("Breaking Bad", "D-1", 2, "2019-01-05", "CA")
+        self._add_item_by_item(book1)
+        self._add_item_by_item(book2)
+        self._add_item_by_item(dvd)
 
     def get_close_matches_by_title(self, title):
         """
@@ -64,6 +75,14 @@ class Catalogue:
             print(f"Item({item.call_number}) bas been added.")
         else:
             print("This item already exists.")
+
+    def _add_item_by_item(self, item):
+        """
+        This method will be used for testing purposes.
+        It takes an item object as a parameter and adds it to the item list.
+        :param item: an item object
+        """
+        self.item_list[item.call_number] = item
 
     def remove_item(self, call_number):
         """

@@ -10,7 +10,7 @@ class DVD(Item):
         :param name: a String
         :param call_number: a String
         :param num_copies: an int
-        :param release_date: a datetime
+        :param release_date: a String
         :param region_code: a String
         """
         super().__init__(name, call_number, num_copies)
