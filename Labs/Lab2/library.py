@@ -27,25 +27,28 @@ class Library:
         if item_list.get(call_number) is not None:
             item = item_list.get(call_number)
             item.increase_copy()
-            print("Item returned.")
+            print(f"Item({call_number}) returned.")
         else:
             print("No matching call number found.")
 
     def give_options(self):
         options = [self.catalogue.display_available_items, self.catalogue.search,
-                   self.check_out, self.return_item, self.catalogue.add_item]
-        question = ("-------------------------------\n"
-                    "(1) Display available items \n"
-                    "(2) Find an item\n"
-                    "(3) Check out an item\n"
-                    "(4) Return an item\n"
-                    "(5) Add an item\n"
-                    "Please select: \n")
-        answer = int(input(question))
+                   self.check_out, self.return_item, self.catalogue.add_item, self.catalogue.remove_item]
+        answer = 0
+        while answer not in ["1", "2", "3", "4", "5", "6"]:
+            answer = input("-------------------------------\n"
+                           "(1) Display available items \n"
+                           "(2) Find an item\n"
+                           "(3) Check out an item\n"
+                           "(4) Return an item\n"
+                           "(5) Add an item\n"
+                           "(6) Remove an item\n"
+                           "Please select: \n")
+        answer = int(answer)
         if answer == 2:
             title = input("Enter the item title: ")
             options[answer-1](title)
-        elif answer == 3 or answer == 4:
+        elif answer in [3, 4, 6]:
             call_number = input("Enter the call number of the item: ")
             options[answer-1](call_number)
         else:
