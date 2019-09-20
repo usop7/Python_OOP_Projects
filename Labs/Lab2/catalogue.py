@@ -1,4 +1,6 @@
 from book import Book
+from libraryItemGenerator import create_item
+
 
 class Catalogue:
     def __init__(self):
@@ -13,12 +15,13 @@ class Catalogue:
         if count == 0:
             print("No result found.")
 
-    def add_item(self, item):
+    def add_item(self):
+        item = create_item()
         if self.item_list.get(str(item.get_call_number())) is None:
             self.item_list[item.get_call_number()] = item
-            print(f"Book({item.get_call_number()}) bas been added.")
+            print(f"Item({item.get_call_number()}) bas been added.")
         else:
-            print("This book already exists.")
+            print("This item already exists.")
 
     def remove_item(self, call_number):
         if self.item_list.get(call_number) is not None:
