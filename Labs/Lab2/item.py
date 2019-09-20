@@ -5,7 +5,7 @@ class Item(abc.ABC):
     def __init__(self, title, call_number, num_copies):
         self._title = title
         self._call_number = call_number
-        self._num_copies = num_copies
+        self._num_copies = int(num_copies)
 
     def check_availability(self):
         return self._num_copies >= 1

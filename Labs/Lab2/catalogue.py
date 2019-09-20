@@ -1,5 +1,5 @@
 from book import Book
-from libraryItemGenerator import create_item
+from libraryItemGenerator import LibraryItemGenerator as LibGen
 
 
 class Catalogue:
@@ -9,14 +9,14 @@ class Catalogue:
     def search(self, title):
         count = 0
         for item in self.item_list.values():
-            if item.title == title:
+            if item.get_title() == title:
                 print(item)
                 count += 1
         if count == 0:
             print("No result found.")
 
     def add_item(self):
-        item = create_item()
+        item = LibGen.create_item()
         if self.item_list.get(str(item.get_call_number())) is None:
             self.item_list[item.get_call_number()] = item
             print(f"Item({item.get_call_number()}) bas been added.")
@@ -34,8 +34,8 @@ class Catalogue:
         count = 0
         print("Available Items:")
         for item in self.item_list.values():
-            count += 1
             if item.check_availability():
+                count += 1
                 print(item)
         if count == 0:
             print("No items are available")

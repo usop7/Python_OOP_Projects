@@ -8,6 +8,6 @@ class DVD(Item):
         self._region_code = region_code
 
     def __str__(self):
-        description = (f"title: {self._title}, call number: {self._call_number}, issue number: {self._issue_number},"
+        description = (f"[DVD] title: {self._title}, call number: {self._call_number}, issue number: {self._issue_number},"
                        f"publisher: {self._author}, number of copies: {self._num_copies}")
         return description

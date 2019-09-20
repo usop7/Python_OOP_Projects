@@ -8,6 +8,6 @@ class Journal(Item):
         self._issue_number = issue_number
 
     def __str__(self):
-        description = (f"title: {self._title}, call number: {self._call_number}, issue number: {self._issue_number},"
+        description = (f"[Journal] title: {self._title}, call number: {self._call_number}, issue number: {self._issue_number},"
                        f"publisher: {self._author}, number of copies: {self._num_copies}")
         return description
