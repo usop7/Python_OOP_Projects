@@ -1,5 +1,4 @@
 import random
-from tamagotchiType import TamagotchiType
 from tamagotchi import Boo
 from tamagotchi import Frieza
 from tamagotchi import Cell
@@ -10,15 +9,11 @@ class TamagotchiCreator:
 
     @staticmethod
     def hatch():
-        name = input("\nPlease give a name to your tamagotchi: ")
+        types = [Boo, Frieza, Cell]
+        name = input("Please give a name to your tamagotchi: ")
         rand_int = random.randint(0, 2)
-        if rand_int == 0:
-            tamagotchi = Boo(name)
-        elif rand_int == 1:
-            tamagotchi = Frieza(name)
-        else:
-            tamagotchi = Cell(name)
-        print(f"{tamagotchi.type_} {name} has been successfully hatched!")
+        tamagotchi = types[rand_int](name)
+        print(f"Tamagotchi has been successfully hatched!\n{tamagotchi}")
         return tamagotchi
 
 
@@ -34,8 +29,10 @@ class TamagotchiManager:
 
     def give_menu(self):
         options = [self.check_status]
-        answer = int(input("(1) Check status\n"
-                           "Please Select: "))
+        question = "\nWhat would you like to do?\n" \
+                   "(1) Check Status\n" \
+                   "Please Select (1-3): "
+        answer = int(input(question))
         options[answer-1]()
 
     def print_status(self):

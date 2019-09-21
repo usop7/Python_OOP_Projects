@@ -10,7 +10,6 @@ from food import Food
 class Tamagotchi:
     """
     A tamagotchi class that models a tamagotchi with a name,
-
     This class serves as a base class and should be inherited from
     a specific tamagotchi type class.
     """
@@ -20,11 +19,12 @@ class Tamagotchi:
         Initialize a Tamagotchi.
         :param name: a String
         """
+        self._name = name
         self._birth_time = datetime.now()
         self._last_checked_time = datetime.now()
-        self.name = name
-        self.status = Status(Status.max_meter, Status.max_meter, Status.min_meter)  # Health, Happiness, Hunger
+        self._status = Status(Status.max_meter, Status.max_meter, Status.min_meter)  # Health, Happiness, Hunger
         self._is_alive = True
+        self._type_ = None
 
     def is_alive(self):
         """:return: boolean, True if it's alive."""
@@ -39,7 +39,21 @@ class Tamagotchi:
         :param checked_time: a datetime"""
         self._last_checked_time = checked_time
 
+    def get_status(self):
+        """Returns tamagotchi's current status.
+        :return: Status object"""
+        return self._status
+
+    status = property(get_status)
     last_checked_time = property(get_last_checked_time, set_last_checked_time)
+
+    def __str__(self):
+        return f"-------------------------------\n" \
+               f"Name: {self._name}\n" \
+               f"Type: {self._type_.value}\n" \
+               f"Birthday: {self._birth_time}\n" \
+               f"Current Status\n{self._status}\n" \
+               f"--------------------------------\n"
 
 
 class Boo(Tamagotchi):
@@ -50,7 +64,7 @@ class Boo(Tamagotchi):
         Initialize a Boo.
         """
         super().__init__(name)
-        self.type_ = TamagotchiType.BOO
+        self._type_ = TamagotchiType.BOO
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
         self.adjust_rate = Status(1, 2, 5)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
@@ -71,7 +85,7 @@ class Frieza(Tamagotchi):
         Initialize a Boo.
         """
         super().__init__(name)
-        self.type_ = TamagotchiType.FRIEZA
+        self._type_ = TamagotchiType.FRIEZA
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
         self.adjust_rate = Status(2, 3, 6)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
@@ -92,7 +106,7 @@ class Cell(Tamagotchi):
         Initialize a Boo.
         """
         super().__init__(name)
-        self.type_ = TamagotchiType.CELL
+        self._type_ = TamagotchiType.CELL
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
         self.adjust_rate = Status(2, 3, 6)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
