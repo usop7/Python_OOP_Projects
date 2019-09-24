@@ -27,6 +27,10 @@ class GameController:
         ]
 
     def give_game_option(self):
+        """
+        Prompt user with game list, and return the selected game.
+        :return: Game object
+        """
         question = "Here is the list of games\n"
         i = 1
         for game in self._game_list:

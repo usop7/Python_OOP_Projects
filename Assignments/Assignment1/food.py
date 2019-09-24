@@ -10,40 +10,54 @@ class Food:
         self.name = name
         self.calorie = calorie
 
+    def __str__(self):
+        return f"{self.name} ({self.calorie} calorie)"
+
 
 class FoodController:
     """This class embodies a list of food and food related methods."""
 
-    @classmethod
-    def _generate_food_items(cls):
+    @staticmethod
+    def is_fav_food(food, fav_food_list):
         """
-        Return a list of food items with dummy data
-        :return: a list
+        Return True if a food item belongs to a fav food list.
+        :param food: a food object
+        :param fav_food_list: a list
+        :return: boolean
         """
-        food_list = [
-            Food("Chocolate", 5),
-            Food("Beer", 2),
-            Food("Church's chicken", 10),
-            Food("Steak", 5),
-            Food("Shrimp", 1),
-            Food("Human", 10),
-            Food("Carrot", 3)
-        ]
-        return food_list
+        result = False
+        for fav_food in fav_food_list:
+            if fav_food.name == food.name:
+                result = True
+        return result
 
-    def __init__(self, food_list):
+    def __init__(self):
         """
         Initialize a food  controller.
         """
-        self._food_list = food_list
+        self._food_list = [
+            Food("Chocolate", 10),
+            Food("Beer", 4),
+            Food("Church's chicken", 15),
+            Food("Steak", 10),
+            Food("Shrimp", 8),
+            Food("Carrot", 4),
+            Food("Android 17", 10),
+            Food("Android 18", 10)
+        ]
 
     def give_food_option(self):
-        question = "Here is the list of food\n"
+        """
+        Prompt user with food list, and return the selected food.
+        :return: Food object
+        """
+        question = "Here is the list of food\n" \
+                   "----------------------------------\n"
         i = 1
         for food in self._food_list:
-            question += f"{i}: {food.name} ({food.calorie} calorie)\n"
+            question += f"{i}: {food}\n"
             i += 1
-        question += "Please select: "
+        question += "----------------------------------\n" \
+                    "Please select: "
         answer = int(input(question))
         return self._food_list[int(answer)-1]
-
