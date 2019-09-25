@@ -3,7 +3,7 @@ from tamagotchiController import TamagotchiManager
 
 
 class Console:
-    """This class embodies the basic functions and attributes of a controller"""
+    """This class embodies the basic functions and attributes of a game console."""
 
     def __init__(self):
         self._tamagotchi = None
@@ -11,8 +11,7 @@ class Console:
     def start_game(self):
         """
         If there is no tamagotchi, ask user if they want to hatch one, and call Tamagotchi Creator.
-        If there is a tamagotchi, call TamagotchiManager and give menu.
-        :return:
+        If there is a tamagotchi, call TamagotchiManager and call give menu method.
         """
         while True:
             if self._tamagotchi is None or self._tamagotchi.is_alive() is False:

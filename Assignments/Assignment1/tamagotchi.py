@@ -93,7 +93,7 @@ class Boo(Tamagotchi):
         super().__init__(name)
         self._type_ = TamagotchiType.BOO
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
-        self.adjust_rate = Status(0.5, 1, 0.5)
+        self.adjust_rate = Status(1, 1, 1)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(40, 60, 50)
         # favorite food list
@@ -118,7 +118,7 @@ class Frieza(Tamagotchi):
         super().__init__(name)
         self._type_ = TamagotchiType.FRIEZA
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
-        self.adjust_rate = Status(1, 1, 0.5)
+        self.adjust_rate = Status(1, 1, 1)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
         # favorite food list
@@ -143,7 +143,7 @@ class Cell(Tamagotchi):
         super().__init__(name)
         self._type_ = TamagotchiType.CELL
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
-        self.adjust_rate = Status(0.5, 0.5, 0.5)
+        self.adjust_rate = Status(1, 1, 1)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
         # favorite food list

@@ -15,7 +15,7 @@ class Status:
         self.hunger = hunger
 
     def __str__(self):
-        return f"---------------------------------\n" \
+        return f"------------- Status ------------\n" \
                f" Health   : {round(self.health, 1)}\n" \
                f" Happiness: {round(self.happiness, 1)}\n" \
                f" Hunger   : {round(self.hunger, 1)}\n" \
