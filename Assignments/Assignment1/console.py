@@ -6,7 +6,7 @@ class Console:
     """This class embodies the basic functions and attributes of a game console."""
 
     def __init__(self):
-        self._tamagotchi = None
+        self.manager = None
 
     def start_game(self):
         """
@@ -14,13 +14,12 @@ class Console:
         If there is a tamagotchi, call TamagotchiManager and call give menu method.
         """
         while True:
-            if self._tamagotchi is None or self._tamagotchi.is_alive() is False:
+            if self.manager is None or self.manager.is_tamagotchi_alive() is False:
                 answer = input(">> No tamagotchi exists. Do you want to hatch one? (Y/N): ")
                 if answer.lower() == "y":
-                    self._tamagotchi = TamagotchiCreator.hatch()
+                    self.manager = TamagotchiManager(TamagotchiCreator.hatch())
             else:
-                manager = TamagotchiManager(self._tamagotchi)
-                manager.give_menu()
+                self.manager.give_menu()
 
 
 def main():

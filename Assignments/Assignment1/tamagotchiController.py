@@ -34,6 +34,15 @@ class TamagotchiManager:
         """
         self._tamagotchi = tamagotchi
 
+    def get_tamagotchi(self):
+        return self._tamagotchi
+
+    tamagotchi = property(get_tamagotchi)
+
+    def is_tamagotchi_alive(self):
+        """Returns true if a tamagotchi is alive."""
+        return self._tamagotchi.is_alive()
+
     def give_menu(self):
         """Prompts user with a menu list, and call the selected method."""
         options = [self.check_status, self.feed, self.give_medicine, self.play_games]
@@ -69,7 +78,7 @@ class TamagotchiManager:
 
         t = self._tamagotchi
         self.update_status()
-        if t.is_alive():
+        if self.is_tamagotchi_alive():
             print(t.status)
             # If health meter is lower than a certain meter, it gets sick.
             if t.status.health < t.satisfactory_meter.health:
@@ -91,7 +100,7 @@ class TamagotchiManager:
         """
         t = self._tamagotchi
         self.update_status()
-        if t.is_alive():
+        if self.is_tamagotchi_alive():
             # Prompt user with food options
             food_controller = FoodController()
             food = food_controller.give_food_option()
@@ -112,7 +121,7 @@ class TamagotchiManager:
         """
         t = self._tamagotchi
         self.update_status()
-        if t.is_alive():
+        if self.is_tamagotchi_alive():
             if not t.is_sick():
                 print(f"[{t.name}] I'm not sick. I don't need a medicine.\n{t.status}")
             else:
@@ -123,7 +132,7 @@ class TamagotchiManager:
         """Give game options to play, and fill up the happiness level by tamagotchi's happiness rate."""
         t = self._tamagotchi
         self.update_status()
-        if t.is_alive():
+        if self.is_tamagotchi_alive():
             # Game Controller prompts user with a mini game list.
             game_controller = GameController()
             game = game_controller.give_game_option()

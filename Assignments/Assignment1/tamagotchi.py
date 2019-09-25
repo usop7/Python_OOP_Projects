@@ -16,7 +16,6 @@ class TamagotchiType(Enum):
 
 class Tamagotchi(abc.ABC):
     """
-    A tamagotchi class that models a tamagotchi with a name,
     This class serves as a base class and should be inherited from
     a specific tamagotchi type class.
     """
@@ -24,7 +23,6 @@ class Tamagotchi(abc.ABC):
     def __init__(self, name):
         """
         Initialize a Tamagotchi.
-        :param name: a String
         """
         self._name = name
         self._birth_time = datetime.now()
@@ -118,7 +116,7 @@ class Frieza(Tamagotchi):
         super().__init__(name)
         self._type_ = TamagotchiType.FRIEZA
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
-        self.adjust_rate = Status(1, 1, 1)
+        self.adjust_rate = Status(0.5, 0.5, 0.5)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
         # favorite food list
@@ -143,7 +141,7 @@ class Cell(Tamagotchi):
         super().__init__(name)
         self._type_ = TamagotchiType.CELL
         # Represents adjustment rate per second for each status meter (health, happiness, hunger)
-        self.adjust_rate = Status(1, 1, 1)
+        self.adjust_rate = Status(0.3, 0.4, 0.5)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
         # favorite food list
