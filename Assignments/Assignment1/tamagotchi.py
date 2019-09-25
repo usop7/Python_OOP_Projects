@@ -3,7 +3,6 @@ All code related to a tamagotchi and types of tamagotchi belong to this module.
 """
 from datetime import datetime
 from status import Status
-from food import Food
 from enum import Enum
 import abc
 
