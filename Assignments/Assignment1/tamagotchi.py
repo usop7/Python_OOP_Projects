@@ -27,6 +27,13 @@ class Tamagotchi(abc.ABC):
         self._birth_time = datetime.now()
         self._last_checked_time = datetime.now()
         self._status = Status(Status.max_meter, Status.max_meter, Status.min_meter)  # Health, Happiness, Hunger
+        self._type_ = TamagotchiType.BOO
+        # Represents adjustment rate per second for each status meter (health, happiness, hunger)
+        self.adjust_rate = None
+        # Represents minimum/maximum meters required for each status to satisfy a Boo
+        self.satisfactory_meter = None
+        # favorite food list
+        self.fav_food = []
         self._is_alive = True
         self._is_sick = False
 
@@ -76,6 +83,7 @@ class Tamagotchi(abc.ABC):
 
     def __str__(self):
         return f"Name: {self._name}\n" \
+               f"Type: {self._type_.value}\n" \
                f"Birthday: {self._birth_time}\n" \
                f"Current Status\n{self._status}\n"
 
@@ -89,16 +97,9 @@ class Boo(Tamagotchi):
         """
         super().__init__(name)
         self._type_ = TamagotchiType.BOO
-        # Represents adjustment rate per second for each status meter (health, happiness, hunger)
         self.adjust_rate = Status(1, 1, 1)
-        # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(40, 60, 50)
-        # favorite food list
         self.fav_food = ["Chocolate", "Beer", "Church's chicken"]
-
-    def __str__(self):
-        return f"Type: {self._type_.value}\n" \
-               f"{super().__str__()}"
 
 
 class Frieza(Tamagotchi):
@@ -110,15 +111,9 @@ class Frieza(Tamagotchi):
         """
         super().__init__(name)
         self._type_ = TamagotchiType.FRIEZA
-        # Represents adjustment rate per second for each status meter (health, happiness, hunger)
         self.adjust_rate = Status(0.5, 0.5, 0.5)
-        # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
         self.fav_food = ["Church's chicken", "Steak", "Shrimp"]
-
-    def __str__(self):
-        return f"Type: {self._type_.value}\n" \
-               f"{super().__str__()}"
 
 
 class Cell(Tamagotchi):
@@ -130,12 +125,6 @@ class Cell(Tamagotchi):
         """
         super().__init__(name)
         self._type_ = TamagotchiType.CELL
-        # Represents adjustment rate per second for each status meter (health, happiness, hunger)
         self.adjust_rate = Status(0.3, 0.4, 0.5)
-        # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
         self.fav_food = ["Android 17", "Android 18"]
-
-    def __str__(self):
-        return f"Type: {self._type_.value}\n" \
-               f"{super().__str__()}"
