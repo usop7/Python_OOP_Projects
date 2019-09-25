@@ -37,5 +37,18 @@ class GameController:
             question += f"{i}: {game}\n"
             i += 1
         question += "Please select: "
-        answer = int(input(question))
+
+        # Create a list of valid answers
+        valid_answers = []
+        i = 0
+        while i <= len(self._game_list):
+            valid_answers.append(str(i))
+            i += 1
+
+        # Repeat until the user enters the valid options
+        answer = 0
+        while answer not in valid_answers:
+            answer = input(question)
+        answer = int(answer)
+
         return self._game_list[int(answer)-1]

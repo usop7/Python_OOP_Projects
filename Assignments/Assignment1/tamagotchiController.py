@@ -46,13 +46,24 @@ class TamagotchiManager:
     def give_menu(self):
         """Prompts user with a menu list, and call the selected method."""
         options = [self.check_status, self.feed, self.give_medicine, self.play_games]
-        question = "\n>> What would you like to do?\n" \
-                   "(1) Check the status of your tamagotchi\n" \
-                   "(2) Feed your tamagotchi\n" \
-                   "(3) Give your tamagotchi a medicine\n" \
-                   "(4) Play with your tamagotchi\n" \
-                   "Please Select (1-4): "
-        answer = int(input(question))
+
+        # Create a list of valid answers
+        valid_answers = []
+        i = 0
+        while i <= len(options):
+            valid_answers.append(str(i))
+            i += 1
+
+        # Repeat until the user enters the valid options (1-4)
+        answer = 0
+        while answer not in valid_answers:
+            answer = input("What would you like to do?\n"
+                           "(1) Check the status of your tamagotchi \n"
+                           "(2) Feed your tamagotchi\n"
+                           "(3) Give your tamagotchi a medicine\n"
+                           "(4) Play with your tamagotchi\n"
+                           "Please select(1-4): \n")
+        answer = int(answer)
         options[answer-1]()
 
     def update_last_checked_time(self):
