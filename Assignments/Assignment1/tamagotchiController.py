@@ -17,10 +17,10 @@ class TamagotchiCreator:
         :return: Tamagotchi
         """
         types = [Boo, Frieza, Cell]
-        name = input(">> Please give a name to your tamagotchi: ")
+        name = input("\n>> Please give a name to your tamagotchi: ")
         rand_int = random.randint(0, 2)
         tamagotchi = types[rand_int](name)
-        print(f">> Tamagotchi has been successfully hatched!\n{tamagotchi}")
+        print(f"\n>> Tamagotchi has been successfully hatched!\n{tamagotchi}")
         return tamagotchi
 
 
@@ -57,7 +57,7 @@ class TamagotchiManager:
         # Repeat until the user enters the valid options (1-4)
         answer = 0
         while answer not in valid_answers:
-            answer = input("What would you like to do?\n"
+            answer = input("\nWhat would you like to do?\n"
                            "(1) Check the status of your tamagotchi \n"
                            "(2) Feed your tamagotchi\n"
                            "(3) Give your tamagotchi a medicine\n"
@@ -83,6 +83,8 @@ class TamagotchiManager:
             t.die()
             print(f">> Your {t.name} died of sickness... RIP...")
             return
+        elif t.status.health < t.satisfactory_meter.health:
+            t.got_sick()
 
     def check_status(self):
         """Updates Status of a tamagotchi and adjusts relevant attributes based on the new status."""
@@ -91,16 +93,31 @@ class TamagotchiManager:
         self.update_status()
         if self.is_tamagotchi_alive():
             print(t.status)
-            # If health meter is lower than a certain meter, it gets sick.
-            if t.status.health < t.satisfactory_meter.health:
-                t.got_sick()
+
+            # Check required conditions, and prints out warning messages to users.
+            # If everything's fine, prints out thank you message.
+            num_of_warning_msg = 0
+
+            if t.is_sick():
+                num_of_warning_msg += 1
                 print(f"[{t.name}] I'm feeling sick. Please give me some medicine.")
+
             # If hunger meter hits 100, health adjustment rate becomes double.
-            elif t.status.hunger >= 100:
+            if t.status.hunger >= 100:
                 t.adjust_rate.health *= 2
-                print("I'm super hangry!! I need food!")
+                num_of_warning_msg += 1
+                print(f"[{t.name}] I'm super hangry!! If you don't feed me now, I will get sick soon!")
+            elif t.status.hunger > t.satisfactory_meter.hunger:
+                num_of_warning_msg += 1
+                print(f"[{t.name}] I'm hungry! Please give me some food.")
+
+            # If happiness meter goes below a satisfactory level, it complains.
+            if t.status.happiness < t.satisfactory_meter.happiness:
+                num_of_warning_msg += 1
+                print(f"[{t.name}] I feel miserable.. Please play with me.")
+
             # If everything is fine, print out thank you message.
-            else:
+            if num_of_warning_msg == 0:
                 print(f"[{t.name}] Thanks for taking care of me, master!")
 
     def feed(self):
@@ -115,8 +132,9 @@ class TamagotchiManager:
             # Prompt user with food options
             food_controller = FoodController()
             food = food_controller.give_food_option()
+
             # If selected food is in a tamagotchi's favorite food list, hunger meter decreases by 110%.
-            if FoodController.is_fav_food(food, t.fav_food):
+            if FoodController.is_fav_food(food.name, t.fav_food):
                 decrement = t.status.decrease_hunger(food.calorie * 1.1 / t.adjust_rate.health)
                 print(f"[{t.name}] {food.name} is my favorite food! Thank you, master!!")
             else:

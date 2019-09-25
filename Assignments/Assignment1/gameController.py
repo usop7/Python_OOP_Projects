@@ -21,9 +21,9 @@ class GameController:
 
     def __init__(self):
         self._game_list = [
-            Game("Fight with Goku", "What a great match!", 20),
-            Game("Strongest under the heaven match", "Human beings were stronger than I thought.", 15),
-            Game("Dragon balls search", "I ended up founding 3 dragon balls!", 10)
+            Game("Fight with Goku", "What a great match!", 60),
+            Game("Strongest under the heaven match", "Human beings were stronger than I thought.", 50),
+            Game("Dragon balls search", "I ended up founding 3 dragon balls!", 40)
         ]
 
     def give_game_option(self):

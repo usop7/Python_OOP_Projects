@@ -95,11 +95,7 @@ class Boo(Tamagotchi):
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(40, 60, 50)
         # favorite food list
-        self.fav_food = [
-            Food("Chocolate", 5),
-            Food("Beer", 1),
-            Food("Church's chicken", 10)
-        ]
+        self.fav_food = ["Chocolate", "Beer", "Church's chicken"]
 
     def __str__(self):
         return f"Type: {self._type_.value}\n" \
@@ -119,12 +115,7 @@ class Frieza(Tamagotchi):
         self.adjust_rate = Status(0.5, 0.5, 0.5)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
-        # favorite food list
-        self.fav_food = [
-            Food("Church's chicken", 15),
-            Food("Steak", 10),
-            Food("Shrimp", 8)
-        ]
+        self.fav_food = ["Church's chicken", "Steak", "Shrimp"]
 
     def __str__(self):
         return f"Type: {self._type_.value}\n" \
@@ -144,11 +135,7 @@ class Cell(Tamagotchi):
         self.adjust_rate = Status(0.3, 0.4, 0.5)
         # Represents minimum/maximum meters required for each status to satisfy a Boo
         self.satisfactory_meter = Status(50, 50, 50)
-        # favorite food list
-        self.fav_food = [
-            Food("Android 17", 10),
-            Food("Android 18", 10)
-        ]
+        self.fav_food = ["Android 17", "Android 18"]
 
     def __str__(self):
         return f"Type: {self._type_.value}\n" \

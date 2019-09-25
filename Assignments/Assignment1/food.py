@@ -18,16 +18,16 @@ class FoodController:
     """This class embodies a list of food and food related methods."""
 
     @staticmethod
-    def is_fav_food(food, fav_food_list):
+    def is_fav_food(food_name, fav_food_list):
         """
         Return True if a food item belongs to a fav food list.
-        :param food: a food object
+        :param food_name: a String
         :param fav_food_list: a list
         :return: boolean
         """
         result = False
         for fav_food in fav_food_list:
-            if fav_food.name == food.name:
+            if fav_food == food_name:
                 result = True
         return result
 
@@ -36,14 +36,14 @@ class FoodController:
         Initialize a food  controller.
         """
         self._food_list = [
-            Food("Chocolate", 10),
-            Food("Beer", 4),
-            Food("Church's chicken", 15),
-            Food("Steak", 10),
-            Food("Shrimp", 8),
-            Food("Carrot", 4),
-            Food("Android 17", 10),
-            Food("Android 18", 10)
+            Food("Chocolate", 20),
+            Food("Beer", 10),
+            Food("Church's chicken", 30),
+            Food("Steak", 30),
+            Food("Shrimp", 20),
+            Food("Carrot", 10),
+            Food("Android 17", 30),
+            Food("Android 18", 30)
         ]
 
     def give_food_option(self):

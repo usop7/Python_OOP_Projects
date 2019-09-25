@@ -15,7 +15,7 @@ class Console:
         """
         while True:
             if self.manager is None or self.manager.is_tamagotchi_alive() is False:
-                answer = input(">> No tamagotchi exists. Do you want to hatch one? (Y/N): ")
+                answer = input("\n>> No tamagotchi exists. Do you want to hatch one? (Y/N): ")
                 if answer.lower() == "y":
                     self.manager = TamagotchiManager(TamagotchiCreator.hatch())
             else:
