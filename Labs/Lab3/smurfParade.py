@@ -21,7 +21,8 @@ class SmurfParade:
 
     def append(self, name):
         """
-        Creates a new smurf with a given name and appends it to the end of the list.
+        Creates a new smurf with a given name and appends it to the end
+        of the list.
         """
         new_smurf = Smurf(name)
         curr_smurf = self.head
@@ -58,7 +59,8 @@ class SmurfParade:
 
     def __contains__(self, item):
         """
-        Returns True if the list has a smurf whose name equals to the parameter, item.
+        Returns True if the list has a smurf whose name equals
+        to the parameter, item.
         :param item: a String
         :return: boolean
         """
@@ -165,7 +167,7 @@ def main():
     print("\n11. Testing Reversed Iterator")
     for smurf in reversed(parade):
         print(f"\t{smurf}")
-    print(f"12. parade: {parade}")
+    print(f"\n12. parade: {parade}")
 
 
 if __name__ == '__main__':
