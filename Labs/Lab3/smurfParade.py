@@ -76,7 +76,7 @@ class SmurfParade:
 
     def __reversed__(self):
         """Returns a reversed list of smurf list."""
-        return reversed(self.smurf_list)
+        return SmurfParade(self.village, list(reversed(self.smurf_list)))
 
 
 def main():
@@ -85,13 +85,12 @@ def main():
                           Smurf("michelle", 20),
                           Smurf("doris", 15)])
 
-    print(f"\nparade: {parade}")
-
-    print(f"\nlen(parade): {len(parade)}")
-
-    print(f"\nparade[0]:\n{parade[0]}")
-
-    print(f"\nreversed(parade): {list(reversed(parade))}")
+    print(f"\n1. parade: {parade}")
+    print(f"\n2. len(parade): {len(parade)}")
+    print(f"\n3. parade[0]:\n{parade[0]}")
+    print(f"\n4. 'leeseul' in parade: {'leeseul' in parade}")
+    print(f"\n5. 'leeseul' not in parade: {'leeseul' not in parade}")
+    print(f"\nreversed(parade): {reversed(parade)}")
 
 
 if __name__ == '__main__':
