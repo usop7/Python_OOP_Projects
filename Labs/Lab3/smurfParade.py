@@ -49,8 +49,13 @@ class SmurfParade:
             curr_smurf = curr_smurf.next_smurf
         return False
 
-    #def __iter__(self):
-     #   return iter(self.smurf_list)
+    def __iter__(self):
+        smurf_list = []
+        curr_smurf = self.head
+        while curr_smurf is not None:
+            smurf_list.append(curr_smurf)
+            curr_smurf = curr_smurf.next_smurf
+        return iter(smurf_list)
 
     def __getitem__(self, key):
         index = 0
@@ -102,6 +107,11 @@ def main():
     print(f"\n3. parade[0]:\n{parade[0]}")
     print(f"\n4. 'leeseul' in parade: {'leeseul' in parade}")
     print(f"\n5. 'leeseul' not in parade: {'leeseul' not in parade}")
+    print("\n------------Iteration Test-----------")
+    for smurf in parade:
+        print(smurf)
+    print("------------End of Iteration-----------")
+
     #print(f"\nreversed(parade): {reversed(parade)}")
 
 
