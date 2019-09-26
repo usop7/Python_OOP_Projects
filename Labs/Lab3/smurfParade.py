@@ -19,7 +19,7 @@ class SmurfParade:
     def __init__(self, head=None):
         self.head = head
 
-    def add(self, name):
+    def append(self, name):
         """
         Creates a new smurf with a given name and appends it to the end of the list.
         """
@@ -143,24 +143,24 @@ def main():
     """Creates a SmurfParade object and tests its methods."""
 
     parade = SmurfParade()
-    parade.add("Leeseul")
-    parade.add("Christy")
-    parade.add("Robert")
-    parade.add("Justin")
-    parade.add("Eric")
+    parade.append("Leeseul")
+    parade.append("Christy")
+    parade.append("Robert")
+    parade.append("Justin")
+    parade.append("Eric")
 
     print(f"1. parade: {parade}")
     print(f"2. len(parade): {len(parade)}")
-    print(f"3. parade[1]:{parade[1]}")
-    print(f"4. parade[6]:{parade[6]}")
+    print(f"3. parade[1]: {parade[1]}")
+    print(f"4. parade[6]: {parade[6]}")
     print(f"5. 'Leeseul' in parade: {'Leeseul' in parade}")
-    print(f"6. 'Leeseul' not in parade: {'Leeseul' not in parade}")
-    print("------------Testing Iteration-----------")
+    print(f"6. 'Rahul' in parade: {'Rahul' in parade}")
+    print(f"7. parade.index('Robert'): {parade.index('Robert')}")
+    print("7. Testing Iteration")
     for smurf in parade:
-        print(smurf)
-    print("------------End of Iteration-----------")
+        print(f"\t{smurf}")
 
-    print(f"\nreversed(parade): {reversed(parade)}")
+    print(f"8. reversed(parade): {reversed(parade)}")
 
 
 if __name__ == '__main__':
