@@ -136,7 +136,8 @@ class SmurfParade:
             curr_smurf.next_smurf = prev_smurf
             prev_smurf = curr_smurf
             curr_smurf = next_temp
-        return SmurfParade(prev_smurf)
+        self.head = prev_smurf
+        return self
 
 
 def main():
