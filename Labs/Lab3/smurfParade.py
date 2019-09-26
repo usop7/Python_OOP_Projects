@@ -5,6 +5,9 @@ class Smurf:
         self.name = name
         self.characteristic = characteristic
 
+    def __str__(self):
+        return f"Name: {self.name}\nCharacteristic: {self.characteristic}"
+
 
 class SmurfParade:
     """This  class ."""
@@ -32,6 +35,12 @@ class SmurfParade:
     def __iter__(self):
         return iter(self.smurfs)
 
+    def __getitem__(self, key):
+        for smurf in self.smurfs:
+            if smurf.name == key:
+                return smurf
+        return None
+
 
 def main():
     parade = SmurfParade("vellage1",
@@ -39,7 +48,11 @@ def main():
                           Smurf("michelle", 20),
                           Smurf("doris", 15)])
 
-    print(parade)
+    print(f"\nparade:\n{parade}")
+
+    print(f"\nlen(parade): {len(parade)}")
+
+    print(f"\nparade['leeseul']:\n {parade['leeseul']}")
 
 
 if __name__ == '__main__':
