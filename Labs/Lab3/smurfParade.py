@@ -111,7 +111,8 @@ class SmurfParade:
 
     def index(self, item):
         """
-        Returns the first index of Smurf in the smurf list whose name equals to an item.
+        Returns the first index of Smurf in the smurf list whose name equals
+        to the parameter item.
         :param item: a String
         :return: an int
         """
@@ -129,15 +130,12 @@ class SmurfParade:
         Creates a reversed linked list and return it.
         :return: a SmurfParade
         """
-        prev_smurf = None
+        reversed_smurfs = []
         curr_smurf = self.head
         while curr_smurf is not None:
-            next_temp = curr_smurf.next_smurf
-            curr_smurf.next_smurf = prev_smurf
-            prev_smurf = curr_smurf
-            curr_smurf = next_temp
-        self.head = prev_smurf
-        return self
+            reversed_smurfs.insert(0, curr_smurf)
+            curr_smurf = curr_smurf.next_smurf
+        return iter(reversed_smurfs)
 
 
 def main():
@@ -148,6 +146,7 @@ def main():
     parade.append("Christy")
     parade.append("Robert")
     parade.append("Justin")
+    parade.append("Leeseul")
     parade.append("Eric")
 
     print(f"1. parade: {parade}")
@@ -157,11 +156,16 @@ def main():
     print(f"5. 'Leeseul' in parade: {'Leeseul' in parade}")
     print(f"6. 'Rahul' in parade: {'Rahul' in parade}")
     print(f"7. parade.index('Robert'): {parade.index('Robert')}")
-    print("7. Testing Iteration")
+    print(f"8. parade.count('Leeseul'): {parade.count('Leeseul')}")
+    print("9. Testing Iterator")
     for smurf in parade:
         print(f"\t{smurf}")
 
-    print(f"8. reversed(parade): {reversed(parade)}")
+    print(f"10. reversed(parade): {reversed(parade)}")
+    print("11. Testing Reversed Iterator")
+    for smurf in reversed(parade):
+        print(f"\t{smurf}")
+    print(f"12. parade: {parade}")
 
 
 if __name__ == '__main__':
