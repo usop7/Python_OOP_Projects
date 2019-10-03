@@ -2,6 +2,7 @@
 runs the program."""
 
 import json
+from file_handler import FileHandler
 
 
 class Dictionary:
@@ -15,11 +16,9 @@ class Dictionary:
         It loads data from the given filepath into the words list.
         :param filepath: String
         """
-        text_file = open(filepath, mode='r', encoding='utf-8')
-        data = text_file.read()
+        data = FileHandler.load_data(filepath)
         # convert String data to Dictionary format
         self.dictionary = json.loads(data)
-        text_file.close()
 
     def query_definition(self, word):
         """
@@ -30,24 +29,22 @@ class Dictionary:
         definitions = self.dictionary.get(word)
         return definitions
 
-    def test_print(self):
-        for key, item in self.dictionary.items():
-            print(f"{key}\n {item}\n\n")
-
     def run_program(self):
         """
         Keep prompting users with the option to query definitions until
         the user has entered 'exitprogram'.
         """
+        EXIT_COMMAND = "exitprogram"
         word = ""
-        count = 0
-        while word != "exitprogram":
-            count = 0
-            word = input("Please type a word to search (Type"
-                         "'exitprogram' if you want to stop the program)"
-                         "the program): ")
+        while word != EXIT_COMMAND:
+            word = input("Please type a word to search (Type 'exitprogram'"
+                         "if you want to stop the program): ").lower()
             result = self.query_definition(word)
-            if result is None:
+            count = 0  # It counts the number of definitions.
+
+            if word == EXIT_COMMAND:
+                return
+            elif result is None:
                 print("No word found.\n")
             else:
                 print(f"\n---------------------------------------------\n"
@@ -58,17 +55,22 @@ class Dictionary:
                     print(f"{count}. {definition}")
                 print("----------------------------------------------\n")
 
+                # Records the result in the text file.
+                FileHandler.write_lines("result.txt", f"{word}:\n{result}\n")
+
 
 def main():
     my_dictionary = Dictionary()
-    my_dictionary.load_dictionary("data.json")
-    my_dictionary.run_program()
+
+    try:
+        my_dictionary.load_dictionary("data.json")
+    except FileNotFoundError as e:
+        print(f"{e}")
+    except TypeError as e:
+        print(f"{e}")
+    else:
+        my_dictionary.run_program()
 
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
