@@ -21,6 +21,13 @@ class FileExtensions(Enum):
         return value in cls._value2member_map_
 
 
+class InvalidFileTypeError(Exception):
+    """This exception will be raised when a file extension is not
+    .json nor .txt."""
+    def __init__(self):
+        super().__init__("Only .txt and .json files are acceptable.")
+
+
 class FileHandler:
     """This class holds methods that are used for file handling."""
 
@@ -35,9 +42,9 @@ class FileHandler:
         :return: String
         """
         if not os.path.exists(path):
-            raise FileNotFoundError(f"A file named {path} doesn't exists.")
-        if FileExtensions.is_valid_extension(Path(path).suffix):
-            raise TypeError("Only txt/json files are acceptable!")
+            raise FileNotFoundError("File not found!")
+        if not FileExtensions.is_valid_extension(Path(path).suffix):
+            raise InvalidFileTypeError
 
         text_file = open(path, mode='r', encoding='utf-8')
         data = text_file.read()
