@@ -8,8 +8,8 @@ import os.path
 
 class FileExtensions(Enum):
     """This class represents a file extension."""
-    TXT = "txt"
-    JSON = "json"
+    TXT = ".txt"
+    JSON = ".json"
 
 
 class FileHandler:
@@ -24,9 +24,9 @@ class FileHandler:
         """
         extension = Path(path).suffix
         if not os.path.exists(path):
-            raise FileNotFoundError("File doesn't exists.")
+            raise FileNotFoundError(f"file named {path} doesn't exists.")
         if extension != FileExtensions.TXT.value and extension != FileExtensions.JSON.value:
-            raise TypeError("Only txt, json files are acceptable!")
+            raise TypeError("Only txt/json files are acceptable!")
 
         text_file = open(path, mode='r', encoding='utf-8')
         data = text_file.read()
@@ -37,7 +37,7 @@ class FileHandler:
         """
         It appends the given lines to a text file in the path.
         :param path: String
-        :param lines: List
+        :param lines: String
         """
 
         # Open a file for writing and create if it doesn't exist.
