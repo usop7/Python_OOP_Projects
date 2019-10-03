@@ -29,7 +29,7 @@ class Dictionary:
         except InvalidFileTypeError as e:
             print(f"{e}")
         except json.decoder.JSONDecodeError as e:
-            print(f"Input file format is not suitable for dictionary: {e}")
+            print(f"Input file format is not compatible for dictionary: {e}")
         except Exception as e:
             print(f"Unknown Exception caught: {e}")
         else:
@@ -51,6 +51,11 @@ class Dictionary:
         """
         Keep prompting users with the option to query definitions until
         the user has entered 'exitprogram'.
+        1) If there is an exact match, show the definition(s) and save the
+           query results into a file.
+        2) If there is no exact match, but close matches exist, show the
+           recommended words.
+        3) If there is no exact match nor close matches, print no word found.
         """
         EXIT_COMMAND = "exitprogram"
         FILE_TO_SAVE = "result.txt"
@@ -67,8 +72,6 @@ class Dictionary:
                 return
             elif result is None and len(close_words) == 0:
                 print("No word found.\n")
-            # If there is an exact match, show the results and write them
-            # into a text file.
             elif result is not None:
                 print(f"\n---------------------------------------------\n"
                       f"Query Results for [{word}]:")
@@ -81,17 +84,16 @@ class Dictionary:
                                             f"{count}. {definition}")
                 print("----------------------------------------------")
             else:
-                print(f"Were you looking for a word in {close_words} ?")
+                print(f"Were you looking for a word among {close_words} ?")
 
 
 def main():
     """Instantiates Dictionary and runs the program."""
 
-    INPUT_FILE = "data.json"
-
     my_dictionary = Dictionary()
 
     # Loads input file, and if loading was successful, runs the program.
+    INPUT_FILE = "data.json"
     if my_dictionary.load_dictionary(INPUT_FILE):
         my_dictionary.run_program()
 
