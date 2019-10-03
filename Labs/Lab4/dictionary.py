@@ -7,6 +7,15 @@ from difflib import get_close_matches
 from file_handler import InvalidFileTypeError
 
 
+class WordNotFoundException(Exception):
+    """This exception will be raised when there is no matching word found,
+    and will suggest similar words."""
+    def __init__(self, word, keys):
+        close_words = get_close_matches(word, keys)
+        super().__init__(f"No exact match found.\n"
+                         f"Were you looking for a word among {close_words} ?")
+
+
 class Dictionary:
     """This class represents a dictionary."""
 
@@ -20,8 +29,18 @@ class Dictionary:
         :param filepath: String
         :return: boolean
         """
-        data = json.loads(FileHandler.load_data(filepath))
-        self.dictionary = {k.lower(): v for k, v in data.items()}
+        self.dictionary = json.loads(FileHandler.load_data(filepath))
+
+    def write_query_result(self, filepath, word, definitions):
+        """
+        It appends the query result into a text file.
+        :param filepath: String
+        :param result: Dictionary
+        """
+        FileHandler.write_lines(filepath, word)
+        for definition in definitions:
+            FileHandler.write_lines(filepath, definition)
+
 
     def query_definition(self, word):
         """
