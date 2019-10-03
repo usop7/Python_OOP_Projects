@@ -20,23 +20,8 @@ class Dictionary:
         :param filepath: String
         :return: boolean
         """
-        loaded = False
-
-        try:
-            data = json.loads(FileHandler.load_data(filepath))
-        except FileNotFoundError as e:
-            print(f"{e}")
-        except InvalidFileTypeError as e:
-            print(f"{e}")
-        except json.decoder.JSONDecodeError as e:
-            print(f"Input file format is not compatible for dictionary: {e}")
-        except Exception as e:
-            print(f"Unknown Exception caught: {e}")
-        else:
-            loaded = True
-            self.dictionary = {k.lower(): v for k, v in data.items()}
-        finally:
-            return loaded
+        data = json.loads(FileHandler.load_data(filepath))
+        self.dictionary = {k.lower(): v for k, v in data.items()}
 
     def query_definition(self, word):
         """
@@ -93,9 +78,25 @@ def main():
     my_dictionary = Dictionary()
 
     # Loads input file, and if loading was successful, runs the program.
+    loaded = False
     INPUT_FILE = "data.json"
-    if my_dictionary.load_dictionary(INPUT_FILE):
-        my_dictionary.run_program()
+    try:
+        my_dictionary.load_dictionary(INPUT_FILE)
+    except FileNotFoundError as e:
+        print(f"{e}")
+    except InvalidFileTypeError as e:
+        print(f"{e}")
+    except json.decoder.JSONDecodeError as e:
+        print(f"Input file format is not compatible for dictionary: {e}")
+    except Exception as e:
+        print(f"Unknown Exception caught: {e}")
+    else:
+        loaded = True
+    finally:
+        if loaded:
+            my_dictionary.run_program()
+        else:
+            print("Failed to load the file.")
 
 
 if __name__ == "__main__":
