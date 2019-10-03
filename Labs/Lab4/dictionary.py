@@ -12,8 +12,11 @@ class WordNotFoundException(Exception):
     and will suggest similar words."""
     def __init__(self, word, keys):
         close_words = get_close_matches(word, keys)
-        super().__init__(f"No exact match found.\n"
-                         f"Were you looking for a word among {close_words} ?")
+        if len(close_words) == 0:
+            super().__init__("No exact match found.")
+        else:
+            super().__init__(f"No exact match found.\nWere you looking for"
+                             f"a word among {close_words} ?")
 
 
 class Dictionary:
@@ -47,11 +50,11 @@ class Dictionary:
         :param definitions: List
         """
         count = 0
-        FileHandler.write_lines(path, word)
+        FileHandler.write_lines(path, f"\n{word}")
         for definition in definitions:
             count += 1
             definition = definition.replace('\\n', ' ')
-            FileHandler.write_lines(f"{count}. {definition}")
+            FileHandler.write_lines(path, f"{count}. {definition}")
 
     def load_dictionary(self, filepath):
         """
@@ -83,9 +86,14 @@ class Dictionary:
         :param word: String
         :return: List
         """
-        if self.dictionary.get(word) is None:
+        if self.dictionary.get(word) is not None:
+            return self.dictionary.get(word)
+        elif self.dictionary.get(word.lower()) is not None:
+            return self.dictionary.get(word.lower())
+        elif self.dictionary.get(word.title()) is not None:
+            return self.dictionary.get(word.title())
+        else:
             raise WordNotFoundException(word, self.dictionary.keys())
-        return self.dictionary.get(word)
 
     def run_program(self):
         """
@@ -103,8 +111,7 @@ class Dictionary:
                 print(f"{e}")
             else:
                 Dictionary.print_query_result(word, result)
-                Dictionary.print_query_result(word, result)
-
+                Dictionary.save_query_result("result.txt", word, result)
 
 
 def main():
