@@ -34,7 +34,7 @@ class FileHandler:
     @staticmethod
     def load_data(path):
         """
-        Read a file in the path, and returns the String data.
+        Read a file in the path, and converts it to dictionary and return it.
         It will throw an exception in the following cases:
         1) The file does not exists.
         2) The file is not json nor txt file.
@@ -46,8 +46,9 @@ class FileHandler:
         if not FileExtensions.is_valid_extension(Path(path).suffix):
             raise InvalidFileTypeError
 
-        text_file = open(path, mode='r', encoding='utf-8')
-        data = text_file.read()
+        file = open(path, mode='r', encoding='utf-8')
+        data = file.read()
+        file.close()
         return data
 
     @staticmethod
