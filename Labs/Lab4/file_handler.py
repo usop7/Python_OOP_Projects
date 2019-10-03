@@ -7,9 +7,18 @@ import os.path
 
 
 class FileExtensions(Enum):
-    """This class represents a file extension."""
+    """This class holds valid file extensions."""
     TXT = ".txt"
     JSON = ".json"
+
+    @classmethod
+    def is_valid_extension(cls, value):
+        """
+        Returns if the given value is in the enum list.
+        :param value: String
+        :return: boolean
+        """
+        return value in cls._value2member_map_
 
 
 class FileHandler:
@@ -19,13 +28,15 @@ class FileHandler:
     def load_data(path):
         """
         Read a file in the path, and returns the String data.
+        It will throw an exception in the following cases:
+        1) The file does not exists.
+        2) The file is not json nor txt file.
         :param path: String
         :return: String
         """
-        extension = Path(path).suffix
         if not os.path.exists(path):
-            raise FileNotFoundError(f"file named {path} doesn't exists.")
-        if extension != FileExtensions.TXT.value and extension != FileExtensions.JSON.value:
+            raise FileNotFoundError(f"A file named {path} doesn't exists.")
+        if FileExtensions.is_valid_extension(Path(path).suffix):
             raise TypeError("Only txt/json files are acceptable!")
 
         text_file = open(path, mode='r', encoding='utf-8')
