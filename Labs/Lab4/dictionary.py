@@ -3,6 +3,7 @@ runs the program."""
 
 import json
 from file_handler import FileHandler
+from difflib import get_close_matches
 
 
 class Dictionary:
@@ -19,6 +20,7 @@ class Dictionary:
         data = FileHandler.load_data(filepath)
         # convert String data to Dictionary format
         self.dictionary = json.loads(data)
+        self.dictionary = {k.lower(): v for k, v in self.dictionary.items()}
 
     def query_definition(self, word):
         """
@@ -37,23 +39,28 @@ class Dictionary:
         EXIT_COMMAND = "exitprogram"
         word = ""
         while word != EXIT_COMMAND:
-            word = input("Please type a word to search (Type 'exitprogram'"
+            close_words = []
+            word = input("\nPlease type a word to search (Type 'exitprogram'"
                          "if you want to stop the program): ").lower()
             result = self.query_definition(word)
-            count = 0  # It counts the number of definitions.
+            close_words = get_close_matches(word, self.dictionary.keys())
 
+            count = 0  # It counts the number of definitions.
             if word == EXIT_COMMAND:
+                print("Bye!")
                 return
-            elif result is None:
+            elif result is None and len(close_words) == 0:
                 print("No word found.\n")
-            else:
+            elif result is not None:
                 print(f"\n---------------------------------------------\n"
                       f"Query Results for [{word}]:")
                 for definition in result:
                     count += 1
                     definition = definition.replace('\\n', ' ')
                     print(f"{count}. {definition}")
-                print("----------------------------------------------\n")
+                print("----------------------------------------------")
+            else:
+                print(f"Were you looking for a word in {close_words} ?")
 
                 # Records the result in the text file.
                 FileHandler.write_lines("result.txt", f"{word}:\n{result}\n")
@@ -61,7 +68,6 @@ class Dictionary:
 
 def main():
     my_dictionary = Dictionary()
-
     try:
         my_dictionary.load_dictionary("data.json")
     except FileNotFoundError as e:
