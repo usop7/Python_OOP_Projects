@@ -10,7 +10,7 @@ from file_handler import InvalidFileTypeError
 class WordNotFoundException(Exception):
     """
     This exception will be raised when there is no matching word found.
-    If there are close matches, it will suggest those words instead.
+    If there are close matches, it will suggest those words.
     """
     def __init__(self, word, keys):
         close_words = get_close_matches(word, keys)
@@ -55,7 +55,7 @@ class Dictionary:
         try:
             FileHandler.write_lines(path, f"\n{word}")
         except Exception as e:
-            print(f"Query was not saved.\n"
+            print(f"Query result was not saved.\n"
                   f"Unknown Exception caught: {e}")
         else:
             for definition in definitions:
@@ -66,7 +66,7 @@ class Dictionary:
     def load_dictionary(self, filepath):
         """
         It loads data from the given filepath into a dictionary.
-        If the file is uccesfully loaded, return True, otherwise return false.
+        If the file load was successful, returns True, otherwise returns false.
         :param filepath: String
         :return: boolean
         """
@@ -88,8 +88,10 @@ class Dictionary:
 
     def query_definition(self, word):
         """
-        It looks for a given word and returns the definitions.
-        if there is no exact match, raise WordNotFoundException
+        It looks for a given word in the dictionary and returns definitions.
+        if there is no exact match found, looks for the word with various
+        cases (capitilized, lowercase, uppercase, and titled).
+        If none of above exists, raises WordNotFoundException error.
         :param word: String
         :return: List
         """
@@ -108,15 +110,17 @@ class Dictionary:
 
     def run_program(self):
         """
-        Keeps prompting users with the option to query definitions until
+        Keeps prompting users with the option to query a word until
         the user types 'exitprogram'.
         """
         EXIT_COMMAND = "exitprogram"
-        word = ""
-        while word != EXIT_COMMAND:
+        want_to_exit = False
+        while not want_to_exit:
             word = input("\nPlease type a word to search (Type 'exitprogram'"
                          " if you want to stop the program): ")
-            if word != EXIT_COMMAND:
+            if word == EXIT_COMMAND:
+                want_to_exit = True
+            else:
                 try:
                     result = self.query_definition(word)
                 except WordNotFoundException as e:
