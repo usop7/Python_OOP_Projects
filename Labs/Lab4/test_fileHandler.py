@@ -24,25 +24,23 @@ class TestFileHandler(TestCase):
         self.assertRaises(InvalidFileTypeError, FileHandler.load_data,
                           "dictionary.py")
 
-    def test_load_data_function(self):
-        """
-        Unit test for load_data. Asserts that the function loads data
-        and returns the loaded data properly.
-        """
-        loaded_data = FileHandler.load_data("test.txt")
-        self.assertEqual(loaded_data, "test")
-
     def test_write_line(self):
         """
         Unit test for load_data. Asserts that the function creates a new
         file when there is no such file and appends the given line properly.
         """
+        # Writes a line
         new_file = "output_text.txt"
         if os.path.exists(new_file):
             os.remove(new_file)
         line_to_write = "Hello Rahul!"
         FileHandler.write_lines(new_file, line_to_write)
 
-        loaded_data = FileHandler.load_data(new_file)
-        self.assertEqual(loaded_data, f"{line_to_write}\n")
+        # Open the newly created file and read
+        file = open(new_file, mode='r', encoding='utf-8')
+        result = file.read()
+        file.close()
+
+        # Asserts two strings are the same
+        self.assertEqual(result, f"{line_to_write}\n")
 
