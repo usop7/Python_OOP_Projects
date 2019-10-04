@@ -112,6 +112,7 @@ class Dictionary:
         """
         Keeps prompting users with the option to query a word until
         the user types 'exitprogram'.
+        If it succeeds to find a word, prints and saves the definitions.
         """
         EXIT_COMMAND = "exitprogram"
         want_to_exit = False
@@ -119,6 +120,7 @@ class Dictionary:
             word = input("\nPlease type a word to search (Type 'exitprogram'"
                          " if you want to stop the program): ")
             if word == EXIT_COMMAND:
+                print("Bye!")
                 want_to_exit = True
             else:
                 try:
