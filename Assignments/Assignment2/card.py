@@ -17,11 +17,11 @@ class CardType(Enum):
     def select_card_types(cls):
         card_types = {}
         count = 0
-        question = "-------- Card Category ---------"
+        question = "-------- Card type_ ---------"
         for type_ in CardType:
             card_types[count] = type_
             question += f"{count+1}. {type_.value}"
-        question += "Please select a card category: "
+        question += "Please select a card type: "
 
         select = int(input(question))
         return card_types[select-1]
@@ -42,27 +42,26 @@ class Card(abc.ABC):
         cls.id += 1
         return cls.id
 
-    def __init__(self, category, note=None):
+    def __init__(self, type_, note=None):
         self._id = Card.get_new_id()
-        self._category = category
+        self._type_ = type_
         self._note = note
 
-    def get_category(self):
-        return self._category
+    def get_type(self):
+        return self._type_
 
     def __str__(self):
         pass
 
-    category = property(get_category)
+    type_ = property(get_type)
 
 
 class CreditCard(Card):
     """This class represents a Credit Card."""
 
-    def __init__(self, category, type_, number, card_holder, company,
+    def __init__(self, _type_, number, card_holder, company,
                  cvc_number, expiry_date):
-        super().__init__(category)
-        self._type_ = type_
+        super().__init__(_type_)
         self._number = number
         self._card_holder = card_holder
         self._company = company
@@ -76,9 +75,9 @@ class CreditCard(Card):
 class IDCard(Card):
     """This class represents a Credit Card."""
 
-    def __init__(self, category, id, card_holder, provider, expiry_date=None,
+    def __init__(self, type_, id, card_holder, provider, expiry_date=None,
                  extra_info=None):
-        super().__init__(category)
+        super().__init__(type_)
         self._id = id
         self._card_holder = card_holder
         self._provider = provider
@@ -86,5 +85,5 @@ class IDCard(Card):
         self._extra_info = extra_info
 
     def __str__(self):
-        return f"{self._category}: {self._provider}"
+        return f"{self._type_}: {self._provider}"
 
