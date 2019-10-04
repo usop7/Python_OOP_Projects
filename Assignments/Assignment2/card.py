@@ -13,6 +13,19 @@ class CardType(Enum):
     BUSINESS = "Business Card"
     OTHER = "Other"
 
+    @classmethod
+    def select_card_types(cls):
+        card_types = {}
+        count = 0
+        question = "-------- Card Category ---------"
+        for type_ in CardType:
+            card_types[count] = type_
+            question += f"{count+1}. {type_.value}"
+        question += "Please select a card category: "
+
+        select = int(input(question))
+        return card_types[select-1]
+
 
 class Card(abc.ABC):
     """
@@ -20,8 +33,19 @@ class Card(abc.ABC):
     a specific card type class.
     """
 
-    def __init__(self, category):
+    # Each card will have a sequential unique ID starting from 1.
+    id = 0
+
+    @classmethod
+    def get_new_id(cls):
+        """Increases id by 1, and returns the new id"""
+        cls.id += 1
+        return cls.id
+
+    def __init__(self, category, note=None):
+        self._id = Card.get_new_id()
         self._category = category
+        self._note = note
 
     def get_category(self):
         return self._category
@@ -62,5 +86,5 @@ class IDCard(Card):
         self._extra_info = extra_info
 
     def __str__(self):
-        return f"{self.category.value}: {self._provider}"
+        return f"{self._category}: {self._provider}"
 
