@@ -1,3 +1,4 @@
+import os
 from unittest import TestCase
 from file_handler import FileHandler
 from file_handler import InvalidFileTypeError
@@ -36,7 +37,9 @@ class TestFileHandler(TestCase):
         Unit test for load_data. Asserts that the function creates a new
         file when there is no such file and appends the given line properly.
         """
-        new_file = "test_output.txt"
+        new_file = "output_text.txt"
+        if os.path.exists(new_file):
+            os.remove(new_file)
         line_to_write = "Hello Rahul!"
         FileHandler.write_lines(new_file, line_to_write)
 
