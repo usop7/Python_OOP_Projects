@@ -58,13 +58,10 @@ class FileHandler:
         :param path: String
         :param lines: String
         """
-
         # Open a file for writing and create if it doesn't exist.
         file = open(path, "a+")
 
         # Append the given lines to the file.
         file.write(f"{lines}\n")
         file.close()
-
-
 

@@ -8,14 +8,16 @@ from file_handler import InvalidFileTypeError
 
 
 class WordNotFoundException(Exception):
-    """This exception will be raised when there is no matching word found,
-    and will suggest similar words."""
+    """
+    This exception will be raised when there is no matching word found.
+    If there are close matches, it will suggest those words instead.
+    """
     def __init__(self, word, keys):
         close_words = get_close_matches(word, keys)
         if len(close_words) == 0:
-            super().__init__("No exact match found.")
+            super().__init__("No match found.")
         else:
-            super().__init__(f"No exact match found.\nWere you looking for"
+            super().__init__(f"No exact match found.\nWere you looking for "
                              f"a word among {close_words} ?")
 
 
@@ -50,11 +52,16 @@ class Dictionary:
         :param definitions: List
         """
         count = 0
-        FileHandler.write_lines(path, f"\n{word}")
-        for definition in definitions:
-            count += 1
-            definition = definition.replace('\\n', ' ')
-            FileHandler.write_lines(path, f"{count}. {definition}")
+        try:
+            FileHandler.write_lines(path, f"\n{word}")
+        except Exception as e:
+            print(f"Query was not saved.\n"
+                  f"Unknown Exception caught: {e}")
+        else:
+            for definition in definitions:
+                count += 1
+                definition = definition.replace('\\n', ' ')
+                FileHandler.write_lines(path, f"{count}. {definition}")
 
     def load_dictionary(self, filepath):
         """
@@ -88,8 +95,12 @@ class Dictionary:
         """
         if self.dictionary.get(word) is not None:
             return self.dictionary.get(word)
+        elif self.dictionary.get(word.capitalize()) is not None:
+            return self.dictionary.get(word.capitalize())
         elif self.dictionary.get(word.lower()) is not None:
             return self.dictionary.get(word.lower())
+        elif self.dictionary.get(word.upper()) is not None:
+            return self.dictionary.get(word.upper())
         elif self.dictionary.get(word.title()) is not None:
             return self.dictionary.get(word.title())
         else:
@@ -97,21 +108,22 @@ class Dictionary:
 
     def run_program(self):
         """
-        Keep prompting users with the option to query definitions until
-        the user has entered 'exitprogram'.
+        Keeps prompting users with the option to query definitions until
+        the user types 'exitprogram'.
         """
         EXIT_COMMAND = "exitprogram"
         word = ""
         while word != EXIT_COMMAND:
             word = input("\nPlease type a word to search (Type 'exitprogram'"
                          " if you want to stop the program): ")
-            try:
-                result = self.query_definition(word)
-            except WordNotFoundException as e:
-                print(f"{e}")
-            else:
-                Dictionary.print_query_result(word, result)
-                Dictionary.save_query_result("result.txt", word, result)
+            if word != EXIT_COMMAND:
+                try:
+                    result = self.query_definition(word)
+                except WordNotFoundException as e:
+                    print(f"{e}")
+                else:
+                    Dictionary.print_query_result(word, result)
+                    Dictionary.save_query_result("result.txt", word, result)
 
 
 def main():
@@ -119,7 +131,7 @@ def main():
 
     my_dictionary = Dictionary()
 
-    # Loads the dictionary file, if succesful, runs the program.
+    # Loads the dictionary file, if successful, runs the dictionary program.
     if my_dictionary.load_dictionary("data.json"):
         my_dictionary.run_program()
 
