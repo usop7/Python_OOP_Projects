@@ -132,7 +132,8 @@ def main():
     my_dictionary = Dictionary()
 
     # Loads the dictionary file, if successful, runs the dictionary program.
-    if my_dictionary.load_dictionary("data.json"):
+    input_data_path = input("Type the dictionary file path: ")
+    if my_dictionary.load_dictionary(input_data_path):
         my_dictionary.run_program()
 
 
