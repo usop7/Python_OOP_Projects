@@ -14,7 +14,7 @@ class InputHandler:
     """This class holds methods that are used for user input handling."""
 
     @staticmethod
-    def user_input_handler(num_commands, user_input):
+    def validate_input(num_commands, user_input):
         """
         If user input is not valid, raises a corresponding error.
         1. If user input is not digit, raises ValueError

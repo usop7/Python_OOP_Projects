@@ -51,7 +51,7 @@ class Manager:
                 want_to_exit = True
             else:
                 try:
-                    InputHandler.user_input_handler(len(commands), answer)
+                    InputHandler.validate_input(len(commands), answer)
                 except ValueError:
                     print("\nPlease type an integer!")
                 except CommandNotFoundException as e:

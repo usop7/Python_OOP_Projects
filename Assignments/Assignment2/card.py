@@ -13,12 +13,7 @@ class Card(abc.ABC):
 
     def __init__(self, id_, type_):
         self._id = id_  # will be auto assigned by a card manager
-        self._name = None
-        self.set_name()
         self._type_ = type_
-
-    def set_name(self):
-        """Set card name with the user input."""
         self._name = input("Please type the card name: ")
 
     def get_type(self):
@@ -26,8 +21,6 @@ class Card(abc.ABC):
 
     def __str__(self):
         pass
-
-    type_ = property(get_type)
 
 
 class CreditCard(Card):

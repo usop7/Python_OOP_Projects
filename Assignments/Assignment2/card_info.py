@@ -16,6 +16,11 @@ class CardType(Enum):
 
     @staticmethod
     def get_card_type():
+        """
+        Keeps prompting a user with a card type option until a user gives
+        a valid answer, and returns the selected card type.
+        :return: CardType
+        """
         card_types = {}
         count = 0
         question = "\n-------- Card type ---------\n"
@@ -28,7 +33,7 @@ class CardType(Enum):
         while input_type is None:
             try:
                 answer = input(question)
-                InputHandler.user_input_handler(len(card_types), answer)
+                InputHandler.validate_input(len(card_types), answer)
             except ValueError:
                 print("\nPlease type an integer!")
             except CommandNotFoundException as e:
@@ -42,21 +47,8 @@ class CardNumber:
     """This class represents a unique card number."""
 
     def __init__(self):
-        """
-        Card number will be initialized with None value first,
-        and then updated based on user input.
-        """
-        self._card_number = None
-        self.set_card_number()
-
-    def set_card_number(self):
-        """Set card number with the user answer."""
+        """Card number will be initialized with a user input."""
         self._card_number = input("Please type your card number: ")
-
-    def get_card_number(self):
-        return self._card_number
-
-    value = property(get_card_number)
 
     def __str__(self):
         return f"{self._card_number}"
@@ -66,21 +58,8 @@ class CardHolder:
     """This class represents a card holder."""
 
     def __init__(self):
-        """
-        Card holder will be initialized with None value first,
-        and then updated based on user input.
-        """
-        self._card_holder = None
-        self.set_card_holder()
-
-    def set_card_holder(self):
-        """Set card holder with the user answer."""
+        """Card holder will be initialized with a user input."""
         self._card_holder = input("Please type the card holder name: ")
-
-    def get_card_holder(self):
-        return self._card_holder
-
-    value = property(get_card_holder)
 
     def __str__(self):
         return f"{self._card_holder}"
