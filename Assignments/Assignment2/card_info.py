@@ -26,13 +26,43 @@ class CardType(Enum):
         return card_types[select-1]
 
 
-class CardNumber():
+class CardNumber:
     """This class represents a unique card number."""
 
-    @classmethod
-    def set_card_number(cls):
-        user_input = input("Please type the card number: ")
-        return user_input
+    def __init__(self):
+        """
+        Card number will be initialized with None value first,
+        and then updated based on user input.
+        """
+        self._card_number = None
+        self.set_card_number()
+
+    def set_card_number(self):
+        """Set card number with the user answer."""
+        self._card_number = input("Please type your card number: ")
+
+    def get_card_number(self):
+        return self._card_number
+
+    value = property(get_card_number)
+
+
+class CardHolder:
+    """This class represents a card holder."""
 
     def __init__(self):
-        self.number = CardNumber().set_card_number()
+        """
+        Card holder will be initialized with None value first,
+        and then updated based on user input.
+        """
+        self._card_holder = None
+        self.set_card_holder()
+
+    def set_card_holder(self):
+        """Set card holder with the user answer."""
+        self._card_holder = input("Please type the card holder name: ")
+
+    def get_card_holder(self):
+        return self._card_holder
+
+    value = property(get_card_holder)
