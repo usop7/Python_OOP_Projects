@@ -6,6 +6,7 @@ from card_info import CardHolder
 from card_info import ExpiryDate
 from card_info import PhoneNumber
 from card_info import Address
+from card_info import Amount
 
 
 class Card(abc.ABC):
@@ -72,4 +73,24 @@ class BusinessCard(Card):
         self.add_note()
 
 
+class MembershipCard(Card):
+    """This class represents a Membership Card."""
+
+    def __init__(self, id_, type_):
+        super().__init__(id_, type_)
+        self._extra_info["Membership Number"] = CardNumber()
+        self._extra_info["Card Holder"] = CardHolder()
+        self._extra_info["Expiry Date"] = ExpiryDate()
+        self.add_note()
+
+
+class GiftCard(Card):
+    """This class represents a Gift Card."""
+
+    def __init__(self, id_, type_):
+        super().__init__(id_, type_)
+        self._extra_info["Card Number"] = CardNumber()
+        self._extra_info["Gift Amount"] = Amount()
+        self._extra_info["Expiry Date"] = ExpiryDate()
+        self.add_note()
 

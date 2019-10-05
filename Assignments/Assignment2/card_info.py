@@ -10,7 +10,6 @@ class CardType(Enum):
     CREDIT = "Credit Card"
     GIFT = "Gift Card"
     MEMBERSHIP = "Membership Card"
-    LOYALTY = "Loyalty Card"
     BUSINESS = "Business Card"
     OTHER = "Other Types of Card"
 
@@ -96,3 +95,14 @@ class Address:
 
     def __str__(self):
         return f"{self._address}"
+
+
+class Amount:
+    """This class represents an amount."""
+
+    def __init__(self):
+        """Amount will be initialized with a user input."""
+        self._amount = input("Please type the amount: ")
+
+    def __str__(self):
+        return f"{self._amount}"
