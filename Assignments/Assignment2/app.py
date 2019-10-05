@@ -49,7 +49,7 @@ class Manager:
                            f"\t4. Search for a card\n"
                            f"\t4. Delete a card\n"
                            f"\t5. Back up all cards in the app\n"
-                           f"Please select or type '{EXIT}' to exit): ")
+                           f"Please select or type '{EXIT}' to exit: ")
             if answer == EXIT:
                 print("\nBye!")
                 want_to_exit = True
@@ -93,6 +93,7 @@ class Manager:
         }
         input_type = CardType.get_card_type()
         self.card_list[new_id] = type_map[input_type](new_id, input_type)
+        print("The following card has been successfully added!\n")
         print(self.card_list[new_id])
 
     def search_card(self):
@@ -100,11 +101,11 @@ class Manager:
         Prompts a user with a card name to search, finds close matches,
         and shows the results.
         """
-        word = input("Please type the card name to search: ")
+        word = input("\nPlease type the card name to search: ")
         names = [word.lower(), word.upper(), word.title(), word.capitalize()]
         count = 0
         for card in self.card_list.values():
-            if card.get_type() in names:
+            if card.get_name() in names:
                 count += 1
                 print(card)
         if count == 0:
