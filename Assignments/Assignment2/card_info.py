@@ -1,6 +1,8 @@
 """This module holds classes regarding card information."""
 
 from enum import Enum
+from input_handler import InputHandler
+from input_handler import CommandNotFoundException
 
 
 class CardType(Enum):
@@ -10,21 +12,30 @@ class CardType(Enum):
     MEMBERSHIP = "Membership Card"
     LOYALTY = "Loyalty Card"
     BUSINESS = "Business Card"
-    OTHER = "Other"
+    OTHER = "Other Types of Card"
 
     @classmethod
     def set_card_type(cls):
         card_types = {}
         count = 0
-        question = "-------- Card type ---------\n"
+        question = "\n-------- Card type ---------\n"
         for type_ in CardType:
             card_types[count] = type_
             count += 1
-            question += f"{count}. {type_.value}\n"
+            question += f"\t{count}. {type_.value}\n"
         question += "Please select a card type: "
 
-        select = int(input(question))
-        return card_types[select-1]
+        answer = input(question)
+
+        try:
+            InputHandler.user_input_handler(len(card_types), answer)
+        except ValueError:
+            print("\nPlease type an integer!")
+        except CommandNotFoundException as e:
+            print(f"{e}")
+        else:
+            return card_types[int(answer) - 1]
+        return None
 
 
 class CardNumber:
