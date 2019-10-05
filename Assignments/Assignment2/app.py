@@ -2,29 +2,15 @@
 
 from card_info import CardType
 from card import CreditCard
+from input_handler import InputHandler
+from input_handler import CommandNotFoundException
 
 
 class App:
     """This class represents an app."""
 
-    @staticmethod
-    def user_input_handler(num_commands, user_input):
-        if not user_input.isdigit():
-            raise ValueError
-        if int(user_input) < 1 or int(user_input) > num_commands:
-            raise CommandNotFoundException(num_commands)
-
     def __init__(self):
         self.manager = Manager()
-
-
-class CommandNotFoundException(Exception):
-    """
-    This exception will be raised when there is no matching command found.
-    """
-
-    def __init__(self, num_commands):
-        super().__init__(f"\nPlease select between 1 to {num_commands}")
 
 
 class Manager:
@@ -66,7 +52,7 @@ class Manager:
                 want_to_exit = True
             else:
                 try:
-                    App.user_input_handler(len(commands), answer)
+                    InputHandler.user_input_handler(len(commands), answer)
                 except ValueError:
                     print("\nPlease type an integer!")
                 except CommandNotFoundException as e:
