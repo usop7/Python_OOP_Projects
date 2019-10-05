@@ -24,7 +24,7 @@ class CommandNotFoundException(Exception):
     """
 
     def __init__(self, num_commands):
-        super().__init__(f"Please select between 1 to {num_commands}")
+        super().__init__(f"\nPlease select between 1 to {num_commands}")
 
 
 class Manager:
@@ -54,30 +54,44 @@ class Manager:
         EXIT = "exit"
         want_to_exit = False
         while not want_to_exit:
-            answer = input(f"\nWhat would you like to do?\nPlease select a"
-                           f"number or type '{EXIT}' to exit the program): ")
+            answer = input(f"\nWhat would you like to do?\n"
+                           f"\t1. Add a new card\n"
+                           f"\t2. Show all cards in the app\n"
+                           f"\t3. Show all cards of a specific type\n"
+                           f"\t4. Delete a card\n"
+                           f"\t5. Back up all cards in the app\n"
+                           f"Please select or type '{EXIT}' to exit): ")
             if answer == EXIT:
-                print("Bye!")
+                print("\nBye!")
                 want_to_exit = True
             else:
                 try:
                     App.user_input_handler(len(commands), answer)
                 except ValueError:
-                    print("Please type an integer!")
+                    print("\nPlease type an integer!")
                 except CommandNotFoundException as e:
                     print(f"{e}")
+                else:
+                    commands[int(answer) - 1]()
 
     def print_all_cards(self):
         """Prints all the cards in the list."""
-        for card in self.card_list:
-            print(card)
+        if len(self.card_list) == 0:
+            print("\nThere is no card saved.")
+        else:
+            for card in self.card_list:
+                print(card)
 
-    def print_cards_by_type(self, type_):
+    def print_cards_by_type(self):
         """Prints all the cards of a specific type."""
         input_type = CardType.set_card_type()
+        count = 0
         for card in self.card_list:
             if card.get_type() == input_type:
+                count += 1
                 print(card)
+        if count == 0:
+            print(f"\nThere is no {input_type.value} saved.")
 
     def add_card(self):
         """
