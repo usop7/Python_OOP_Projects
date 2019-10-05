@@ -3,6 +3,7 @@
 import abc
 from card_info import CardNumber
 from card_info import CardHolder
+from card_info import ExpiryDate
 
 
 class Card(abc.ABC):
@@ -12,15 +13,21 @@ class Card(abc.ABC):
     """
 
     def __init__(self, id_, type_):
-        self._id = id_  # will be auto assigned by a card manager
-        self._type_ = type_
-        self._name = input("Please type the card name: ")
+        self._info_list = {
+            "id": id_,
+            "type": type_,
+            "name": input("Please type the card name: ")
+        }
 
     def get_type(self):
-        return self._type_
+        return self._info_list["type"]
 
     def __str__(self):
-        pass
+        info_str = "---------------------------------\n"
+        for key, value in self._info_list.items():
+            info_str += f"{key}: {value}\n"
+        info_str += "---------------------------------\n"
+        return info_str
 
 
 class CreditCard(Card):
@@ -28,17 +35,9 @@ class CreditCard(Card):
 
     def __init__(self, id_, type_):
         super().__init__(id_, type_)
-        self._number = CardNumber()
-        self._card_holder = CardHolder()
-        #self._company = company
-        #self._cvc_number = cvc_number
-        #self._expiry_date = expiry_date
+        self._info_list["number"] = CardNumber()
+        self._info_list["card holder"] = CardHolder()
+        self._info_list["expiry date"] = ExpiryDate()
+        self._info_list["CVC number"] = input("Please type CVC number: ")
 
-    def __str__(self):
-        return f"-----------------------------------------\n" \
-               f"(ID: {self._id}) {self._name}\n" \
-               f"\ttype: {self._type_.value}\n" \
-               f"\tnumber: {self._number}\n" \
-               f"\tcard holder: {self._card_holder}\n" \
-               f"-----------------------------------------\n"
 
