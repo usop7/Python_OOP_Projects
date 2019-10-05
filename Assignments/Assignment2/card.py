@@ -4,6 +4,8 @@ import abc
 from card_info import CardNumber
 from card_info import CardHolder
 from card_info import ExpiryDate
+from card_info import PhoneNumber
+from card_info import Address
 
 
 class Card(abc.ABC):
@@ -30,7 +32,7 @@ class Card(abc.ABC):
     def __str__(self):
         info_str = "---------------------------------\n" \
                    f"({self._id}) {self._name}\n" \
-                   f"Card Type:{self._type_.value}\n"
+                   f"Card Type: {self._type_.value}\n"
         for key, value in self._extra_info.items():
             info_str += f"{key}: {value}\n"
         info_str += "---------------------------------\n"
@@ -58,5 +60,16 @@ class IDCard(Card):
         self._extra_info["Card Holder"] = CardHolder()
         self._extra_info["Expiry Date"] = ExpiryDate()
         self.add_note()
+
+
+class BusinessCard(Card):
+    """This class represents a Business Card."""
+
+    def __init__(self, id_, type_):
+        super().__init__(id_, type_)
+        self._extra_info["Phone Number"] = PhoneNumber()
+        self._extra_info["Address"] = Address()
+        self.add_note()
+
 
 

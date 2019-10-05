@@ -3,6 +3,7 @@
 from card_info import CardType
 from card import CreditCard
 from card import IDCard
+from card import BusinessCard
 from input_handler import InputHandler
 from input_handler import CommandNotFoundException
 
@@ -89,7 +90,8 @@ class Manager:
         new_id = Manager.get_new_id()
         type_map = {
             CardType.ID: IDCard,
-            CardType.CREDIT: CreditCard
+            CardType.CREDIT: CreditCard,
+            CardType.BUSINESS: BusinessCard
         }
         input_type = CardType.get_card_type()
         self.card_list[new_id] = type_map[input_type](new_id, input_type)

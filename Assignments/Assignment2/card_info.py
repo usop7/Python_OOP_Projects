@@ -23,7 +23,7 @@ class CardType(Enum):
         """
         card_types = {}
         count = 0
-        question = "\n-------- Card type ---------\n"
+        question = "\nWhich type of card would you like to add?\n"
         for type_ in CardType:
             card_types[count] = type_
             count += 1
@@ -63,3 +63,36 @@ class CardHolder:
 
     def __str__(self):
         return f"{self._card_holder}"
+
+
+class ExpiryDate:
+    """This class represents an expiry date of a card."""
+
+    def __init__(self):
+        """Expire date will be initialized with a user input."""
+        self._expiry_date = input("Please type the expiry date: ")
+
+    def __str__(self):
+        return f"{self._expiry_date}"
+
+
+class PhoneNumber:
+    """This class represents a phone number."""
+
+    def __init__(self):
+        """Phonen umber will be initialized with a user input."""
+        self._phone_number = input("Please type the phone number: ")
+
+    def __str__(self):
+        return f"{self._phone_number}"
+
+
+class Address:
+    """This class represents an address."""
+
+    def __init__(self):
+        """Address will be initialized with a user input."""
+        self._address = input("Please type the address: ")
+
+    def __str__(self):
+        return f"{self._address}"
