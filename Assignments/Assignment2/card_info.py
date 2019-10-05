@@ -16,10 +16,11 @@ class CardType(Enum):
     def set_card_type(cls):
         card_types = {}
         count = 0
-        question = "-------- Card type_ ---------"
+        question = "-------- Card type ---------\n"
         for type_ in CardType:
             card_types[count] = type_
-            question += f"{count+1}. {type_.value}"
+            count += 1
+            question += f"{count}. {type_.value}\n"
         question += "Please select a card type: "
 
         select = int(input(question))
@@ -46,6 +47,9 @@ class CardNumber:
 
     value = property(get_card_number)
 
+    def __str__(self):
+        return f"{self._card_number}"
+
 
 class CardHolder:
     """This class represents a card holder."""
@@ -66,3 +70,6 @@ class CardHolder:
         return self._card_holder
 
     value = property(get_card_holder)
+
+    def __str__(self):
+        return f"{self._card_holder}"
