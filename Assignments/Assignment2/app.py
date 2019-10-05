@@ -2,6 +2,7 @@
 
 from card_info import CardType
 from card import CreditCard
+from card import IDCard
 from input_handler import InputHandler
 from input_handler import CommandNotFoundException
 
@@ -34,15 +35,18 @@ class Manager:
         the user types 'exitprogram'.
         If it succeeds to find a word, prints and saves the definitions.
         """
-        commands = [self.add_card, self.print_all_cards,
-                    self.print_cards_by_type]
+        commands = [self.print_all_cards,
+                    self.print_cards_by_type,
+                    self.add_card,
+                    self.search_card]
         EXIT = "exit"
         want_to_exit = False
         while not want_to_exit:
             answer = input(f"\nWhat would you like to do?\n"
-                           f"\t1. Add a new card\n"
-                           f"\t2. Show all cards in the app\n"
-                           f"\t3. Show all cards of a specific type\n"
+                           f"\t1. Show all cards in the app\n"
+                           f"\t2. Show all cards of a specific type\n"
+                           f"\t3. Add a new card\n"
+                           f"\t4. Search for a card\n"
                            f"\t4. Delete a card\n"
                            f"\t5. Back up all cards in the app\n"
                            f"Please select or type '{EXIT}' to exit): ")
@@ -80,15 +84,31 @@ class Manager:
 
     def add_card(self):
         """
-        Generates a new id, creates a new card, and add is to the list.
+        Generates a new id, creates a new card, and adds is to the list.
         """
         new_id = Manager.get_new_id()
         type_map = {
+            CardType.ID: IDCard,
             CardType.CREDIT: CreditCard
         }
         input_type = CardType.get_card_type()
         self.card_list[new_id] = type_map[input_type](new_id, input_type)
         print(self.card_list[new_id])
+
+    def search_card(self):
+        """
+        Prompts a user with a card name to search, finds close matches,
+        and shows the results.
+        """
+        word = input("Please type the card name to search: ")
+        names = [word.lower(), word.upper(), word.title(), word.capitalize()]
+        count = 0
+        for card in self.card_list.values():
+            if card.get_type() in names:
+                count += 1
+                print(card)
+        if count == 0:
+            print(f"\nThere is no card named '{word}'.")
 
 
 def main():
