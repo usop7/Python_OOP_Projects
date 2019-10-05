@@ -14,8 +14,8 @@ class CardType(Enum):
     BUSINESS = "Business Card"
     OTHER = "Other Types of Card"
 
-    @classmethod
-    def set_card_type(cls):
+    @staticmethod
+    def get_card_type():
         card_types = {}
         count = 0
         question = "\n-------- Card type ---------\n"
@@ -24,9 +24,7 @@ class CardType(Enum):
             count += 1
             question += f"\t{count}. {type_.value}\n"
         question += "Please select a card type: "
-
         answer = input(question)
-
         try:
             InputHandler.user_input_handler(len(card_types), answer)
         except ValueError:

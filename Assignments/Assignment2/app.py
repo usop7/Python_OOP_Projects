@@ -8,7 +8,6 @@ from input_handler import CommandNotFoundException
 
 class App:
     """This class represents an app."""
-
     def __init__(self):
         self.manager = Manager()
 
@@ -84,10 +83,13 @@ class Manager:
         Generates a new id, creates a new card, and add is to the list.
         """
         new_id = Manager.get_new_id()
-        input_type = CardType.set_card_type()
-        if input_type == CardType.CREDIT:
-            self.card_list[new_id] = CreditCard(new_id, input_type)
-        # Prints the newly created card
+        input_type = None
+        type_map = {
+            CardType.CREDIT: CreditCard
+        }
+        while input_type is None:
+            input_type = CardType.get_card_type()
+        self.card_list[new_id] = type_map[input_type](new_id, input_type)
         print(self.card_list[new_id])
 
 

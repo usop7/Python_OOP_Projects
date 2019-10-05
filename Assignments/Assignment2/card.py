@@ -1,7 +1,6 @@
 """This module includes classes related to card."""
 
 import abc
-from card_info import CardType
 from card_info import CardNumber
 from card_info import CardHolder
 
@@ -12,12 +11,11 @@ class Card(abc.ABC):
     a specific card type class.
     """
 
-    def __init__(self, id_, note=None):
+    def __init__(self, id_, type_):
         self._id = id_  # will be auto assigned by a card manager
         self._name = None
         self.set_name()
-        self._type_ = CardType.set_card_type()
-        self._note = note
+        self._type_ = type_
 
     def set_name(self):
         """Set card name with the user input."""
@@ -35,8 +33,8 @@ class Card(abc.ABC):
 class CreditCard(Card):
     """This class represents a Credit Card."""
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, id_, type_):
+        super().__init__(id_, type_)
         self._number = CardNumber()
         self._card_holder = CardHolder()
         #self._company = company
@@ -44,8 +42,10 @@ class CreditCard(Card):
         #self._expiry_date = expiry_date
 
     def __str__(self):
-        return f"{self._name}\n" \
-               f"type: {self._type_}\n" \
-               f"number: {self._number}\n" \
-               f"card holder: {self._card_holder}"
+        return f"-----------------------------------------\n" \
+               f"(ID: {self._id}) {self._name}\n" \
+               f"\ttype: {self._type_.value}\n" \
+               f"\tnumber: {self._number}\n" \
+               f"\tcard holder: {self._card_holder}\n" \
+               f"-----------------------------------------\n"
 
