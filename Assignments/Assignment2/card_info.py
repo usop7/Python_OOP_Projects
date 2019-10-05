@@ -24,16 +24,18 @@ class CardType(Enum):
             count += 1
             question += f"\t{count}. {type_.value}\n"
         question += "Please select a card type: "
-        answer = input(question)
-        try:
-            InputHandler.user_input_handler(len(card_types), answer)
-        except ValueError:
-            print("\nPlease type an integer!")
-        except CommandNotFoundException as e:
-            print(f"{e}")
-        else:
-            return card_types[int(answer) - 1]
-        return None
+        input_type = None
+        while input_type is None:
+            try:
+                answer = input(question)
+                InputHandler.user_input_handler(len(card_types), answer)
+            except ValueError:
+                print("\nPlease type an integer!")
+            except CommandNotFoundException as e:
+                print(f"{e}")
+            else:
+                input_type = card_types[int(answer) - 1]
+                return input_type
 
 
 class CardNumber:

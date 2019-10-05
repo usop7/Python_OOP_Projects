@@ -64,14 +64,14 @@ class Manager:
         if len(self.card_list) == 0:
             print("\nThere is no card saved.")
         else:
-            for card in self.card_list:
+            for card in self.card_list.values():
                 print(card)
 
     def print_cards_by_type(self):
         """Prints all the cards of a specific type."""
-        input_type = CardType.set_card_type()
+        input_type = CardType.get_card_type()
         count = 0
-        for card in self.card_list:
+        for card in self.card_list.values():
             if card.get_type() == input_type:
                 count += 1
                 print(card)
@@ -83,12 +83,10 @@ class Manager:
         Generates a new id, creates a new card, and add is to the list.
         """
         new_id = Manager.get_new_id()
-        input_type = None
         type_map = {
             CardType.CREDIT: CreditCard
         }
-        while input_type is None:
-            input_type = CardType.get_card_type()
+        input_type = CardType.get_card_type()
         self.card_list[new_id] = type_map[input_type](new_id, input_type)
         print(self.card_list[new_id])
 
