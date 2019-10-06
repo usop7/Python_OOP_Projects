@@ -6,12 +6,17 @@ from card import IDCard
 from card import BusinessCard
 from card import MembershipCard
 from card import GiftCard
+from card import OtherCard
 from input_handler import InputHandler
 from input_handler import CommandNotFoundException
+from file_writer import FileWriter
+from datetime import datetime
 
 
 class App:
     """This class represents an app."""
+    app_name = "CardManager"
+
     def __init__(self):
         self.manager = Manager()
 
@@ -34,14 +39,13 @@ class Manager:
 
     def run_program(self):
         """
-        Keeps prompting users with the option to query a word until
-        the user types 'exitprogram'.
-        If it succeeds to find a word, prints and saves the definitions.
+        Prompts a user with a various options until a user types 'exit'.
         """
         commands = [self.print_all_cards,
                     self.print_cards_by_type,
                     self.add_card,
-                    self.search_card]
+                    self.search_card,
+                    self.backup_card_list]
         EXIT = "exit"
         want_to_exit = False
         while not want_to_exit:
@@ -50,7 +54,7 @@ class Manager:
                            f"\t2. Show all cards of a specific type\n"
                            f"\t3. Add a new card\n"
                            f"\t4. Search for a card\n"
-                           f"\t4. Delete a card\n"
+                           #f"\t4. Delete a card\n"
                            f"\t5. Back up all cards in the app\n"
                            f"Please select or type '{EXIT}' to exit: ")
             if answer == EXIT:
@@ -86,16 +90,15 @@ class Manager:
             print(f"\nThere is no {input_type.value} saved.")
 
     def add_card(self):
-        """
-        Generates a new id, creates a new card, and adds is to the list.
-        """
+        """Creates a new card with a new ID, and adds is to the list."""
         new_id = Manager.get_new_id()
         type_map = {
             CardType.ID: IDCard,
             CardType.CREDIT: CreditCard,
             CardType.BUSINESS: BusinessCard,
             CardType.MEMBERSHIP: MembershipCard,
-            CardType.GIFT: GiftCard
+            CardType.GIFT: GiftCard,
+            CardType.OTHER: OtherCard
         }
         input_type = CardType.get_card_type()
         self.card_list[new_id] = type_map[input_type](new_id, input_type)
@@ -116,6 +119,14 @@ class Manager:
                 print(card)
         if count == 0:
             print(f"\nThere is no card named '{word}'.")
+
+    def backup_card_list(self):
+        now = datetime.now()
+        path = f"{App.app_name}_Export_{now.strftime('%d%m%Y_%H%M')}.txt"
+        card_string_list = []
+        for card in self.card_list.values():
+            card_string_list.append(card.to_one_line_str())
+        FileWriter.write_lines(path, card_string_list)
 
 
 def main():

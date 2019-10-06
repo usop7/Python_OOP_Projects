@@ -28,15 +28,20 @@ class Card(abc.ABC):
         return self._name
 
     def add_note(self):
-        self._extra_info["Note"] = input("Extra Note: ")
+        self._extra_info["Note"] = input("Add a note: ")
+
+    def to_one_line_str(self):
+        """
+        Returns one line of string about the card.
+        :return: String
+        """
+        return self.__str__().replace("\n", ", ")
 
     def __str__(self):
-        info_str = "---------------------------------\n" \
-                   f"({self._id}) {self._name}\n" \
+        info_str = f"\n({self._id}) {self._name}\n" \
                    f"Card Type: {self._type_.value}\n"
         for key, value in self._extra_info.items():
             info_str += f"{key}: {value}\n"
-        info_str += "---------------------------------\n"
         return info_str
 
 
@@ -92,5 +97,13 @@ class GiftCard(Card):
         self._extra_info["Card Number"] = CardNumber()
         self._extra_info["Gift Amount"] = Amount()
         self._extra_info["Expiry Date"] = ExpiryDate()
+        self.add_note()
+
+
+class OtherCard(Card):
+    """This class represents a Other type of Card."""
+
+    def __init__(self, id_, type_):
+        super().__init__(id_, type_)
         self.add_note()
 
