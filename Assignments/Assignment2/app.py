@@ -34,7 +34,7 @@ class Manager:
         return cls.id
 
     def __init__(self):
-        self.card_list = {}
+        self._card_list = {}
 
     def run_program(self):
         """
@@ -74,17 +74,17 @@ class Manager:
 
     def print_all_cards(self):
         """Prints all the cards in the list."""
-        if len(self.card_list) == 0:
+        if len(self._card_list) == 0:
             print("\nThere is no card saved.")
         else:
-            for card in self.card_list.values():
+            for card in self._card_list.values():
                 print(card)
 
     def print_cards_by_type(self):
         """Prints all the cards of a specific type."""
         input_type = CardType.get_card_type()
         count = 0
-        for card in self.card_list.values():
+        for card in self._card_list.values():
             if card.get_type() == input_type:
                 count += 1
                 print(card)
@@ -103,9 +103,9 @@ class Manager:
             CardType.OTHER: OtherCard
         }
         input_type = CardType.get_card_type()
-        self.card_list[new_id] = type_map[input_type](new_id, input_type)
+        self._card_list[new_id] = type_map[input_type](new_id, input_type)
         print("The following card has been successfully added!\n")
-        print(self.card_list[new_id])
+        print(self._card_list[new_id])
 
     def search_card(self):
         """
@@ -115,7 +115,7 @@ class Manager:
         word = input("\nPlease type the card name to search: ")
         names = [word.lower(), word.upper(), word.title(), word.capitalize()]
         count = 0
-        for card in self.card_list.values():
+        for card in self._card_list.values():
             if card.get_name() in names:
                 count += 1
                 print(card)
@@ -131,7 +131,7 @@ class Manager:
         path = f"{App.app_name}_Export_{now.strftime('%d%m%Y_%H%M')}.txt"
         card_string_list = []
         saved = False
-        for card in self.card_list.values():
+        for card in self._card_list.values():
             card_string_list.append(card.to_one_line_str())
         try:
             FileWriter.write_lines(path, card_string_list)
@@ -148,8 +148,8 @@ class Manager:
     def delete_card_by_id(self):
         """Deletes a card by its specific ID."""
         answer = input("Type the card ID to delete: ")
-        if answer.isdigit() and self.card_list.get(int(answer)) is not None:
-            del self.card_list[int(answer)]
+        if answer.isdigit() and self._card_list.get(int(answer)) is not None:
+            del self._card_list[int(answer)]
             print("Requested card has been successfully deleted.")
         else:
             print(f"There is no card whose ID is '{answer}'")
@@ -160,13 +160,13 @@ class Manager:
         delete_list = []
         count = 0
         # Records card IDs whose name is same as the user input.
-        for card in self.card_list.values():
+        for card in self._card_list.values():
             if card.get_name() == answer:
                 count += 1
                 delete_list.append(card.get_id())
         # Deletes the cards from the list.
         for card_id in delete_list:
-            del self.card_list[card_id]
+            del self._card_list[card_id]
 
         if count == 0:
             print(f"\nThere is no card named '{answer}'.")
