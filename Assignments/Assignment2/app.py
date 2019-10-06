@@ -34,7 +34,6 @@ class Manager:
         return cls.id
 
     def __init__(self):
-        self.num_of_cards = 0
         self.card_list = {}
 
     def run_program(self):
@@ -45,6 +44,8 @@ class Manager:
                     self.print_cards_by_type,
                     self.add_card,
                     self.search_card,
+                    self.delete_card_by_id,
+                    self.delete_card_by_name,
                     self.backup_card_list]
         EXIT = "exit"
         want_to_exit = False
@@ -54,8 +55,9 @@ class Manager:
                            f"\t2. Show all cards of a specific type\n"
                            f"\t3. Add a new card\n"
                            f"\t4. Search for a card\n"
-                           #f"\t4. Delete a card\n"
-                           f"\t5. Back up all cards in the app\n"
+                           f"\t5. Delete a card by ID\n"
+                           f"\t6. Delete a card by Name\n"
+                           f"\t7. Back up all cards in the app\n"
                            f"Please select or type '{EXIT}' to exit: ")
             if answer == EXIT:
                 print("\nBye!")
@@ -142,6 +144,34 @@ class Manager:
                 print(f"File has been successfully created at '{path}'")
             else:
                 print("Back up failed.")
+
+    def delete_card_by_id(self):
+        """Deletes a card by its specific ID."""
+        answer = input("Type the card ID to delete: ")
+        if answer.isdigit() and self.card_list.get(int(answer)) is not None:
+            del self.card_list[int(answer)]
+            print("Requested card has been successfully deleted.")
+        else:
+            print(f"There is no card whose ID is '{answer}'")
+
+    def delete_card_by_name(self):
+        """Deletes card(s) by its name."""
+        answer = input("Type the card name to delete: ")
+        delete_list = []
+        count = 0
+        # Records card IDs whose name is same as the user input.
+        for card in self.card_list.values():
+            if card.get_name() == answer:
+                count += 1
+                delete_list.append(card.get_id())
+        # Deletes the cards from the list.
+        for card_id in delete_list:
+            del self.card_list[card_id]
+
+        if count == 0:
+            print(f"\nThere is no card named '{answer}'.")
+        else:
+            print(f"{count} card(s) have been successfully deleted.")
 
 
 def main():

@@ -21,6 +21,9 @@ class Card(abc.ABC):
         self._name = input("Please type the card name: ")
         self._extra_info = {}
 
+    def get_id(self):
+        return self._id
+
     def get_type(self):
         return self._type_
 
