@@ -121,12 +121,27 @@ class Manager:
             print(f"\nThere is no card named '{word}'.")
 
     def backup_card_list(self):
+        """
+        Converts each card into one line of string and saves this collection
+        collection to a file named 'CardManager_Export_DDMMYY_HHMM.txt'.
+        """
         now = datetime.now()
         path = f"{App.app_name}_Export_{now.strftime('%d%m%Y_%H%M')}.txt"
         card_string_list = []
+        saved = False
         for card in self.card_list.values():
             card_string_list.append(card.to_one_line_str())
-        FileWriter.write_lines(path, card_string_list)
+        try:
+            FileWriter.write_lines(path, card_string_list)
+        except Exception as e:
+            print(f"Unknown Exception Caught: {e}")
+        else:
+            saved = True
+        finally:
+            if saved:
+                print(f"File has been successfully created at '{path}'")
+            else:
+                print("Back up failed.")
 
 
 def main():

@@ -1,3 +1,6 @@
+""" A short description about the module """
+
+
 class Smurf:
     """This class represents a smurf as a Node with a name value."""
 

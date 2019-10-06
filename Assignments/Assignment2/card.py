@@ -35,13 +35,13 @@ class Card(abc.ABC):
         Returns one line of string about the card.
         :return: String
         """
-        return self.__str__().replace("\n", ", ")
+        return self.__str__().replace("\n", ", ").replace("\t", "")
 
     def __str__(self):
-        info_str = f"\n({self._id}) {self._name}\n" \
-                   f"Card Type: {self._type_.value}\n"
+        info_str = f"[ID: {self._id}] {self._name}\n" \
+                   f"\tCard Type: {self._type_.value}\n"
         for key, value in self._extra_info.items():
-            info_str += f"{key}: {value}\n"
+            info_str += f"\t{key}: {value}\n"
         return info_str
 
 
