@@ -63,7 +63,9 @@ class Auctioneer:
         new_Bidder = None
         for bidder in self._bidders:
             if bidder != self.current_bidder:
-                if bidder.
+                if bidder.bid_probability > probability:
+                    new_bid = bidder.
+
 
 
 
@@ -82,7 +84,6 @@ class Bidder:
         self._bid_probability = random.random()
         self._bid_increase_perc = bid_increase_perc
         self._highest_bid = 0
-        self._curr_bid = 0
 
     def get_bid_probability(self):
         self._bid_probability = random.random()
@@ -101,6 +102,35 @@ class Bidder:
             return bid_price
         else:
             return 0
+
+
+def main():
+    """Prompts the user with auction info, and starts the auction."""
+
+    bidders = []
+    item_name = input("Please type the name of the item: ")
+    valid = False
+    while not valid:
+        starting_price = input("Please type the starting price: ")
+        if starting_price.isdigit():
+            valid = True
+
+    valid = False
+    num_of_bidders = 0
+    while not valid:
+        num_of_bidders = input("Please type the number of bidders: ")
+        if num_of_bidders.isdigit():
+            valid = True
+
+    num = 1
+    while num <= int(num_of_bidders):
+        print(f"Please provide the details of the bidder {num}")
+        name = input("name: ")
+        budget = input("budget: ")
+        bid_increase_perc = input("bid increase percentage(greater than 1): ")
+        bidders.append(Bidder(name, budget, bid_increase_perc))
+
+    my_auction = Auction(bidders, item_name, starting_price)
 
 
 
