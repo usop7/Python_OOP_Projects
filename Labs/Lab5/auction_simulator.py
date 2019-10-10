@@ -25,8 +25,19 @@ class Auction:
 
     def print_bidders(self):
         """Print all biders in in name : highest bid format."""
-        bidders = {bidder.name: bidder.highest_bid for bidder in self._bidders}
-        print(bidders)
+        bidders = {bidder: bidder.highest_bid for bidder in self._bidders}
+        print("\nHighest Bids Per Bidder")
+        for bidder, price in bidders.items():
+            print(f"Bidder: {bidder.name}\t Bid: {price}")
+
+    def print_winner(self):
+        winner = None
+        winning_price = 0
+        for bidder in self._bidders:
+            if bidder.highest_bid > winning_price:
+                winner = bidder.name
+                winning_price = bidder.highest_bid
+        print(f"\nThe winner of the auction is: {winner} at ${winning_price}")
 
 
 class Auctioneer:
@@ -53,6 +64,8 @@ class Auctioneer:
     current_bidder = property(get_current_bidder)
 
     def update_bid(self, bid_price, bidder):
+        """Update the  current bid price and bidder when the new bid
+        price is higher, and start the new bid in turn."""
         current_bidder = "Starting Bid"
         if self.current_bidder is not None:
             current_bidder = self.current_bidder.name
@@ -64,15 +77,13 @@ class Auctioneer:
             self.start_new_bids()
 
     def start_new_bids(self):
-        """Notify all bidders of the new bid price and bidder."""
+        """Start a new bid by notifying all bidders except for the
+        current highest bidder."""
         for bidder in self._bidders:
             if bidder != self._highest_current_bidder:
                 bid_price = bidder(self)
                 if bid_price > 0:
                     self.update_bid(bid_price, bidder)
-
-    def __str__(self):
-        return f"{self.current_bidder} - {self.current_bid}"
 
 
 class Bidder:
@@ -160,10 +171,8 @@ def main():
           f"Auctioning {name} starting at {starting_price}.")
     my_auction.start_auction()
 
-    print(f"\nThe winner of the auction is")
-
+    my_auction.print_winner()
     my_auction.print_bidders()
-
 
 
 if __name__ == '__main__':
