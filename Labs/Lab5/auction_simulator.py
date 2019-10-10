@@ -34,5 +34,31 @@ class Auctioneer:
         """
         self._bidders = bidders
         self._highest_current_bid = 0
-        self.highest_current_bidder = None
+        self._highest_current_bidder = None
+
+    def notify_bidders(self):
+        """Notify all bidders of the new bid price and bidder."""
+        for bidder in self._bidders:
+
+
+
+    def update_bid(self, bidder, price):
+        """Checks the new bid price is greater than the current bid,
+        and updates the highest bid and bidder, and notify all bidders."""
+        if price > self._highest_current_bid:
+            _highest_current_bid = price
+            _highest_current_bidder = bidder
+
+
+class Bidder:
+    """This class represents a bidder who places bids during an auction."""
+
+    def __init__(self, name, budget, bid_increase_perc):
+        self._name = name
+        self._budget = budget
+        self._bid_increase_perc = bid_increase_perc
+        self._highest_bid = 0
+
+
+
 
