@@ -19,10 +19,7 @@ class Auction:
         self._starting_price = starting_price
 
     def start_auction(self):
-        """
-        Creates an Auctioneer object and starts the auction.
-        """
-
+        """Creates an Auctioneer object and starts the auction."""
 
 
 class Auctioneer:
@@ -38,35 +35,25 @@ class Auctioneer:
         self._highest_current_bid = 0
         self._highest_current_bidder = None
 
-    def get_current_bid(self):
-        return self._highest_current_bid
+    def update_bid(self, bid_price, bidder):
+        if bid_price > self._highest_current_bid:
+            self._highest_current_bid = bid_price
+            self._highest_current_bidder = bidder
+            self.accept_bids()
 
-    current_bid = property(get_current_bid)
-
-    def get_current_bidder(self):
-        return self._highest_current_bidder
-
-    current_bidder = property(get_current_bidder)
-
-    def notify_bidders(self, new_bidder):
+    def accept_bids(self):
         """Notify all bidders of the new bid price and bidder."""
+        prob = 0
+        accepted_price = 0
+        winner = None
         for bidder in self._bidders:
-            if bidder != new_bidder:
-                bidder(self)
-
-
-
-    def update_bid(self):
-        """"""
-        probability = 0
-        new_bid = 0
-        new_Bidder = None
-        for bidder in self._bidders:
-            if bidder != self.current_bidder:
-                if bidder.bid_probability > probability:
-                    new_bid = bidder.
-
-
+            if bidder != self._highest_current_bidder:
+                bid_price = bidder(self)
+                if bidder.bid_probability > prob:
+                    prob = bidder.bid_probability
+                    accepted_price = bid_price
+                    winner = bidder
+        self.update_bid(accepted_price, winner)
 
 
 class Bidder:
@@ -99,9 +86,9 @@ class Bidder:
         curr_bid = auctioneer.current_bid
         bid_price = curr_bid * self._bid_increase_perc
         if bid_price <= self._budget:
+            self.get_bid_probability()
             return bid_price
-        else:
-            return 0
+
 
 
 def main():
