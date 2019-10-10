@@ -23,6 +23,11 @@ class Auction:
         """Starts the auction."""
         self._auctioneer.start_new_bids()
 
+    def print_bidders(self):
+        """Print all biders in in name : highest bid format."""
+        bidders = {bidder.name: bidder.highest_bid for bidder in self._bidders}
+        print(bidders)
+
 
 class Auctioneer:
     """This class represents an Auctioneer which is responsible for
@@ -110,12 +115,14 @@ class Bidder:
 
     def __call__(self, auctioneer):
         """
-        Places a new bid with the auctioneer.
+        Places a new bid with the auctioneer, after checking the budget and
+        probability, and updates the its highest bid price.
         :param auctioneer: Auctioneer
         """
         curr_bid = auctioneer.current_bid
         bid_price = curr_bid * self._bid_increase_perc
         if bid_price <= self._budget and self.get_bid_probability() > 0:
+            self._highest_bid = bid_price
             return bid_price
         return 0
 
@@ -152,6 +159,10 @@ def main():
     print(f"Starting Auction!!\n----------------------\n"
           f"Auctioning {name} starting at {starting_price}.")
     my_auction.start_auction()
+
+    print(f"\nThe winner of the auction is")
+
+    my_auction.print_bidders()
 
 
 
