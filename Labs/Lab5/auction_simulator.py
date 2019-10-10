@@ -17,9 +17,11 @@ class Auction:
         self._bidders = bidders
         self._item = item
         self._starting_price = starting_price
+        self._auctioneer = Auctioneer(self._bidders)
 
     def start_auction(self):
-        """Creates an Auctioneer object and starts the auction."""
+        """Starts the auction."""
+        self._auctioneer.start_new_bids()
 
 
 class Auctioneer:
@@ -35,13 +37,23 @@ class Auctioneer:
         self._highest_current_bid = 0
         self._highest_current_bidder = None
 
+    def get_current_bid(self):
+        return self._highest_current_bid
+
+    def get_current_bidder(self):
+        return self._highest_current_bidder
+
+    current_bid = property(get_current_bid)
+
+    current_bidder = property(get_current_bidder)
+
     def update_bid(self, bid_price, bidder):
         if bid_price > self._highest_current_bid:
             self._highest_current_bid = bid_price
             self._highest_current_bidder = bidder
-            self.accept_bids()
+            self.start_new_bids()
 
-    def accept_bids(self):
+    def start_new_bids(self):
         """Notify all bidders of the new bid price and bidder."""
         prob = 0
         accepted_price = 0
@@ -53,6 +65,7 @@ class Auctioneer:
                     prob = bidder.bid_probability
                     accepted_price = bid_price
                     winner = bidder
+        winner.highest_bid = accepted_price
         self.update_bid(accepted_price, winner)
 
 
@@ -76,6 +89,14 @@ class Bidder:
         self._bid_probability = random.random()
         return self._bid_probability
 
+    def get_highest_bid(self):
+        return self._highest_bid
+
+    def set_highest_bid(self, price):
+        self._highest_bid = price
+
+    highest_bid = property(get_highest_bid, set_highest_bid)
+
     bid_probability = property(get_bid_probability)
 
     def __call__(self, auctioneer):
@@ -90,16 +111,16 @@ class Bidder:
             return bid_price
 
 
-
 def main():
     """Prompts the user with auction info, and starts the auction."""
 
     bidders = []
     item_name = input("Please type the name of the item: ")
     valid = False
+    starting_price = 0
     while not valid:
         starting_price = input("Please type the starting price: ")
-        if starting_price.isdigit():
+        if starting_price.isdecimal():
             valid = True
 
     valid = False
@@ -117,7 +138,15 @@ def main():
         bid_increase_perc = input("bid increase percentage(greater than 1): ")
         bidders.append(Bidder(name, budget, bid_increase_perc))
 
-    my_auction = Auction(bidders, item_name, starting_price)
+    my_auction = Auction(bidders, item_name, float(starting_price))
+    print(f"Starting Auction!!\n----------------------"
+          f"Auctioning {name} starting at {starting_price}.")
+    my_auction.start_auction()
+
+
+
+if __name__ == '__main__':
+    main()
 
 
 
