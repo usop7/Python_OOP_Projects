@@ -24,13 +24,14 @@ class Auction:
         self._auctioneer.start_new_bids()
 
     def print_bidders(self):
-        """Print all biders in in name : highest bid format."""
+        """Print all bidders in name : highest bid format."""
         bidders = {bidder: bidder.highest_bid for bidder in self._bidders}
         print("\nHighest Bids Per Bidder")
         for bidder, price in bidders.items():
             print(f"Bidder: {bidder.name}\t Bid: {price}")
 
     def print_winner(self):
+        """Print the bidder who won the auction."""
         winner = None
         winning_price = 0
         for bidder in self._bidders:
@@ -64,17 +65,16 @@ class Auctioneer:
     current_bidder = property(get_current_bidder)
 
     def update_bid(self, bid_price, bidder):
-        """Update the  current bid price and bidder when the new bid
-        price is higher, and start the new bid in turn."""
-        current_bidder = "Starting Bid"
+        """Update the highest current bid price and highest bidder,
+         and start a new bid in turn."""
+        bidder_info = "Starting Bid"
         if self.current_bidder is not None:
-            current_bidder = self.current_bidder.name
-        if bid_price > self._highest_current_bid:
-            print(f"{bidder.name} bidded {bid_price} in response to "
-                  f"{current_bidder}'s bid of {self.current_bid}!")
-            self._highest_current_bid = bid_price
-            self._highest_current_bidder = bidder
-            self.start_new_bids()
+            bidder_info = self.current_bidder.name
+        print(f"{bidder.name} bidded {bid_price} in response to "
+              f"{bidder_info}'s bid of {self.current_bid}!")
+        self._highest_current_bid = bid_price
+        self._highest_current_bidder = bidder
+        self.start_new_bids()
 
     def start_new_bids(self):
         """Start a new bid by notifying all bidders except for the
@@ -82,7 +82,7 @@ class Auctioneer:
         for bidder in self._bidders:
             if bidder != self._highest_current_bidder:
                 bid_price = bidder(self)
-                if bid_price > 0:
+                if bid_price > self.current_bid:
                     self.update_bid(bid_price, bidder)
 
 
@@ -115,9 +115,6 @@ class Bidder:
     def set_highest_bid(self, price):
         self._highest_bid = price
 
-    def __str__(self):
-        return f"{self.name} - {self._budget}"
-
     name = property(get_name)
 
     highest_bid = property(get_highest_bid, set_highest_bid)
@@ -129,6 +126,7 @@ class Bidder:
         Places a new bid with the auctioneer, after checking the budget and
         probability, and updates the its highest bid price.
         :param auctioneer: Auctioneer
+        :return float
         """
         curr_bid = auctioneer.current_bid
         bid_price = curr_bid * self._bid_increase_perc
@@ -145,32 +143,59 @@ def main():
     item_name = input("Please type the name of the item: ")
     valid = False
     starting_price = 0
+
+    # Starting Price
     while not valid:
-        starting_price = input("Please type the starting price: ")
-        if starting_price.isdecimal():
+        try:
+            starting_price = float(input("Please type the starting price: "))
+        except TypeError as e:
+            print("Please type decimal number.")
+        else:
             valid = True
 
+    # Number of bidders
+    valid = False
+    while not valid:
+        try:
+            num_of_bidders = int(input("Please type the number of bidders: "))
+        except TypeError as e:
+            print("Please type integer.")
+        else:
+            valid = True
+
+    # Number of bidders
     valid = False
     num_of_bidders = 0
     while not valid:
-        num_of_bidders = input("Please type the number of bidders: ")
-        if num_of_bidders.isdigit():
+        try:
+            num_of_bidders = int(
+                input("Please type the number of bidders: "))
+        except TypeError as e:
+            print("Please type an integer.")
+        else:
             valid = True
 
+    # Creating bidders
     num = 1
+    valid = False
     while num <= int(num_of_bidders):
         print(f"Please provide the details of the bidder {num}")
         name = input("name: ")
-        budget = input("budget: ")
+        try:
+            budget = float(input("budget: "))
+        except TypeError as e:
+            print("Please type an integer.")
+        else:
+            valid = True
+
         bid_increase_perc = input("bid increase percentage(greater than 1): ")
-        bidders.append(Bidder(name, float(budget), float(bid_increase_perc)))
+        bidders.append(Bidder(name, float(budget), (1 + random.random())))
         num += 1
 
     my_auction = Auction(bidders, item_name, float(starting_price))
-    print(f"Starting Auction!!\n----------------------\n"
+    print(f"\nStarting Auction!!\n----------------------\n"
           f"Auctioning {name} starting at {starting_price}.")
     my_auction.start_auction()
-
     my_auction.print_winner()
     my_auction.print_bidders()
 
