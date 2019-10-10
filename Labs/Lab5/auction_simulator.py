@@ -139,62 +139,56 @@ class Bidder:
 def main():
     """Prompts the user with auction info, and starts the auction."""
 
+    # values to receive from a user
     bidders = []
-    item_name = input("Please type the name of the item: ")
-    valid = False
+    item_name = ""
+    num_of_bidders = 0
     starting_price = 0
 
-    # Starting Price
-    while not valid:
+    errors = []
+    is_valid = False
+    while not is_valid:
+        is_valid = True
+        item_name = input("Please type the name of the item: ")
+
+        # Starting price
         try:
             starting_price = float(input("Please type the starting price: "))
-        except TypeError as e:
-            print("Please type decimal number.")
-        else:
-            valid = True
+        except ValueError:
+            errors.append("[Error] Starting price should be a decimal number.")
+            is_valid = False
 
-    # Number of bidders
-    valid = False
-    while not valid:
+        # Number of bidders
         try:
             num_of_bidders = int(input("Please type the number of bidders: "))
-        except TypeError as e:
-            print("Please type integer.")
-        else:
-            valid = True
+        except ValueError:
+            errors.append("[Error] Number of bidders should be an integer.")
+            is_valid = False
 
-    # Number of bidders
-    valid = False
-    num_of_bidders = 0
-    while not valid:
-        try:
-            num_of_bidders = int(
-                input("Please type the number of bidders: "))
-        except TypeError as e:
-            print("Please type an integer.")
-        else:
-            valid = True
+        # print input errors
+        for error in errors:
+            print(error)
 
     # Creating bidders
     num = 1
-    valid = False
-    while num <= int(num_of_bidders):
+    bidder_name = ""
+    is_valid = False
+    while num <= int(num_of_bidders) or is_valid is False:
         print(f"Please provide the details of the bidder {num}")
         name = input("name: ")
         try:
             budget = float(input("budget: "))
-        except TypeError as e:
-            print("Please type an integer.")
+        except ValueError as e:
+            print("[Error] Budget should be a decimal number")
         else:
-            valid = True
-
-        bid_increase_perc = input("bid increase percentage(greater than 1): ")
-        bidders.append(Bidder(name, float(budget), (1 + random.random())))
-        num += 1
+            is_valid = True
+            inc_rate = random.random()
+            bidders.append(Bidder(name, float(budget), (1 + inc_rate)))
+            num += 1
 
     my_auction = Auction(bidders, item_name, float(starting_price))
     print(f"\nStarting Auction!!\n----------------------\n"
-          f"Auctioning {name} starting at {starting_price}.")
+          f"Auctioning {bidder_name} starting at {starting_price}.")
     my_auction.start_auction()
     my_auction.print_winner()
     my_auction.print_bidders()
