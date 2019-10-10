@@ -17,7 +17,7 @@ class Auction:
         self._bidders = bidders
         self._item = item
         self._starting_price = starting_price
-        self._auctioneer = Auctioneer(self._bidders)
+        self._auctioneer = Auctioneer(self._bidders, self._starting_price)
 
     def start_auction(self):
         """Starts the auction."""
@@ -28,13 +28,13 @@ class Auctioneer:
     """This class represents an Auctioneer which is responsible for
     maintaining a list of bidders and notifying them the new bid."""
 
-    def __init__(self, bidders):
+    def __init__(self, bidders, starting_price):
         """
         Initializes an Auctioneer object.
         :param bidders: List
         """
         self._bidders = bidders
-        self._highest_current_bid = 0
+        self._highest_current_bid = starting_price
         self._highest_current_bidder = None
 
     def get_current_bid(self):
@@ -48,25 +48,26 @@ class Auctioneer:
     current_bidder = property(get_current_bidder)
 
     def update_bid(self, bid_price, bidder):
+        current_bidder = "Starting Bid"
+        if self.current_bidder is not None:
+            current_bidder = self.current_bidder.name
         if bid_price > self._highest_current_bid:
+            print(f"{bidder.name} bidded {bid_price} in response to "
+                  f"{current_bidder}'s bid of {self.current_bid}!")
             self._highest_current_bid = bid_price
             self._highest_current_bidder = bidder
             self.start_new_bids()
 
     def start_new_bids(self):
         """Notify all bidders of the new bid price and bidder."""
-        prob = 0
-        accepted_price = 0
-        winner = None
         for bidder in self._bidders:
             if bidder != self._highest_current_bidder:
                 bid_price = bidder(self)
-                if bidder.bid_probability > prob:
-                    prob = bidder.bid_probability
-                    accepted_price = bid_price
-                    winner = bidder
-        winner.highest_bid = accepted_price
-        self.update_bid(accepted_price, winner)
+                if bid_price > 0:
+                    self.update_bid(bid_price, bidder)
+
+    def __str__(self):
+        return f"{self.current_bidder} - {self.current_bid}"
 
 
 class Bidder:
@@ -85,6 +86,9 @@ class Bidder:
         self._bid_increase_perc = bid_increase_perc
         self._highest_bid = 0
 
+    def get_name(self):
+        return self._name
+
     def get_bid_probability(self):
         self._bid_probability = random.random()
         return self._bid_probability
@@ -94,6 +98,11 @@ class Bidder:
 
     def set_highest_bid(self, price):
         self._highest_bid = price
+
+    def __str__(self):
+        return f"{self.name} - {self._budget}"
+
+    name = property(get_name)
 
     highest_bid = property(get_highest_bid, set_highest_bid)
 
@@ -106,9 +115,9 @@ class Bidder:
         """
         curr_bid = auctioneer.current_bid
         bid_price = curr_bid * self._bid_increase_perc
-        if bid_price <= self._budget:
-            self.get_bid_probability()
+        if bid_price <= self._budget and self.get_bid_probability() > 0:
             return bid_price
+        return 0
 
 
 def main():
@@ -136,10 +145,11 @@ def main():
         name = input("name: ")
         budget = input("budget: ")
         bid_increase_perc = input("bid increase percentage(greater than 1): ")
-        bidders.append(Bidder(name, budget, bid_increase_perc))
+        bidders.append(Bidder(name, float(budget), float(bid_increase_perc)))
+        num += 1
 
     my_auction = Auction(bidders, item_name, float(starting_price))
-    print(f"Starting Auction!!\n----------------------"
+    print(f"Starting Auction!!\n----------------------\n"
           f"Auctioning {name} starting at {starting_price}.")
     my_auction.start_auction()
 
