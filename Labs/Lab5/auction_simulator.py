@@ -82,8 +82,11 @@ class Auctioneer:
 
     def print_winner(self):
         """Print the bidder with the highest bid price."""
-        print(f"\nThe winner of the auction is: "
-              f"{self.current_bidder} at ${self.current_bid}")
+        if self.current_bidder is None:
+            print("There is no winner.")
+        else:
+            print(f"\nThe winner of the auction is: "
+                  f"{self.current_bidder.name} at ${self.current_bid}")
 
 
 class Bidder:
@@ -130,7 +133,7 @@ class Bidder:
         """
         curr_bid = auctioneer.current_bid
         bid_price = curr_bid * self._bid_increase_perc
-        if bid_price <= self._budget and self.get_bid_probability() > 0:
+        if bid_price <= self._budget and self.get_bid_probability() > 0.3:
             self._highest_bid = bid_price
             return bid_price
         return 0
@@ -152,6 +155,7 @@ def main():
     is_valid = False
     while not is_valid:
         is_valid = True
+        errors.clear()
         item_name = input("Please type the name of the item: ")
 
         # Starting price
@@ -201,8 +205,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
