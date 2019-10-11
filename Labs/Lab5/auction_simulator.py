@@ -186,10 +186,13 @@ def main():
             bidders.append(Bidder(name, float(budget), (1 + inc_rate)))
             num += 1
 
+    # Create Auction with the input values and Start the auction
     my_auction = Auction(bidders, item_name, float(starting_price))
     print(f"\nStarting Auction!!\n----------------------\n"
           f"Auctioning {bidder_name} starting at {starting_price}.")
     my_auction.start_auction()
+
+    # Print out the auction results
     my_auction.print_winner()
     my_auction.print_bidders()
 
