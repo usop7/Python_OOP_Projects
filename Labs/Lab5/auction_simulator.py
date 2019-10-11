@@ -23,22 +23,10 @@ class Auction:
         """Starts the auction."""
         self._auctioneer.start_new_bids()
 
-    def print_bidders(self):
-        """Print all bidders in name : highest bid format."""
-        bidders = {bidder: bidder.highest_bid for bidder in self._bidders}
-        print("\nHighest Bids Per Bidder")
-        for bidder, price in bidders.items():
-            print(f"Bidder: {bidder.name}\t Bid: {price}")
-
-    def print_winner(self):
-        """Print the bidder who won the auction."""
-        winner = None
-        winning_price = 0
-        for bidder in self._bidders:
-            if bidder.highest_bid > winning_price:
-                winner = bidder.name
-                winning_price = bidder.highest_bid
-        print(f"\nThe winner of the auction is: {winner} at ${winning_price}")
+    def print_auction_result(self):
+        """Print the highest bid, and all the bid prices of bidders."""
+        self._auctioneer.print_winner()
+        self._auctioneer.print_bidders()
 
 
 class Auctioneer:
@@ -84,6 +72,18 @@ class Auctioneer:
                 bid_price = bidder(self)
                 if bid_price > self.current_bid:
                     self.update_bid(bid_price, bidder)
+
+    def print_bidders(self):
+        """Print all bidders."""
+        bidders = {bidder: bidder.highest_bid for bidder in self._bidders}
+        print("\nHighest Bids Per Bidder")
+        for bidder, price in bidders.items():
+            print(bidder)
+
+    def print_winner(self):
+        """Print the bidder with the highest bid price."""
+        print(f"\nThe winner of the auction is: "
+              f"{self.current_bidder} at ${self.current_bid}")
 
 
 class Bidder:
@@ -134,6 +134,9 @@ class Bidder:
             self._highest_bid = bid_price
             return bid_price
         return 0
+
+    def __str__(self):
+        return f"Bidder: {self.name}\t Bid: {self.highest_bid}"
 
 
 def main():
@@ -193,8 +196,7 @@ def main():
     my_auction.start_auction()
 
     # Print out the auction results
-    my_auction.print_winner()
-    my_auction.print_bidders()
+    my_auction.print_auction_result()
 
 
 if __name__ == '__main__':
