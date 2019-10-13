@@ -30,6 +30,12 @@ class Card(abc.ABC):
     def get_name(self):
         return self._name
 
+    id = property(get_id)
+
+    type = property(get_type)
+
+    name = property(get_name)
+
     def add_note(self):
         self._extra_info["Note"] = input("Add a note: ")
 

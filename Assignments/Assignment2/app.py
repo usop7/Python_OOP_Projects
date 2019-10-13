@@ -82,10 +82,10 @@ class Manager:
 
     def print_cards_by_type(self):
         """Prints all the cards of a specific type."""
-        input_type = CardType.get_card_type()
+        input_type = CardType.set_card_type()
         count = 0
         for card in self._card_list.values():
-            if card.get_type() == input_type:
+            if card.type == input_type:
                 count += 1
                 print(card)
         if count == 0:
@@ -102,7 +102,7 @@ class Manager:
             CardType.GIFT: GiftCard,
             CardType.OTHER: OtherCard
         }
-        input_type = CardType.get_card_type()
+        input_type = CardType.set_card_type()
         self._card_list[new_id] = type_map[input_type](new_id, input_type)
         print("The following card has been successfully added!\n")
         print(self._card_list[new_id])
@@ -116,7 +116,7 @@ class Manager:
         names = [word.lower(), word.upper(), word.title(), word.capitalize()]
         count = 0
         for card in self._card_list.values():
-            if card.get_name() in names:
+            if card.name in names:
                 count += 1
                 print(card)
         if count == 0:
@@ -161,9 +161,9 @@ class Manager:
         count = 0
         # Records card IDs whose name is same as the user input.
         for card in self._card_list.values():
-            if card.get_name() == answer:
+            if card.name == answer:
                 count += 1
-                delete_list.append(card.get_id())
+                delete_list.append(card.id)
         # Deletes the cards from the list.
         for card_id in delete_list:
             del self._card_list[card_id]

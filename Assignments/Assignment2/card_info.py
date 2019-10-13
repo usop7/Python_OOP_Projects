@@ -14,7 +14,7 @@ class CardType(Enum):
     OTHER = "Other Types of Card"
 
     @staticmethod
-    def get_card_type():
+    def set_card_type():
         """
         Keeps prompting a user with a card type option until a user gives
         a valid answer, and returns the selected card type.
