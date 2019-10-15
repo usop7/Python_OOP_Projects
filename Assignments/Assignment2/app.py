@@ -111,6 +111,7 @@ class Manager:
         """
         Prompts a user with a card name to search, finds close matches,
         and shows the results.
+        :return boolean
         """
         word = input("\nPlease type the card name to search: ")
         names = [word.lower(), word.upper(), word.title(), word.capitalize()]
@@ -119,8 +120,10 @@ class Manager:
             if card.name in names:
                 count += 1
                 print(card)
+                return True
         if count == 0:
             print(f"\nThere is no card named '{word}'.")
+            return False
 
     def backup_card_list(self):
         """
@@ -146,16 +149,20 @@ class Manager:
                 print("Back up failed.")
 
     def delete_card_by_id(self):
-        """Deletes a card by its specific ID."""
+        """Deletes a card by its specific ID.
+        :return boolean"""
         answer = input("Type the card ID to delete: ")
         if answer.isdigit() and self._card_list.get(int(answer)) is not None:
             del self._card_list[int(answer)]
             print("Requested card has been successfully deleted.")
+            return True
         else:
             print(f"There is no card whose ID is '{answer}'")
+            return False
 
     def delete_card_by_name(self):
-        """Deletes card(s) by its name."""
+        """Deletes card(s) by its name.
+        :return boolean"""
         answer = input("Type the card name to delete: ")
         delete_list = []
         count = 0
@@ -170,8 +177,10 @@ class Manager:
 
         if count == 0:
             print(f"\nThere is no card named '{answer}'.")
+            return False
         else:
             print(f"{count} card(s) have been successfully deleted.")
+            return True
 
 
 def main():
