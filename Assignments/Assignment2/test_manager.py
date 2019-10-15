@@ -19,7 +19,25 @@ class TestManager(TestCase):
         Unit test for add_card. Asserts that the method creates a card
         based on multiple user inputs.
         """
+        m = Manager()
         m_input.side_effect = ["1", "BCIT", "A01029289",
                                "Leeseul Kim", "2020-05-01", ""]
-        self.m.add_card()
-        self.assertEqual(len(self.m._card_list), 1)
+        m.add_card()
+        self.assertEqual(len(m._card_list), 1)
+
+    @patch('builtins.input')
+    def test_search_card(self, m_input):
+        """
+        Unit test for search_card. Asserts that the method returns True
+        after searching for the card 'BCIT'.
+        """
+        m = Manager()
+        m_input.side_effect = ["1", "BCIT", "A01029289",
+                               "Leeseul Kim", "2020-05-01", ""]
+        m.add_card()
+
+        m_input.side_effect = ["BCIT"]
+        self.assertTrue(m.search_card())
+
+
+
