@@ -44,7 +44,7 @@ class Card(abc.ABC):
         Returns one line of string about the card.
         :return: String
         """
-        return self.__str__().replace("\t", "").replace("\n", ";\t")
+        return self.__str__().replace("\t", "").replace("\n", "; ")
 
     def __str__(self):
         info_str = f"[ID: {self._id}] {self._name}\n" \
