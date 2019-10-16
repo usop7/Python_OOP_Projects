@@ -2,6 +2,8 @@
 from unittest import TestCase
 from unittest.mock import patch
 from app import Manager
+import os
+from datetime import datetime
 
 
 class TestManager(TestCase):
@@ -60,6 +62,24 @@ class TestManager(TestCase):
         m.add_card()
         m_input.side_effect = ["BCIT"]
         self.assertTrue(m.delete_card_by_name())
+
+    def test_backup_card_list(self):
+        """
+        Unit test for backup_card_list. Asserts that the function creates a
+        new file named CardManager_Export_DDMMYYYY_HHMM.txt.
+        """
+        file_exist = False
+
+        # back up file
+        m = Manager()
+        m.backup_card_list()
+
+        # check if the corresponding file has been created.
+        now = datetime.now()
+        path = f"CardManager_Export_{now.strftime('%d%m%Y_%H%M')}.txt"
+        if os.path.exists(path):
+            file_exist = True
+        self.assertTrue(file_exist)
 
 
 
