@@ -9,19 +9,23 @@ from datetime import datetime
 class TestManager(TestCase):
     """
     Inherits from TestCase and is responsible for executing and housing
-    the different unit tests for app.py.
+    the different unit tests for manager.py.
     """
 
     @patch('builtins.input')
-    def test_add_card(self, m_input):
-        """
-        Unit test for add_card. Asserts that the method creates a card
-        based on multiple user inputs.
-        """
+    def add_card(self, m_input):
         m = Manager()
         m_input.side_effect = ["1", "BCIT", "A01029289",
                                "Leeseul Kim", "2020-05-01", ""]
         m.add_card()
+        return m
+
+    def test_add_card(self):
+        """
+        Unit test for add_card. Asserts that the method creates a card
+        based on multiple user inputs.
+        """
+        m = self.add_card()
         self.assertEqual(len(m._card_list), 1)
 
     @patch('builtins.input')
@@ -30,10 +34,7 @@ class TestManager(TestCase):
         Unit test for search_card. Asserts that the method returns True
         after searching for the card 'BCIT'.
         """
-        m = Manager()
-        m_input.side_effect = ["1", "BCIT", "A01029289",
-                               "Leeseul Kim", "2020-05-01", ""]
-        m.add_card()
+        m = self.add_card()
         m_input.side_effect = ["BCIT"]
         self.assertTrue(m.search_card())
 
@@ -41,13 +42,10 @@ class TestManager(TestCase):
     def test_delete_card_by_id(self, m_input):
         """
         Unit test for delete_card_by_id. Asserts the method returns True
-        after deleting a card whose id is 2.
+        after deleting a card whose id is 1.
         """
-        m = Manager()
-        m_input.side_effect = ["1", "BCIT", "A01029289",
-                               "Leeseul Kim", "2020-05-01", ""]
-        m.add_card()
-        m_input.side_effect = ["2"]
+        m = self.add_card()
+        m_input.side_effect = ["1"]
         self.assertTrue(m.delete_card_by_id())
 
     @patch('builtins.input')
@@ -56,10 +54,7 @@ class TestManager(TestCase):
         Unit test for delete_card_by_name. Asserts the method returns True
         after deleting a card whose name is BCIT.
         """
-        m = Manager()
-        m_input.side_effect = ["1", "BCIT", "A01029289",
-                               "Leeseul Kim", "2020-05-01", ""]
-        m.add_card()
+        m = self.add_card()
         m_input.side_effect = ["BCIT"]
         self.assertTrue(m.delete_card_by_name())
 
