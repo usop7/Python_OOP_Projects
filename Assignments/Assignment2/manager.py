@@ -16,19 +16,15 @@ from datetime import datetime
 class Manager:
     """This class represents a Card Manager app."""
 
-    name = "CardManager"
-
-    # Each card will have a sequential unique ID starting from 1.
-    id = 0
-
-    @classmethod
-    def get_new_id(cls):
-        """Increments id by 1, and returns the new id"""
-        cls.id += 1
-        return cls.id
-
     def __init__(self):
+        self.name = "CardManager"
+        self._id = 0
         self._card_list = {}
+
+    def get_new_id(self):
+        """Increments id by 1, and returns the new id"""
+        self._id += 1
+        return self._id
 
     def run_program(self):
         """
@@ -87,7 +83,7 @@ class Manager:
 
     def add_card(self):
         """Creates a new card with a new ID, and adds is to the list."""
-        new_id = Manager.get_new_id()
+        new_id = self.get_new_id()
         type_map = {
             CardType.ID: IDCard,
             CardType.CREDIT: CreditCard,
