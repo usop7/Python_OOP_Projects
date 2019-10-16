@@ -66,7 +66,7 @@ class TestManager(TestCase):
     def test_backup_card_list(self):
         """
         Unit test for backup_card_list. Asserts that the function creates a
-        new file named CardManager_Export_DDMMYYYY_HHMM.txt.
+        new file named CardManager_Export_DDMMYY_HHMM.txt.
         """
         file_exist = False
 
@@ -76,7 +76,7 @@ class TestManager(TestCase):
 
         # check if the corresponding file has been created.
         now = datetime.now()
-        path = f"CardManager_Export_{now.strftime('%d%m%Y_%H%M')}.txt"
+        path = f"CardManager_Export_{now.strftime('%d%m%y_%H%M')}.txt"
         if os.path.exists(path):
             file_exist = True
         self.assertTrue(file_exist)

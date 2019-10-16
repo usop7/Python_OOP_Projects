@@ -19,7 +19,7 @@ class Card(abc.ABC):
         self._id = id_
         self._type_ = type_
         self._name = input("Please type the card name: ")
-        self._extra_info = {}
+        self._additional_info = {}
 
     def get_id(self):
         return self._id
@@ -37,19 +37,19 @@ class Card(abc.ABC):
     name = property(get_name)
 
     def add_note(self):
-        self._extra_info["Note"] = input("Add a note: ")
+        self._additional_info["Note"] = input("Add a note: ")
 
     def to_one_line_str(self):
         """
         Returns one line of string about the card.
         :return: String
         """
-        return self.__str__().replace("\n", ", ").replace("\t", "")
+        return self.__str__().replace("\t", "").replace("\n", ";\t")
 
     def __str__(self):
         info_str = f"[ID: {self._id}] {self._name}\n" \
                    f"\tCard Type: {self._type_.value}\n"
-        for key, value in self._extra_info.items():
+        for key, value in self._additional_info.items():
             info_str += f"\t{key}: {value}\n"
         return info_str
 
@@ -59,10 +59,10 @@ class CreditCard(Card):
 
     def __init__(self, id_, type_):
         super().__init__(id_, type_)
-        self._extra_info["Card Number"] = CardNumber()
-        self._extra_info["Card Holder"] = CardHolder()
-        self._extra_info["Expiry Date"] = ExpiryDate()
-        self._extra_info["CVC Number"] = input("Please type CVC number: ")
+        self._additional_info["Card Number"] = CardNumber()
+        self._additional_info["Card Holder"] = CardHolder()
+        self._additional_info["Expiry Date"] = ExpiryDate()
+        self._additional_info["CVC Number"] = input("Please type CVC number: ")
         self.add_note()
 
 
@@ -71,9 +71,9 @@ class IDCard(Card):
 
     def __init__(self, id_, type_):
         super().__init__(id_, type_)
-        self._extra_info["ID Number"] = CardNumber()
-        self._extra_info["Card Holder"] = CardHolder()
-        self._extra_info["Expiry Date"] = ExpiryDate()
+        self._additional_info["ID Number"] = CardNumber()
+        self._additional_info["Card Holder"] = CardHolder()
+        self._additional_info["Expiry Date"] = ExpiryDate()
         self.add_note()
 
 
@@ -82,8 +82,8 @@ class BusinessCard(Card):
 
     def __init__(self, id_, type_):
         super().__init__(id_, type_)
-        self._extra_info["Phone Number"] = PhoneNumber()
-        self._extra_info["Address"] = Address()
+        self._additional_info["Phone Number"] = PhoneNumber()
+        self._additional_info["Address"] = Address()
         self.add_note()
 
 
@@ -92,9 +92,9 @@ class MembershipCard(Card):
 
     def __init__(self, id_, type_):
         super().__init__(id_, type_)
-        self._extra_info["Membership Number"] = CardNumber()
-        self._extra_info["Card Holder"] = CardHolder()
-        self._extra_info["Expiry Date"] = ExpiryDate()
+        self._additional_info["Membership Number"] = CardNumber()
+        self._additional_info["Card Holder"] = CardHolder()
+        self._additional_info["Expiry Date"] = ExpiryDate()
         self.add_note()
 
 
@@ -103,9 +103,9 @@ class GiftCard(Card):
 
     def __init__(self, id_, type_):
         super().__init__(id_, type_)
-        self._extra_info["Card Number"] = CardNumber()
-        self._extra_info["Gift Amount"] = Amount()
-        self._extra_info["Expiry Date"] = ExpiryDate()
+        self._additional_info["Card Number"] = CardNumber()
+        self._additional_info["Gift Amount"] = Amount()
+        self._additional_info["Expiry Date"] = ExpiryDate()
         self.add_note()
 
 

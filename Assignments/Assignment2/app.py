@@ -131,7 +131,7 @@ class Manager:
         collection to a file named 'CardManager_Export_DDMMYY_HHMM.txt'.
         """
         now = datetime.now()
-        path = f"{App.app_name}_Export_{now.strftime('%d%m%Y_%H%M')}.txt"
+        path = f"{App.app_name}_Export_{now.strftime('%d%m%y_%H%M')}.txt"
         card_string_list = []
         saved = False
         for card in self._card_list.values():
