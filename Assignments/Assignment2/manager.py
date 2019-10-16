@@ -13,16 +13,10 @@ from file_writer import FileWriter
 from datetime import datetime
 
 
-class App:
-    """This class represents an app."""
-    app_name = "CardManager"
-
-    def __init__(self):
-        self.manager = Manager()
-
-
 class Manager:
-    """This class represents """
+    """This class represents a Card Manager app."""
+
+    name = "CardManager"
 
     # Each card will have a sequential unique ID starting from 1.
     id = 0
@@ -131,7 +125,7 @@ class Manager:
         collection to a file named 'CardManager_Export_DDMMYY_HHMM.txt'.
         """
         now = datetime.now()
-        path = f"{App.app_name}_Export_{now.strftime('%d%m%y_%H%M')}.txt"
+        path = f"{self.name}_Export_{now.strftime('%d%m%y_%H%M')}.txt"
         card_string_list = []
         saved = False
         for card in self._card_list.values():

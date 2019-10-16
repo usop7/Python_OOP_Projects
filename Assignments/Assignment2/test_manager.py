@@ -1,7 +1,7 @@
 """This module is to test card app's major features."""
 from unittest import TestCase
 from unittest.mock import patch
-from app import Manager
+from manager import Manager
 import os
 from datetime import datetime
 
