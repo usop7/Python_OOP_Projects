@@ -1,4 +1,4 @@
-"""This module includes . """
+"""This module embodies the basic functions and attributes of Card Manager."""
 
 from card_info import CardType
 from card import CreditCard
@@ -14,7 +14,7 @@ from datetime import datetime
 
 
 class Manager:
-    """This class represents a Card Manager app."""
+    """This class represents a Card Manager."""
 
     def __init__(self):
         self.name = "CardManager"
@@ -174,6 +174,7 @@ class Manager:
 
 
 def main():
+    """Creates a Manager and runs the program."""
     card_manager = Manager()
     card_manager.run_program()
 
