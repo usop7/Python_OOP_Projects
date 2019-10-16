@@ -10,9 +10,6 @@ class TestManager(TestCase):
     the different unit tests for app.py.
     """
 
-    def setUp(self):
-        self.m = Manager()
-
     @patch('builtins.input')
     def test_add_card(self, m_input):
         """
@@ -35,9 +32,37 @@ class TestManager(TestCase):
         m_input.side_effect = ["1", "BCIT", "A01029289",
                                "Leeseul Kim", "2020-05-01", ""]
         m.add_card()
-
         m_input.side_effect = ["BCIT"]
         self.assertTrue(m.search_card())
+
+    @patch('builtins.input')
+    def test_delete_card_by_id(self, m_input):
+        """
+        Unit test for delete_card_by_id. Asserts the method returns True
+        after deleting a card whose id is 2.
+        """
+        m = Manager()
+        m_input.side_effect = ["1", "BCIT", "A01029289",
+                               "Leeseul Kim", "2020-05-01", ""]
+        m.add_card()
+        m_input.side_effect = ["2"]
+        self.assertTrue(m.delete_card_by_id())
+
+    @patch('builtins.input')
+    def test_delete_card_by_name(self, m_input):
+        """
+        Unit test for delete_card_by_name. Asserts the method returns True
+        after deleting a card whose name is BCIT.
+        """
+        m = Manager()
+        m_input.side_effect = ["1", "BCIT", "A01029289",
+                               "Leeseul Kim", "2020-05-01", ""]
+        m.add_card()
+        m_input.side_effect = ["BCIT"]
+        self.assertTrue(m.delete_card_by_name())
+
+
+
 
 
 
