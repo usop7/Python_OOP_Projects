@@ -31,11 +31,9 @@ class BookAnalyzer:
         with open(src, mode='r', encoding='utf-8-sig') as book_file:
             for line in book_file:
                 for word in line.split():
-                    word = word.translate(str.maketrans('', '', string.punctuation)).lower()
-                    if word_counter.get(word) is None:
-                        word_counter[word] = 1
-                    else:
-                        word_counter[word] = word_counter.get(word) + 1
+                    translator = str.maketrans('', '', string.punctuation)
+                    word = word.translate(translator).lower()
+                    word_counter[word] = word_counter.get(word, 0) + 1
         self.text = word_counter
 
     def find_unique_words(self):
