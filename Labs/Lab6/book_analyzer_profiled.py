@@ -27,20 +27,8 @@ class BookAnalyzer:
         """
         # read lines
         with open(src, mode='r', encoding='utf-8') as book_file:
-            self.text = book_file.readlines()
-
-        #strip out empty lines
-        stripped_text = []
-        for line in self.text:
-            if line != "\n":
-                stripped_text.append(line)
-        self.text = stripped_text
-
-        # convert list of lines to list of words
-        words = []
-        for line in self.text:
-            words += line.split()
-        self.text = words
+            self.text = [word.lower() for line in book_file
+                         for word in line.split()]
 
         # remove common punctuation from words
         temp_text = []
