@@ -28,7 +28,7 @@ class BookAnalyzer:
         """
         # read lines
         word_counter = {}
-        with open(src, mode='r', encoding='utf-8') as book_file:
+        with open(src, mode='r', encoding='utf-8-sig') as book_file:
             for line in book_file:
                 for word in line.split():
                     word = word.translate(str.maketrans('', '', string.punctuation)).lower()
