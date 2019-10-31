@@ -16,7 +16,7 @@ class BookAnalyzer:
     COMMON_PUNCTUATION = [",", "*", ";", ".", ":", "(", "[", "]", ")"]
 
     def __init__(self):
-        self.text = None
+        self.text = []
         self.word_count = {}
 
     def read_data(self, src="House of Usher.txt"):
@@ -26,12 +26,15 @@ class BookAnalyzer:
         common punctuation is removed.
         :param src: the name of the file, a string
         """
-        # convert a text file into a dictionary {word: count}
         punctuation_str = ''.join(self.COMMON_PUNCTUATION)
         translator = str.maketrans('', '', punctuation_str)
         with open(src, mode='r', encoding='utf-8-sig') as book_file:
             for word in book_file.read().split():
-                word = word.translate(translator).lower()
+                word = word.translate(translator)
+                # building a list of words
+                self.text.append(word)
+                # building a dictionary: {word: count}
+                word = word.lower()
                 self.word_count[word] = self.word_count.get(word, 0) + 1
 
     def find_unique_words(self):

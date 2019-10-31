@@ -29,7 +29,7 @@ class BookAnalyzer:
         punctuation_str = ''.join(self.COMMON_PUNCTUATION)
         translator = str.maketrans('', '', punctuation_str)
         with open(src, mode='r', encoding='utf-8-sig') as book_file:
-            self.text = [word.translate(translator).lower()
+            self.text = [word.translate(translator)
                          for word in book_file.read().split()]
 
     @staticmethod
@@ -48,11 +48,11 @@ class BookAnalyzer:
         Filters out all the words that only appear once in the text.
         :return: a list of all the unique words.
         """
-        temp_text = self.text
+        temp_text = [word.lower() for word in self.text]
         unique_words = []
         non_unique_words = []
         while temp_text:
-            word = temp_text.pop().lower()
+            word = temp_text.pop()
             if word in non_unique_words:
                 continue
             if self.is_unique(word, temp_text):
