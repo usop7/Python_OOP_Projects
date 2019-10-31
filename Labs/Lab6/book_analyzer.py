@@ -26,7 +26,7 @@ class BookAnalyzer:
         :param src: the name of the file, a string
         """
         # read lines
-        with open(src, mode='r', encoding='utf-8') as book_file:
+        with open(src, mode='r', encoding='utf-8-sig') as book_file:
             self.text = book_file.readlines()
 
         #strip out empty lines

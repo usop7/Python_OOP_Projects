@@ -25,20 +25,12 @@ class BookAnalyzer:
         common punctuation is removed.
         :param src: the name of the file, a string
         """
-        # read lines
-        with open(src, mode='r', encoding='utf-8') as book_file:
-            self.text = [word.lower() for line in book_file
-                         for word in line.split()]
-
-        # remove common punctuation from words
-        temp_text = []
-        for word in self.text:
-            temp_word = word.lower()
-            for punctuation in self.COMMON_PUNCTUATION:
-                temp_word = temp_word.replace(punctuation, '')
-            temp_text.append(temp_word)
-        self.text = temp_text
-
+        # convert a text file into a list of words
+        punctuation_str = ''.join(self.COMMON_PUNCTUATION)
+        translator = str.maketrans('', '', punctuation_str)
+        with open(src, mode='r', encoding='utf-8-sig') as book_file:
+            self.text = [word.translate(translator).lower()
+                         for line in book_file for word in line.split()]
 
     @staticmethod
     def is_unique(word, word_list):
