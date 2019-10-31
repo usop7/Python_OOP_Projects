@@ -3,7 +3,6 @@ This module is responsible for holding a badly written (but not so bad
 that you won't find this in the workplace) BookAnalyzer class that needs
 to be profiled and optimized.
 """
-import string
 
 
 class BookAnalyzer:
@@ -26,23 +25,20 @@ class BookAnalyzer:
         common punctuation is removed.
         :param src: the name of the file, a string
         """
-        # convert a text file into a dictionary {word: word_count}
-        word_counter = {}
+        # convert a text file into a dictionary {word: count}
         punctuation_str = ''.join(self.COMMON_PUNCTUATION)
         translator = str.maketrans('', '', punctuation_str)
         with open(src, mode='r', encoding='utf-8-sig') as book_file:
-            for line in book_file:
-                for word in line.split():
-                    word = word.translate(translator).lower()
-                    word_counter[word] = word_counter.get(word, 0) + 1
-        self.text = word_counter
+            for word in book_file.read().split():
+                word = word.translate(translator).lower()
+                self.text[word] = self.text.get(word, 0) + 1
 
     def find_unique_words(self):
         """
         Filters out all the words that only appear once in the text.
         :return: a list of all the unique words.
         """
-        unique_words = [word for (word, count) in self.text.items() if count == 1]
+        unique_words = [w for (w, c) in self.text.items() if c == 1]
         return unique_words
 
 

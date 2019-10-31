@@ -30,7 +30,7 @@ class BookAnalyzer:
         translator = str.maketrans('', '', punctuation_str)
         with open(src, mode='r', encoding='utf-8-sig') as book_file:
             self.text = [word.translate(translator).lower()
-                         for line in book_file for word in line.split()]
+                         for word in book_file.read().split()]
 
     @staticmethod
     def is_unique(word, word_list):
