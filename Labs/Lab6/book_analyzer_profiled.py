@@ -45,7 +45,7 @@ class BookAnalyzer:
         # remove common punctuation from words
         temp_text = []
         for word in self.text:
-            temp_word = word
+            temp_word = word.lower()
             for punctuation in self.COMMON_PUNCTUATION:
                 temp_word = temp_word.replace(punctuation, '')
             temp_text.append(temp_word)
@@ -61,7 +61,7 @@ class BookAnalyzer:
         :param word_list: a sequence of words
         :return: True if not found, false otherwise
         """
-        return word_list.count(word) == 1
+        return word_list.count(word.lower()) == 0
 
     def find_unique_words(self):
         """
@@ -70,10 +70,15 @@ class BookAnalyzer:
         """
         temp_text = self.text
         unique_words = []
+        non_unique_words = []
         while temp_text:
-            word = temp_text.pop()
+            word = temp_text.pop().lower()
+            if word in non_unique_words:
+                continue
             if self.is_unique(word, temp_text):
                 unique_words.append(word)
+            else:
+                non_unique_words.append(word)
         return unique_words
 
 

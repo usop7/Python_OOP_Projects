@@ -75,7 +75,7 @@ class BookAnalyzer:
         unique_words = []
         non_unique_words = []
         while temp_text:
-            word = temp_text.pop()
+            word = temp_text.pop().lower()
             if word in non_unique_words:
                 continue
             if self.is_unique(word, temp_text):
