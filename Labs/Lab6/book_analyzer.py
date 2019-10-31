@@ -73,10 +73,15 @@ class BookAnalyzer:
         """
         temp_text = self.text
         unique_words = []
+        non_unique_words = []
         while temp_text:
             word = temp_text.pop()
+            if word in non_unique_words:
+                continue
             if self.is_unique(word, temp_text):
                 unique_words.append(word)
+            else:
+                non_unique_words.append(word)
         return unique_words
 
 
