@@ -26,12 +26,13 @@ class BookAnalyzer:
         common punctuation is removed.
         :param src: the name of the file, a string
         """
-        # read lines
+        # convert a text file into a dictionary {word: word_count}
         word_counter = {}
+        punctuation_str = ''.join(self.COMMON_PUNCTUATION)
+        translator = str.maketrans('', '', punctuation_str)
         with open(src, mode='r', encoding='utf-8-sig') as book_file:
             for line in book_file:
                 for word in line.split():
-                    translator = str.maketrans('', '', string.punctuation)
                     word = word.translate(translator).lower()
                     word_counter[word] = word_counter.get(word, 0) + 1
         self.text = word_counter
@@ -48,7 +49,6 @@ class BookAnalyzer:
 def main():
     book_analyzer = BookAnalyzer()
     book_analyzer.read_data()
-    print(len(book_analyzer.text))
     unique_words = book_analyzer.find_unique_words()
     print("-"*50)
     print(f"List of unique words (Count: {len(unique_words)})")
