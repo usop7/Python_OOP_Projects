@@ -16,7 +16,8 @@ class BookAnalyzer:
     COMMON_PUNCTUATION = [",", "*", ";", ".", ":", "(", "[", "]", ")"]
 
     def __init__(self):
-        self.text = {}
+        self.text = None
+        self.word_count = {}
 
     def read_data(self, src="House of Usher.txt"):
         """
@@ -31,14 +32,14 @@ class BookAnalyzer:
         with open(src, mode='r', encoding='utf-8-sig') as book_file:
             for word in book_file.read().split():
                 word = word.translate(translator).lower()
-                self.text[word] = self.text.get(word, 0) + 1
+                self.word_count[word] = self.word_count.get(word, 0) + 1
 
     def find_unique_words(self):
         """
         Filters out all the words that only appear once in the text.
         :return: a list of all the unique words.
         """
-        unique_words = [w for (w, c) in self.text.items() if c == 1]
+        unique_words = [w for (w, c) in self.word_count.items() if c == 1]
         return unique_words
 
 

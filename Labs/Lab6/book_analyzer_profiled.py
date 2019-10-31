@@ -41,7 +41,7 @@ class BookAnalyzer:
         :param word_list: a sequence of words
         :return: True if not found, false otherwise
         """
-        return word_list.count(word.lower()) == 0
+        return word_list.count(word) == 0
 
     def find_unique_words(self):
         """
