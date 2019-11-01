@@ -1,4 +1,7 @@
 import abc
+from ingredients import CheeseMenu
+from ingredients import ToppingMenu
+
 
 class Pizza(abc.ABC):
     """
@@ -7,46 +10,51 @@ class Pizza(abc.ABC):
     """
 
     @abc.abstractmethod
-    def print_ingredients(self, name, price):
+    def __str__(self):
         pass
 
 
 class SignatureCrust(Pizza):
     """This class represents a Signature Crust pizza which is the
     base pizza of every pizza."""
-    def __init__(self, price):
-        self._price = price
 
-    def print_ingredients(self, name, price):
-        self._price += price
-        return f"Signature Crust: 4.99\nTotal: {self._price}"
+    def __str__(self):
+        return f"Signature Crust: $ 4.99"
 
 
-class SignatureCrustDecorator(Pizza):
+class BasePizzaDecorator(Pizza):
     def __init__(self, base_pizza):
-        self._base_pizza = base_pizza
+        self.base_pizza = base_pizza
 
-    def print_ingredients(self, name, price):
-        return self._base_pizza.print_ingredients(name, price)
+    def add(self):
+        self.base_pizza.add()
+
+    def __str__(self):
+        return self.base_pizza.__str__()
 
 
-class ParmigianoReggiano(SignatureCrustDecorator):
+class ParmigianoReggiano(BasePizzaDecorator):
     """This is a decorator that adds a Parmigiano Reggiano topping
     on the base pizza."""
 
-    def print_ingredients(self, name, price):
-        return f"{name}: {price}\n{super().print_ingredients(name, price)}"
+    def __str__(self):
+        return f"{super().__str__()}\n" \
+               f"Parmigiano Reggiano: $ 4.99"
 
 
 def main():
-    base_pizza = SignatureCrust(4.99)
+    base_pizza = SignatureCrust()
+    pizza = BasePizzaDecorator(base_pizza)
 
-    parmigiano = input("yes?")
+    cheese = 1
+    while cheese is not None:
+        cheese_menu = CheeseMenu()
+        cheese = cheese_menu.select_cheese()
+        pizza = ParmigianoReggiano(pizza)
 
-    if parmigiano == 'y':
-        pizza = ParmigianoReggiano(base_pizza)
 
-    print(pizza.print_ingredients('cheese', 3.99))
+    print(pizza)
+
 
 
 if __name__ == '__main__':
