@@ -1,4 +1,5 @@
 import abc
+from input_handler import NoCheeseAddedException
 from ingredients import SignatureCrust
 from ingredients import CheeseMenu
 from ingredients import ToppingMenu
@@ -20,18 +21,27 @@ class OrderController:
         self._pizza = BasePizzaDecorator(self._pizza, crust)
 
     def add_cheese(self):
-        """Keep prompting users with a cheese menu until they select
-        'Next' option. User must select at least one cheese."""
-        cheese = 1
+        """
+        Keep prompting users with a cheese menu until they select 'Next'.
+        Wrap a base pizza with a CheeseDecorator with a selected cheese,
+        and print the ingredients that are added so far each time.
+
+        If there is no cheese selected, an exception will be raised.
+        """
+        cheese = not None
         while cheese is not None:
             cheese = CheeseMenu.select_cheese()
             if cheese is not None:
                 self._pizza = CheeseDecorator(self._pizza, cheese)
                 print(self._pizza)
+            if not isinstance(self._pizza, CheeseDecorator):
+                raise NoCheeseAddedException
 
     def check_out(self):
-        """Print a well formatted bill that includes all pizza ingredients
-        and the total price."""
+        """
+        Print a well formatted bill that includes all pizza ingredients
+        and the total price.
+        """
         print(f"\n{'-'*40}\nHere is your bill.\n")
         print(f"{self._pizza}\n{self._pizza.total_price}")
         print(f"{'-'*40}")
@@ -119,8 +129,20 @@ class CheeseDecorator(BasePizzaDecorator):
 
 def main():
     order_controller = OrderController()
+
+    # Add Signature Crust by default
     order_controller.add_signature_crust()
-    order_controller.add_cheese()
+
+    # Call Cheese Menu
+    passed = False
+    while not passed:
+        try:
+            order_controller.add_cheese()
+        except NoCheeseAddedException as e:
+            print(f"{e}")
+        else:
+            passed = True
+
     order_controller.check_out()
 
 

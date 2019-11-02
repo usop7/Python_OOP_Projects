@@ -1,11 +1,14 @@
 """This module holds classes that will be used for user input handling."""
 
 
-class CommandNotFoundException(Exception):
-    """
-    This exception will be raised when there is no matching command found.
-    """
+class NoCheeseAddedException(Exception):
+    """This exception will be raised when there is no cheese added."""
+    def __init__(self):
+        super().__init__("[Error] Please select at least one cheese!")
 
+
+class CommandNotFoundException(Exception):
+    """This exception will be raised when the input value is not valid."""
     def __init__(self, num):
         super().__init__(f"\n[Error] Please select between 1 to {num}")
 
