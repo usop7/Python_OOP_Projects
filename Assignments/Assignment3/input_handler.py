@@ -28,19 +28,18 @@ class InputHandler:
             raise CommandNotFoundException(num_commands)
 
     @staticmethod
-    def prompt_menu(question, option_list, skipable):
+    def prompt_menu(question, option_list):
         """
         Prompt user with a list of options, and returns the selected option.
         The 'skip' option will be added to the end of the given list.
         :param question: String
         :param option_list: list
-        :parm skipable: Boolean
         :return: None or an Item in the list
         """
         while True:
             answer = input(question)
             # When choose to 'skip'(last option)
-            if answer == str(len(option_list) + 1) and skipable:
+            if answer == str(len(option_list) + 1):
                 return None
             else:
                 try:
