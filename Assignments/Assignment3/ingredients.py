@@ -1,8 +1,9 @@
-from enum import Enum
 from input_handler import InputHandler
 
 
 class SignatureCrust:
+    """This class represents a Signature Crust ingredient."""
+
     def __init__(self):
         self.name = "Signature Crust"
         self.price = 4.99

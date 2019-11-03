@@ -14,9 +14,9 @@ class OrderController:
 
     def add_signature_crust(self):
         """Add a SignatureCrust to its pizza."""
-        crust = SignatureCrust()
-        self._pizza = SignatureCrustPizza(crust)
-        self._pizza = BasePizzaDecorator(self._pizza, crust)
+        signature_crust = SignatureCrust()
+        self._pizza = CrustPizza(signature_crust)
+        self._pizza = BasePizzaDecorator(self._pizza, signature_crust)
 
     def add_cheese(self):
         """
@@ -31,7 +31,7 @@ class OrderController:
             cheese = CheeseMenu.select_cheese()
             if cheese is not None:
                 self._pizza = CheeseDecorator(self._pizza, cheese)
-                print(self._pizza)
+                print(f"\nYou've ordered:\n{self._pizza}")
             if not isinstance(self._pizza, CheeseDecorator):
                 raise NoCheeseAddedException
 
@@ -41,13 +41,19 @@ class OrderController:
             topping = ToppingMenu.select_topping()
             if topping is not None:
                 self._pizza = ToppingDecorator(self._pizza, topping)
-                print(self._pizza)
+                print(f"\nYou've ordered:\n{self._pizza}")
             else:
                 done = True
 
     def start_order(self):
+        """
+        1. Add a Signature Crust to a pizza.
+        2. Add cheeses.
+        3. Add toppings.
+        4. Checkout and complete the order.
+        """
 
-        # add a default signature crust
+        # add a signature crust by default
         self.add_signature_crust()
 
         # add cheeses
@@ -71,9 +77,9 @@ class OrderController:
         Print a well formatted bill that includes all pizza ingredients
         and the total price.
         """
-        print(f"\n{'-'*40}\nHere is your bill.\n")
-        print(f"{self._pizza}\n{self._pizza.total_price}")
-        print(f"{'-'*40}")
+        print(f"\n{'-'*30}\nHere is your bill.\n")
+        print(f"{self._pizza}\n{'-'*30}\n"
+              f"{self._pizza.total_price}")
 
 
 class Pizza(abc.ABC):
@@ -96,12 +102,12 @@ class Pizza(abc.ABC):
         pass
 
 
-class SignatureCrustPizza(Pizza):
-    """A Signature Crust Pizza is a Concrete Pizza that has a
-    signature crust ingredient added on the pizza."""
+class CrustPizza(Pizza):
+    """A Crust Pizza is a Concrete Pizza that has a crust ingredient
+    added on the pizza."""
 
-    def __init__(self, ingredient):
-        self._ingredient = ingredient
+    def __init__(self, crust):
+        self._ingredient = crust
         self._total_price = 0
 
     def add_price(self, price):
