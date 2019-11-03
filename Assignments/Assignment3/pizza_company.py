@@ -3,8 +3,6 @@ from input_handler import NoCheeseAddedException
 from ingredients import SignatureCrust
 from ingredients import CheeseMenu
 from ingredients import ToppingMenu
-from ingredients import CheeseType
-from ingredients import ToppingType
 
 
 class OrderController:
@@ -37,6 +35,37 @@ class OrderController:
             if not isinstance(self._pizza, CheeseDecorator):
                 raise NoCheeseAddedException
 
+    def add_topping(self):
+        done = False
+        while not done:
+            topping = ToppingMenu.select_topping()
+            if topping is not None:
+                self._pizza = ToppingDecorator(self._pizza, topping)
+                print(self._pizza)
+            else:
+                done = True
+
+    def start_order(self):
+
+        # add a default signature crust
+        self.add_signature_crust()
+
+        # add cheeses
+        passed = False
+        while not passed:
+            try:
+                self.add_cheese()
+            except NoCheeseAddedException as e:
+                print(f"{e}")
+            else:
+                passed = True
+
+        # add toppings
+        self.add_topping()
+
+        # check out
+        self.check_out()
+
     def check_out(self):
         """
         Print a well formatted bill that includes all pizza ingredients
@@ -54,7 +83,7 @@ class Pizza(abc.ABC):
     """
 
     @abc.abstractmethod
-    def add_ingredient(self):
+    def add_price(self, price):
         pass
 
     @abc.abstractmethod
@@ -75,8 +104,8 @@ class SignatureCrustPizza(Pizza):
         self._ingredient = ingredient
         self._total_price = 0
 
-    def add_ingredient(self):
-        self._total_price += self._ingredient.price
+    def add_price(self, price):
+        self._total_price += price
 
     def get_total_price(self):
         return f"Total Price: $ {self._total_price}"
@@ -95,16 +124,16 @@ class BasePizzaDecorator(Pizza):
     def __init__(self, base_pizza, ingredient):
         """
         Initialize a BasePizzaDecorator with a base pizza and a new
-        ingredient.
+        ingredient, and add the ingredient's price.
         :param base_pizza: Pizza
         :param ingredient: Ingredient objects such as cheese, toppings
         """
         self._base_pizza = base_pizza
         self._ingredient = ingredient
-        self.add_ingredient()
+        self.add_price(ingredient.price)
 
-    def add_ingredient(self):
-        self._base_pizza.add_ingredient()
+    def add_price(self, price):
+        self._base_pizza.add_price(price)
 
     def get_total_price(self):
         return self._base_pizza.get_total_price()
@@ -120,30 +149,29 @@ class CheeseDecorator(BasePizzaDecorator):
     base pizza. This decorator can wrap around a concrete Pizza or
     another Decorator."""
 
-    def add_ingredient(self):
-        self._base_pizza.add_ingredient()
+    def __str__(self):
+        """
+        Return a formatted string of its base pizza's ingredients and
+        its ingredient.
+        :return: Sring
+        """
+        return f"{self._base_pizza.__str__()}\n{self._ingredient}"
+
+
+class ToppingDecorator(BasePizzaDecorator):
+    """This is a decorator that adds a topping ingredient to a
+    base pizza. This decorator can wrap around a concrete Pizza or
+    another Decorator."""
 
     def __str__(self):
         return f"{self._base_pizza.__str__()}\n{self._ingredient}"
 
 
 def main():
+    """Instantiate an Order Controller and start an order."""
+
     order_controller = OrderController()
-
-    # Add Signature Crust by default
-    order_controller.add_signature_crust()
-
-    # Call Cheese Menu
-    passed = False
-    while not passed:
-        try:
-            order_controller.add_cheese()
-        except NoCheeseAddedException as e:
-            print(f"{e}")
-        else:
-            passed = True
-
-    order_controller.check_out()
+    order_controller.start_order()
 
 
 if __name__ == '__main__':

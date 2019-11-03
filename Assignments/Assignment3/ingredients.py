@@ -88,7 +88,7 @@ class ToppingMenu:
         Prompt user with a topping list, and return the selected topping.
         :return: None or Topping object
         """
-        question = f"\nSelect your topping!\n{'-'*40}\n"
+        question = f"\nStep 2: Select your topping!\n{'-'*40}\n"
         i = 1
         for topping in ToppingMenu.topping_list:
             question += f"{i}. {topping}\n"

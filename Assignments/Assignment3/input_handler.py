@@ -4,7 +4,7 @@
 class NoCheeseAddedException(Exception):
     """This exception will be raised when there is no cheese added."""
     def __init__(self):
-        super().__init__("[Error] Please select at least one cheese!")
+        super().__init__("\n[Error] Please select at least one cheese!")
 
 
 class CommandNotFoundException(Exception):
