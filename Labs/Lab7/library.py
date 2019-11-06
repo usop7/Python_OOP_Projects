@@ -1,3 +1,5 @@
+"""This module embodies Library class and main method."""
+
 from catalogue import Catalogue
 
 
@@ -73,7 +75,7 @@ class Library:
                            "(6) Remove an item\n"
                            "Please select: \n")
         answer = int(answer)
-        # Ask additional questions based on the choice, and call the corresponding method.
+
         if answer == 2:
             title = input("Enter the item title: ")
             options[answer-1](title)

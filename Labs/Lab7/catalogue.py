@@ -1,12 +1,11 @@
 from difflib import get_close_matches
 from libraryItemGenerator import LibraryItemGenerator as LibGen
-# import book and dvd modules in order to manually add to the item list for testing purposes.
 from book import Book
 from dvd import DVD
 
 
 class Catalogue:
-    """This class embodies the basic functions and attributes of a Catalogue."""
+    """This class embodies basic functions and attributes of a Catalogue."""
 
     def __init__(self):
         """
@@ -96,9 +95,8 @@ class Catalogue:
             print("No matching call number found.")
 
     def display_available_items(self):
-        """
-        Display all available items that have more than one copy in the catalogue.
-        """
+        """Display all available items that have more than one copy
+        in the catalogue."""
         count = 0
         print("Available Items:")
         for item in self.item_list.values():

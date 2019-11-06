@@ -82,8 +82,10 @@ class Book(Item):
         """
         :return: A well formatted string depicting the book attributes.
         """
-        description = (f"[Book] title: {self._title}, call number: {self._call_number}, "
-                       f"author: {self._author}, number of copies: {self._num_copies}")
+        description = (f"[Book] title: {self._title}, "
+                       f"call number: {self._call_number}, "
+                       f"author: {self._author}, "
+                       f"number of copies: {self._num_copies}")
         return description
 
 
@@ -107,9 +109,11 @@ class DVD(Item):
         """
         :return: A user friendly formatted string depicting the dvd attributes.
         """
-        description = (f"[DVD] title: {self._title}, call number: {self._call_number}, "
+        description = (f"[DVD] title: {self._title}, "
+                       f"call number: {self._call_number}, "
                        f"release date: {self._release_date},"
-                       f"region code: {self._region_code}, number of copies: {self._num_copies}")
+                       f"region code: {self._region_code}, "
+                       f"number of copies: {self._num_copies}")
         return description
 
 
@@ -131,11 +135,13 @@ class Journal(Item):
 
     def __str__(self):
         """
-        :return: A user friendly formatted string depicting the journal attributes.
+        :return: A well formatted string depicting the journal attributes.
         """
-        description = (f"[Journal] title: {self._title}, call number: {self._call_number}, "
+        description = (f"[Journal] title: {self._title}, "
+                       f"call number: {self._call_number}, "
                        f"issue number: {self._issue_number},"
-                       f"publisher: {self._publisher}, number of copies: {self._num_copies}")
+                       f"publisher: {self._publisher}, "
+                       f"number of copies: {self._num_copies}")
         return description
 
 
