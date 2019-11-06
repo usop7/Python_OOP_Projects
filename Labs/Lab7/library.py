@@ -22,17 +22,10 @@ class Library:
 
     def return_item(self, call_number):
         """
-        Check if there exists an item with the call number, and then,
-        1) If exists, increase the number of copies.
-        2) If not exists, notify the user.
+        Return an item with a given call number.
         :param call_number: a String
         """
-        item = self.catalogue.get_item(call_number)
-        if item is not None:
-            item.increase_copy()
-            print(f"Item({call_number}) returned.")
-        else:
-            print("No matching call number found.")
+        self.catalogue.return_item(call_number)
 
     def give_options(self):
         """
