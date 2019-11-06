@@ -106,3 +106,22 @@ class Catalogue:
         if count == 0:
             print("No items are available")
 
+    def check_out_item(self, call_number):
+        """
+        Check if there exists an item with the call number, and then,
+        1) If exists and available, decrease the number of copies.
+        2) If exists and not available, notify the user.
+        3) If not exists, notify the user.
+        :param call_number: a String
+        """
+        item = self.get_item(call_number)
+        if item is not None:
+            if item.check_availability() is True:
+                item.decrease_copy()
+                print(f"Item({call_number}) has been checked out.")
+            else:
+                print("No copies are available")
+        else:
+            print("No matching call number found.")
+
+
