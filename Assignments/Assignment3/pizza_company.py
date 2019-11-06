@@ -1,3 +1,9 @@
+"""
+This module holds the controller that is responsible to create and
+proceed a pizza order with users, and Pizza related classes and
+decorators.
+"""
+
 import abc
 from input_handler import NoCheeseAddedException
 from ingredients import SignatureCrust

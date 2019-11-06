@@ -1,3 +1,7 @@
+"""
+This module includes ingredients classes and related Menu classes.
+"""
+
 from input_handler import InputHandler
 
 
