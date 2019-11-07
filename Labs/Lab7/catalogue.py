@@ -1,7 +1,11 @@
 from difflib import get_close_matches
-from item import LibraryItemGenerator as LibGen
 from item import Book
 from item import DVD
+from item import BookFactory
+from item import DvdFactory
+from item import JournalFactory
+from input_handler import InputHandler
+from input_handler import CommandNotFoundException
 
 
 class Catalogue:
@@ -13,6 +17,11 @@ class Catalogue:
         """
         # Item Dictionary (key: call number, value: Item object)
         self.item_list = {}
+        self.item_factory_map = {
+            1: BookFactory,
+            2: DvdFactory,
+            3: JournalFactory
+        }
 
         # Add some items manually for testing purposes.
         book1 = Book("In praise of Idleness", "B-1", 3, "bertrand russell")
@@ -64,12 +73,26 @@ class Catalogue:
         """
         Adds a new item to the catalogue if not exists yet.
         """
-        item = LibGen.create_item()
-        if not self.item_exists(item.call_number):
-            self.item_list[item.call_number] = item
-            print(f"Item({item.call_number}) bas been added.")
-        else:
-            print("This item already exists.")
+        passed = False
+        while not passed:
+            try:
+                print("Which item type would you like to add?")
+                print("1. Book\n2. DVD\n3. Journal")
+                answer = input("Enter your choice (1-3)")
+                InputHandler.validate(len(self.item_factory_map), answer)
+                item_factory = self.item_factory_map.get(int(answer))
+                item = item_factory().create_item()
+            except ValueError:
+                print("\n[Error] Please type an integer!")
+            except CommandNotFoundException as e:
+                print(f"{e}")
+            else:
+                passed = True
+                if not self.item_exists(item.call_number):
+                    self.item_list[item.call_number] = item
+                    print(f"Item({item.call_number}) bas been added.")
+                else:
+                    print("This call number already exists.")
 
     def _add_item_by_item(self, item):
         """
