@@ -1,7 +1,7 @@
 from difflib import get_close_matches
-from libraryItemGenerator import LibraryItemGenerator as LibGen
-from book import Book
-from dvd import DVD
+from item import LibraryItemGenerator as LibGen
+from item import Book
+from item import DVD
 
 
 class Catalogue:
@@ -28,9 +28,7 @@ class Catalogue:
         :param title: a String
         :return: a list of String
         """
-        titles = []
-        for item in self.item_list.values():
-            titles.append(item.title)
+        titles = [item.title for item in self.item_list.values()]
         return get_close_matches(title, titles)
 
     def search(self, title):
@@ -39,12 +37,10 @@ class Catalogue:
         :param title: a String
         """
         close_matches = self.get_close_matches_by_title(title)
-        count = 0
         for item in self.item_list.values():
             if item.title in close_matches:
                 print(item)
-                count += 1
-        if count == 0:
+        if len(close_matches) == 0:
             print("No result found.")
 
     def item_exists(self, call_number):
