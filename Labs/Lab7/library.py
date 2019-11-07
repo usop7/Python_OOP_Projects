@@ -11,7 +11,11 @@ class Library:
         Initialize a library with a catalogue.
         :param catalogue: a catalogue object
         """
-        self.catalogue = catalogue
+        self._catalogue = catalogue
+
+    @property
+    def catalogue(self):
+        return self._catalogue
 
     def check_out(self, call_number):
         """

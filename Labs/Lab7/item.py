@@ -27,22 +27,21 @@ class Item(abc.ABC):
         """
         return self._num_copies >= 1
 
-    def get_title(self):
+    @property
+    def title(self):
         """
         Return the title.
         :return: a String
         """
         return self._title
 
-    def get_call_number(self):
+    @property
+    def call_number(self):
         """
         Return the call number.
         :return: a String
         """
         return self._call_number
-
-    title = property(get_title)
-    call_number = property(get_call_number)
 
     def increase_copy(self):
         """
