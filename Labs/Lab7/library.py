@@ -1,6 +1,8 @@
 """This module embodies Library class and main method."""
 
 from catalogue import Catalogue
+from input_handler import InputHandler
+from input_handler import CommandNotFoundException
 
 
 class Library:
@@ -41,35 +43,30 @@ class Library:
                    self.return_item,
                    self.catalogue.add_item,
                    self.catalogue.remove_item]
-        answer = 0
-
-        # Create a list of valid answers
-        valid_answers = []
-        i = 1
-        while i <= len(options):
-            valid_answers.append(str(i))
-            i += 1
-
-        # Repeat until the user enters the valid options (1~6)
-        while answer not in valid_answers:
+        try:
             answer = input("-------------------------------\n"
                            "(1) Display available items \n"
-                           "(2) Find an item\n"
+                           "(2) Find an item by title\n"
                            "(3) Check out an item\n"
                            "(4) Return an item\n"
                            "(5) Add an item\n"
                            "(6) Remove an item\n"
                            "Please select: \n")
-        answer = int(answer)
-
-        if answer == 2:
-            title = input("Enter the item title: ")
-            options[answer-1](title)
-        elif answer in [3, 4, 6]:
-            call_number = input("Enter the call number of the item: ")
-            options[answer-1](call_number)
+            InputHandler.validate(len(options), answer)
+            answer = int(answer) - 1
+        except ValueError:
+            print("\n[Error] Please type an integer!")
+        except CommandNotFoundException as e:
+            print(f"{e}")
         else:
-            options[answer-1]()
+            if answer == 1:
+                title = input("Enter the item title: ")
+                options[answer](title)
+            elif answer in [2, 3, 5]:
+                call_number = input("Enter the call number of the item: ")
+                options[answer](call_number)
+            else:
+                options[answer]()
 
 
 def main():
