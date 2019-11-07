@@ -25,7 +25,6 @@ class TrafficLightCore:
     def traffic_light(self):
         return self._light
 
-
     @traffic_light.setter
     def traffic_light(self, value):
         self._light = value

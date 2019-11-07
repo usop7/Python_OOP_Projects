@@ -7,5 +7,5 @@ list = [1, 2, 3, 4, 5]
 result = [square_root(i) for i in list]
 print(result)
 
-result2 = [(lambda x: x**0.5)(x) for x in list]
+result2 = [(lambda x: x**0.5)(i) for i in list]
 print(result2)

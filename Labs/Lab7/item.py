@@ -158,7 +158,6 @@ class ItemFactory(abc.ABC):
 class BookFactory(ItemFactory):
     """The BookFactory is responsible for creating a Book Item."""
 
-    @abc.abstractmethod
     def create_item(self) -> Item:
         title = input("Title: ")
         call_number = input("Call Number: ")
@@ -170,7 +169,6 @@ class BookFactory(ItemFactory):
 class DvdFactory(ItemFactory):
     """The DvdFactory is responsible for creating a DVD Item."""
 
-    @abc.abstractmethod
     def create_item(self) -> Item:
         title = input("Title: ")
         call_number = input("Call Number: ")
@@ -183,7 +181,6 @@ class DvdFactory(ItemFactory):
 class JournalFactory(ItemFactory):
     """The JournalFactory is responsible for creating a Journal Item."""
 
-    @abc.abstractmethod
     def create_item(self) -> Item:
         title = input("Title: ")
         call_number = input("Call Number: ")

@@ -11,5 +11,6 @@ print(even_list)
 x_list = [i if i % 2 == 0 else 'x' for i in range(0, 100)]
 print(x_list)
 
-a = "aLaSKA lee"
-print(a.title())
+names = ['leeseul kim', 'justin lee']
+first_names = [name.split(' ')[0] for name in names]
+print(first_names)

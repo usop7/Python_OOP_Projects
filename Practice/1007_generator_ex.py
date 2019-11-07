@@ -1,9 +1,5 @@
-def generate_numbers(upper_bound=0):
-    for i in range(upper_bound):
-        input("Line before yield")
-        yield i
-        input("Line after yield")
+def gen_even_multiples(multiplier, start, stop):
+    yield from (x * multiplier for x in range(start, stop) if x % 2 == 0)
 
-
-for result in generate_numbers(9):
+for result in gen_even_multiples(5, 0, 100):
     print(result)
