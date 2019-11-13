@@ -3,7 +3,7 @@ import argparse
 import abc
 import enum
 import os.path
-from pathlib import Path
+
 
 class CryptoMode(enum.Enum):
     """
@@ -128,6 +128,52 @@ class BaseDesHandler(abc.ABC):
         self.next_handler = handler
 
 
+class ValidateKeyHandler(BaseDesHandler):
+    """
+    This handler ensures that the Key exists and is a length of 8, 16 or 24.
+    """
+
+    def handle_request(self, command: Request) -> (str, bool):
+        """
+        Check if the length of the key value is either 8, 16 or 24.
+        :param command: a Request
+        :return: a tuple where the first element is a string stating the
+        outcome and the reason, and the second a bool indicating
+        successful handling of the form or not.
+        """
+        if command.key is None:
+            return "The Key is required.", False
+        if len(command.key) not in [8, 16, 24]:
+            return "The Key value needs to be of length 8, 16 or 24", False
+
+        if not self.next_handler:
+            return "", True
+        return self.next_handler.handle_request(command)
+
+
+class ValidateModeHandler(BaseDesHandler):
+    """
+    This handler ensures that a mode belongs to the CryptoMode..
+    """
+
+    def handle_request(self, command: Request) -> (str, bool):
+        """
+        Check if a mode matches any value of CryptoMode Enum type's value.
+        :param command: a Request
+        :return: a tuple where the first element is a string stating the
+        outcome and the reason, and the second a bool indicating
+        successful handling of the form or not.
+        """
+        mode = command.encryption_state
+        found = False
+        for mode_type in CryptoMode:
+            if mode_type.value == mode:
+                found = True
+                break
+        if not found:
+            return "Mode not found.", False
+
+
 class InputDataHandler(BaseDesHandler):
     """
     This handler ensures that the request has one input data, either
@@ -179,6 +225,9 @@ class InputFileHandler(BaseDesHandler):
         if not self.next_handler:
             return "", True
         return self.next_handler.handle_request(command)
+
+
+
 
 
 
