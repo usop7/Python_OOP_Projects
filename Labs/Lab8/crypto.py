@@ -2,6 +2,8 @@ import des
 import argparse
 import abc
 import enum
+import os.path
+from pathlib import Path
 
 class CryptoMode(enum.Enum):
     """
@@ -99,6 +101,86 @@ class Crypto:
 
 def main(request: Request):
     pass
+
+
+class BaseDesHandler(abc.ABC):
+    """
+    Baseclass for all handlers that handle Encryption and Decryption Request.
+    Each concrete handler will be inherited from this BaseHandler.
+    """
+
+    def __init__(self, next_handler=None):
+        self.next_handler = next_handler
+
+    @abc.abstractmethod
+    def handle_request(self, command: Request) -> (str, bool):
+        """
+        Each Handler will have a specific implementation of how it processes
+        a request.
+        :param command: a Request
+        :return: a tuple where the first element is a string stating the
+        outcome and the reason, and the second a bool indicating
+        successful handling of the form or not.
+        """
+        pass
+
+    def set_next_handler(self, handler):
+        self.next_handler = handler
+
+
+class InputDataHandler(BaseDesHandler):
+    """
+    This handler ensures that the request has one input data, either
+    a String or an input file.
+    """
+
+    def handle_request(self, command: Request) -> (str, bool):
+        """
+        Check if there is only one input data type: either a data_input(str)
+        or an input_file.
+        :param command: a Request
+        :return: a tuple where the first element is a string stating the
+        outcome and the reason, and the second a bool indicating
+        successful handling of the form or not.
+        """
+        print("Validating input data type")
+        str_data = request.data_input
+        file_data = request.input_file
+        if str_data is not None and file_data is not None:
+            return "Select only one input data type", False
+
+        if not self.next_handler:
+            return "", True
+        return self.next_handler.handle_request(command)
+
+
+class InputFileHandler(BaseDesHandler):
+    """
+    This handler ensures that the input data file exists that contain text.
+    """
+
+    def handle_request(self, command: Request) -> (str, bool):
+        """
+        Check if there exists a given file, and if it has a contents.
+        :param command: a Request
+        :return: a tuple where the first element is a string stating the
+        outcome and the reason, and the second a bool indicating
+        successful handling of the form or not.
+        """
+        print("Validating input file")
+        path = request.input_file
+        if not os.path.exists(path):
+            return "Input file doesn't exist.", False
+        with open(path, mode='r', encoding='utf-8') as file:
+            data = file.read().strip()
+        if data is None or data == "":
+            return "Input file doesn't have any content in it.", False
+
+        if not self.next_handler:
+            return "", True
+        return self.next_handler.handle_request(command)
+
+
 
 
 if __name__ == '__main__':
