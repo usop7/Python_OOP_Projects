@@ -77,7 +77,7 @@ def setup_request_commandline() -> Request:
     try:
         args = parser.parse_args()
         request = Request()
-        request.encryption_state = CryptoMode(args.mode)
+        request.encryption_state = args.mode
         request.data_input = args.string
         request.input_file = args.file
         request.output = args.output
@@ -92,15 +92,34 @@ def setup_request_commandline() -> Request:
 class Crypto:
 
     def __init__(self):
-        self.encryption_start_handler = None
-        self.decryption_start_handler = None
+        """
+        Set up the Crypto program and create a chain of handlers.
+        """
+
+        key_handler = ValidateKeyHandler()
+        input_handler = InputDataHandler()
+        file_handler = InputFileHandler()
+        mode_handler = ValidateModeHandler()
+
+        key_handler.set_next_handler(input_handler)
+        input_handler.set_next_handler(mode_handler)
+        mode_handler.set_next_handler(file_handler)
+
+        self.encryption_start_handler = key_handler
+        self.decryption_start_handler = key_handler
 
     def execute_request(self, request: Request):
-        pass
+        result = self.encryption_start_handler.handle_request(request)
 
-
-def main(request: Request):
-    pass
+        if result[0]:
+            mode = result[1]
+            data = result[2]
+            print(mode)
+            print(data)
+            return False
+        else:
+            print(result[2])
+            return False
 
 
 class BaseDesHandler(abc.ABC):
@@ -113,7 +132,7 @@ class BaseDesHandler(abc.ABC):
         self.next_handler = next_handler
 
     @abc.abstractmethod
-    def handle_request(self, command: Request) -> (str, bool):
+    def handle_request(self, command: Request) -> (bool, str, CryptoMode):
         """
         Each Handler will have a specific implementation of how it processes
         a request.
@@ -133,7 +152,7 @@ class ValidateKeyHandler(BaseDesHandler):
     This handler ensures that the Key exists and is a length of 8, 16 or 24.
     """
 
-    def handle_request(self, command: Request) -> (str, bool):
+    def handle_request(self, command: Request) -> (bool, str, CryptoMode):
         """
         Check if the length of the key value is either 8, 16 or 24.
         :param command: a Request
@@ -142,12 +161,12 @@ class ValidateKeyHandler(BaseDesHandler):
         successful handling of the form or not.
         """
         if command.key is None:
-            return "The Key is required.", False
+            return False, None, "The Key is required."
         if len(command.key) not in [8, 16, 24]:
-            return "The Key value needs to be of length 8, 16 or 24", False
+            return None, "The Key value needs to be of length 8, 16 or 24", False
 
         if not self.next_handler:
-            return "", True
+            return True, command.encryption_state, command.data_input
         return self.next_handler.handle_request(command)
 
 
@@ -156,7 +175,7 @@ class ValidateModeHandler(BaseDesHandler):
     This handler ensures that a mode belongs to the CryptoMode..
     """
 
-    def handle_request(self, command: Request) -> (str, bool):
+    def handle_request(self, command: Request) -> (bool, str, CryptoMode):
         """
         Check if a mode matches any value of CryptoMode Enum type's value.
         :param command: a Request
@@ -169,43 +188,45 @@ class ValidateModeHandler(BaseDesHandler):
         for mode_type in CryptoMode:
             if mode_type.value == mode:
                 found = True
-                break
         if not found:
-            return "Mode not found.", False
+            return False, None, "Mode not found."
+
+        if not self.next_handler:
+            return True, command.encryption_state, command.data_input
+        return self.next_handler.handle_request(command)
 
 
 class InputDataHandler(BaseDesHandler):
     """
-    This handler ensures that the request has one input data, either
+    This handler ensures that the request has an input data, either
     a String or an input file.
     """
 
-    def handle_request(self, command: Request) -> (str, bool):
+    def handle_request(self, command: Request) -> (bool, str, CryptoMode):
         """
-        Check if there is only one input data type: either a data_input(str)
-        or an input_file.
+        Check if an input data exists, either input file or data input.
         :param command: a Request
         :return: a tuple where the first element is a string stating the
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
-        print("Validating input data type")
+        print("Validating input data")
         str_data = request.data_input
         file_data = request.input_file
-        if str_data is not None and file_data is not None:
-            return "Select only one input data type", False
+        if str_data is None and file_data is None:
+            return None, "No input data found.", False
 
         if not self.next_handler:
-            return "", True
+            return True, command.encryption_state, command.data_input
         return self.next_handler.handle_request(command)
 
 
 class InputFileHandler(BaseDesHandler):
     """
-    This handler ensures that the input data file exists that contain text.
+    This handler ensures that the input data file exists.
     """
 
-    def handle_request(self, command: Request) -> (str, bool):
+    def handle_request(self, command: Request) -> (bool, str, CryptoMode):
         """
         Check if there exists a given file, and if it has a contents.
         :param command: a Request
@@ -214,22 +235,29 @@ class InputFileHandler(BaseDesHandler):
         successful handling of the form or not.
         """
         print("Validating input file")
-        path = request.input_file
-        if not os.path.exists(path):
-            return "Input file doesn't exist.", False
-        with open(path, mode='r', encoding='utf-8') as file:
-            data = file.read().strip()
-        if data is None or data == "":
-            return "Input file doesn't have any content in it.", False
+        file_path = request.input_file
+        input_str = request.data_input
+        data = None
+        if file_path is not None:
+            if not os.path.exists(file_path):
+                return False, None, "Input file doesn't exist."
+            else:
+                with open(file_path, mode='r', encoding='utf-8') as file:
+                    data = file.read()
+        else:
+            data = input_str
+
+        if data == "":
+            return False, None, "Input file doesn't have any content in it."
 
         if not self.next_handler:
-            return "", True
+            return True, command.encryption_state, data
         return self.next_handler.handle_request(command)
 
 
-
-
-
+def main(request: Request):
+    crypto_system = Crypto()
+    crypto_system.execute_request(request)
 
 
 if __name__ == '__main__':
