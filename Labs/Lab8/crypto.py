@@ -3,6 +3,7 @@ import argparse
 import abc
 import enum
 import os.path
+import ast
 
 
 class CryptoMode(enum.Enum):
@@ -37,8 +38,8 @@ class Request:
         data_input or input_file.
 
     """
-    def __init__(self, output="print"):
-        self.encryption_state = None
+    def __init__(self, output="print", encryption_state="en"):
+        self.encryption_state = encryption_state
         self.data_input = None
         self.input_file = None
         self.output = output
@@ -48,8 +49,9 @@ class Request:
 
     def __str__(self):
         return f"Request: State: {self.encryption_state}, Data: {self.data}" \
-               f", Input file: {self.input_file}, Output: {self.output}, " \
-               f"Key: {self.key}"
+               f", Input file: {self.input_file}, " \
+               f"Data Input: {self.data_input} Output: {self.output}, " \
+               f"Key: {self.key}\n"
 
 
 def setup_request_commandline() -> Request:
@@ -273,9 +275,6 @@ class PopulateDataHandler(BaseDesHandler):
             if not os.path.exists(file_path):
                 return False, "Input file doesn't exist."
             else:
-                # if command.encryption_state == 'de':
-                #     if not isinstance(command.data, bytes):
-                #         return False, "Input file is not byte type"
                 mode = 'r' if command.encryption_state == 'en' else 'rb'
                 with open(file_path, mode=mode) as file:
                     command.data = file.read()
@@ -286,19 +285,23 @@ class PopulateDataHandler(BaseDesHandler):
 
 class ValidateInputDataHandler(BaseDesHandler):
     """
-    It ensures that the data is not an empty string.
+    It ensures that the data is a right type and not emtpy.
     """
 
     def handle_request(self, command: Request) -> (bool, str):
         """
-        It checks if the request's data attribute is an empty string.
+        It checks if the request's data is right type (bytes or string),
+        and not empty.
         :param command: a Request
         :return: a tuple where the first element is a string stating the
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
 
-        print("Validating input data is not empty")
+        print("Validating input data type and emptiness")
+        if command.encryption_state == 'de':
+            if not isinstance(command.data, bytes):
+                return False, "Input data is not byte type"
         if command.data == "":
             return False, "The input data is empty."
         return self.pass_handler(command)
@@ -338,13 +341,17 @@ class DecryptDataHandler(BaseDesHandler):
         print("Decrypting...")
         key = DesKey(command.key.encode("utf-8"))
         command.result = key.decrypt(command.data, padding=True).decode("utf-8")
-        print(command.result)
         return self.pass_handler(command)
 
 
 class OutputHandler(BaseDesHandler):
 
     def handle_request(self, command: Request) -> (bool, str):
+        """
+        It
+        :param command:
+        :return:
+        """
         print("Generating results")
         if command.output.lower() != "print":
             mode = 'wb' if command.encryption_state == 'en' else 'w'
