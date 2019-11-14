@@ -300,6 +300,7 @@ class ValidateInputDataHandler(BaseDesHandler):
 
         print("Validating input data type and emptiness")
         if command.encryption_state == 'de':
+            command.data = ast.literal_eval(command.data)
             if not isinstance(command.data, bytes):
                 return False, "Input data is not byte type"
         if command.data == "":
