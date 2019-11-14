@@ -74,7 +74,7 @@ def setup_request_commandline() -> Request:
                         help="The output of the program. This is 'print' by "
                              "default, but can be set to a file name as well.")
     parser.add_argument("-m", "--mode", default="en",
-                        help="The mode to run the program in. If 'en' (default)"
+                        help="The mode to run the program in. If 'en'(default)"
                              " then the program will encrypt, 'de' will cause "
                              "the program to decrypt")
     try:
@@ -99,38 +99,52 @@ class Crypto:
         Set up the Crypto program and create a chain of handlers.
         """
 
+        # Handler Chains for Encryption
         key_handler = ValidateKeyHandler()
-        input_handler = ValidateInputDataHandler()
-        file_handler = InputSourceHandler()
         mode_handler = ValidateModeHandler()
+        input_source_handler = InputSourceHandler()
+        populate_data_handler = PopulateDataHandler()
+        input_data_handler = ValidateInputDataHandler()
+        encrypt_handler = EncryptDataHandler()
+        output_handler = OutputHandler()
 
-        key_handler.set_next_handler(input_handler)
-        input_handler.set_next_handler(mode_handler)
-        mode_handler.set_next_handler(file_handler)
+        key_handler.set_next_handler(mode_handler)
+        mode_handler.set_next_handler(input_source_handler)
+        input_source_handler.set_next_handler(populate_data_handler)
+        populate_data_handler.set_next_handler(input_data_handler)
+        input_data_handler.set_next_handler(encrypt_handler)
+        encrypt_handler.set_next_handler(output_handler)
+
+        # Handler Chains for Decryption
+        key_handler2 = ValidateKeyHandler()
+        mode_handler2 = ValidateModeHandler()
+        input_source_handler2 = InputSourceHandler()
+        populate_data_handler2 = PopulateDataHandler()
+        input_data_handler2 = ValidateInputDataHandler()
+        decrypt_handler = DecryptDataHandler()
+        output_handler2 = OutputHandler()
+
+        key_handler2.set_next_handler(mode_handler2)
+        mode_handler2.set_next_handler(input_source_handler2)
+        input_source_handler2.set_next_handler(populate_data_handler2)
+        populate_data_handler2.set_next_handler(input_data_handler2)
+        input_data_handler2.set_next_handler(decrypt_handler)
+        decrypt_handler.set_next_handler(output_handler2)
 
         self.encryption_start_handler = key_handler
-        self.decryption_start_handler = key_handler
+        self.decryption_start_handler = key_handler2
 
     def execute_request(self, request: Request):
-        result = self.encryption_start_handler.handle_request(request)
+
+        if request.encryption_state == CryptoMode.EN.value:
+            result = self.encryption_start_handler.handle_request(request)
+        else:
+            result = self.decryption_start_handler.handle_request(request)
 
         if result[0]:
-            data = result[1]
-            print(data)
-            if request.encryption_state == CryptoMode.EN.value:
-                byte_key = request.key.encode("utf-8")
-                key = DesKey(byte_key)
-                byte_data = data.encode("utf-8")
-                print(byte_data)
-                result = key.encrypt(byte_data, padding=True)
-                print(result)
-            else:
-
-
             return True
-
         else:
-            print(result[2])
+            print(result[1])
             return False
 
 
@@ -202,6 +216,7 @@ class ValidateModeHandler(BaseDesHandler):
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
+        print("Validating Mode")
         mode = command.encryption_state
         found = False
         for mode_type in CryptoMode:
@@ -227,9 +242,9 @@ class InputSourceHandler(BaseDesHandler):
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
-        print("Validating input data")
-        str_data = request.data_input
-        file_data = request.input_file
+        print("Validating input data source")
+        str_data = command.data_input
+        file_data = command.input_file
         if str_data is None and file_data is None:
             return False, "No input data found."
         if str_data is not None and file_data is not None:
@@ -252,16 +267,20 @@ class PopulateDataHandler(BaseDesHandler):
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
-        print("Validating input data")
-        file_path = request.input_file
+        print("Validating input data file")
+        file_path = command.input_file
         if file_path is not None:
             if not os.path.exists(file_path):
                 return False, "Input file doesn't exist."
             else:
-                with open(file_path, mode='r', encoding='utf-8') as file:
-                    request.data = file.read()
+                # if command.encryption_state == 'de':
+                #     if not isinstance(command.data, bytes):
+                #         return False, "Input file is not byte type"
+                mode = 'r' if command.encryption_state == 'en' else 'rb'
+                with open(file_path, mode=mode) as file:
+                    command.data = file.read()
         else:
-            request.data = request.data_input
+            command.data = command.data_input
         return self.pass_handler(command)
 
 
@@ -278,7 +297,9 @@ class ValidateInputDataHandler(BaseDesHandler):
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
-        if request.data == "":
+
+        print("Validating input data is not empty")
+        if command.data == "":
             return False, "The input data is empty."
         return self.pass_handler(command)
 
@@ -289,14 +310,16 @@ class EncryptDataHandler(BaseDesHandler):
     def handle_request(self, command: Request) -> (bool, str):
         """
         It converts the Key into DesKey and encrypt the data,
-        re-assigns it to a data attribute of the request.
+        assigns it to a result attribute of the request.
         :param command: a Request
         :return: a tuple where the first element is a string stating the
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
+
+        print("Encrypting...")
         key = DesKey(command.key.encode("utf-8"))
-        command.data = key.encrypt(command.data.encode("utf-8"), padding=True)
+        command.result = key.encrypt(command.data.encode("utf-8"), padding=True)
         return self.pass_handler(command)
 
 
@@ -306,14 +329,29 @@ class DecryptDataHandler(BaseDesHandler):
     def handle_request(self, command: Request) -> (bool, str):
         """
         It conveerts the Key into DesKey and decrypt the data,
-        re-assigns it to a data attribute of the request.
+        assigns it to a result attribute of the request.
         :param command: a Request
         :return: a tuple where the first element is a string stating the
         outcome and the reason, and the second a bool indicating
         successful handling of the form or not.
         """
+        print("Decrypting...")
         key = DesKey(command.key.encode("utf-8"))
-        command.data = key.decrypt(command.data, padding=True)
+        command.result = key.decrypt(command.data, padding=True).decode("utf-8")
+        print(command.result)
+        return self.pass_handler(command)
+
+
+class OutputHandler(BaseDesHandler):
+
+    def handle_request(self, command: Request) -> (bool, str):
+        print("Generating results")
+        if command.output.lower() != "print":
+            mode = 'wb' if command.encryption_state == 'en' else 'w'
+            with open(command.output, mode) as file:
+                file.write(command.result)
+        else:
+            print(command.result)
         return self.pass_handler(command)
 
 
