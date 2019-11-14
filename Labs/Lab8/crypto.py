@@ -339,9 +339,13 @@ class DecryptDataHandler(BaseDesHandler):
         successful handling of the form or not.
         """
         print("Decrypting...")
-        key = DesKey(command.key.encode("utf-8"))
-        command.result = key.decrypt(command.data, padding=True).decode("utf-8")
-        return self.pass_handler(command)
+        try:
+            key = DesKey(command.key.encode("utf-8"))
+            command.result = key.decrypt(command.data, padding=True).decode("utf-8")
+        except Exception as e:
+            return False, f"Decryption Failed!"
+        else:
+            return self.pass_handler(command)
 
 
 class OutputHandler(BaseDesHandler):
