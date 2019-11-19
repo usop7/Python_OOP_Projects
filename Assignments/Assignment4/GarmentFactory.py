@@ -5,6 +5,9 @@ various garments of various brands.
 
 import abc
 import enum
+import pandas as pd
+import xlrd
+
 
 class BrandEnum(enum.Enum):
     LULULIME = "LuluLime"
@@ -155,14 +158,14 @@ class SockPairUnisexNika(SockPairUnisex):
 
 
 class Order:
-    def __init__(self, date=None, number=None, brand=None, garment=None,
+    def __init__(self, number=None, date=None, brand=None, garment=None,
                  count=None, style=None, size=None, colour=None, textile=None,
                  sport_type=None, num_hidden_pockets=None,
                  require_drycleaning=None, in_or_out=None,
                  require_ironing=None, num_buttons=None, articulated=None,
                  length=None, contain_silver=None, stripe=None):
-        self.date = date
         self.number = number
+        self.date = date
         self.brand = brand
         self.garment = garment
         self.count = count
@@ -270,5 +273,84 @@ class NikaFactory(BrandFactory):
                                   order.textile, order.articulated,
                                   order.length)
 
+
+class OrderProcessor:
+    """
+    Maintains a mapping of brand -> BrandFactory. The OrderProcessor
+    is responsible for retrieving the right factory for the specified brand.
+    """
+
+    # Map Brand types to their respective factories
+    brand_map = {
+        "Lululime": LululimeFactory,
+        "PineappleRepublic": PineappleRepublicFactory,
+        "Nika": NikaFactory
+    }
+    order_list = {}
+
+    def get_factory(self, order: Order) -> BrandFactory:
+        """
+        Retrieves the associated factory for the specified BrandEnum
+        """
+        brand_type = order.brand
+        factory_class = self.brand_map.get(brand_type, None)
+        return factory_class()
+
+    def open_order_sheet(self):
+        """
+        Aks users the name of the excel spreadsheet and read the spreadsheet.
+        Iterate each row and process the order.
+        """
+        #file_path = input("Please enter the excel file name: ")
+        file_path = "COMP_3522_A4_orders.xlsx"
+        df = pd.read_excel(file_path)
+        for _, row in df.iterrows():
+            self.process_next_order(row)
+
+    def process_next_order(self, row):
+        """
+        Convert each row to an Order object and store it
+        in the order_list dictionary as {Order Number: Order object}
+        :param row: data frame row
+        """
+        order = Order(row['Order Number'], row['Date'], row['Brand'],
+                      row['Garment'], row['Count'], row['Style name'],
+                      row['Size'], row['Colour'], row['Textile'], row['Sport'],
+                      row['Hidden Zipper Pockets'], row['Dry Cleaning'],
+                      row['Indoor/Outdoor'], row['Requires Ironing'],
+                      row['Buttons'], row['Articulated'], row['Length'],
+                      row['Silver'], row['Stripe'])
+        self.order_list[row['Order Number']] = order
+
+
+class GarmentMaker:
+    """
+    Defines a Garment Factory that makes of Men's shirts, Women's shirts
+    and Socks. Each product has a brand.
+    """
+
+    def __init__(self):
+        self.order_processor = OrderProcessor()
+        self.shirts_men = []
+        self.shirts_women = []
+        self.socks_unisex = []
+
+    def shirt_men_maker(self, order):
+        """
+        Make men's shirts with the specified character factory.
+        :param order: an Order
+        """
+        factory = self.order_processor.get_factory(order)
+        factory.create_shirt_men(order)
+
+
+
+def main():
+    garment_maker = GarmentMaker()
+    garment_maker.order_processor.open_order_sheet()
+
+
+if __name__ == '__main__':
+    main()
 
 
