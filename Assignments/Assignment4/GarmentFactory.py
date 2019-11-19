@@ -26,6 +26,10 @@ class ShirtMen(abc.ABC):
         self.colour = colour
         self.textile = textile
 
+    def __str__(self):
+        return f"Style name: {self.style}, Size: {self.size}, " \
+               f"Colour: {self.colour}, Textile: {self.textile}"
+
 
 class ShirtMenLuluLime(ShirtMen):
     """
@@ -38,6 +42,11 @@ class ShirtMenLuluLime(ShirtMen):
         self.sport_type = sport_type
         self.num_hidden_pockets = num_hidden_pockets
 
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Sport: {self.sport_type}," \
+               f"Hidden Zipper Pockets: {self.num_hidden_pockets}"
+
 
 class ShirtMenPineappleRepublic(ShirtMen):
     """
@@ -45,11 +54,16 @@ class ShirtMenPineappleRepublic(ShirtMen):
     a garment factory makes.
     """
 
-    def __init__(self, style, size, colour, textile, require_ironing,
+    def __init__(self, style, size, colour, textile, req_ironing,
                  num_buttons):
         super().__init__(style, size, colour, textile)
-        self.require_ironing = require_ironing
+        self.req_ironing = req_ironing
         self.num_buttons = num_buttons
+
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Dry Cleaning: {self.req_ironing}," \
+               f"Buttons: {self.num_buttons}"
 
 
 class ShirtMenNika(ShirtMen):
@@ -60,6 +74,10 @@ class ShirtMenNika(ShirtMen):
     def __init__(self, style, size, colour, textile, in_or_out):
         super().__init__(style, size, colour, textile)
         self.in_or_out = in_or_out
+
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Indoor/Outdoor: {self.in_or_out}"
 
 
 class ShirtWomen(abc.ABC):
@@ -73,6 +91,10 @@ class ShirtWomen(abc.ABC):
         self.colour = colour
         self.textile = textile
 
+    def __str__(self):
+        return f"Style name: {self.style}, Size: {self.size}, " \
+               f"Colour: {self.colour}, Textile: {self.textile}"
+
 
 class ShirtWomenLuluLime(ShirtWomen):
     """
@@ -85,6 +107,11 @@ class ShirtWomenLuluLime(ShirtWomen):
         super().__init__(style, size, colour, textile)
         self.sport_type = sport_type
         self.num_hidden_pockets = num_hidden_pockets
+
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Sport: {self.sport_type}," \
+               f"Hidden Zipper Pockets: {self.num_hidden_pockets}"
 
 
 class ShirtWomenPineappleRepublic(ShirtWomen):
@@ -109,6 +136,10 @@ class ShirtWomenNika(ShirtWomen):
         super().__init__(style, size, colour, textile)
         self.in_or_out = in_or_out
 
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Indoor/Outdoor: {self.in_or_out}"
+
 
 class SockPairUnisex(abc.ABC):
     """
@@ -120,6 +151,10 @@ class SockPairUnisex(abc.ABC):
         self.size = size
         self.colour = colour
         self.textile = textile
+
+    def __str__(self):
+        return f"Style name: {self.style}, Size: {self.size}, " \
+               f"Colour: {self.colour}, Textile: {self.textile}"
 
 
 class SockPairUnisexLuluLime(SockPairUnisex):
@@ -134,6 +169,11 @@ class SockPairUnisexLuluLime(SockPairUnisex):
         self.contain_silver = contain_silver
         self.stripe = stripe
 
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Silver: {self.contain_silver}, " \
+               f"Stripe: {self.stripe}"
+
 
 class SockPairUnisexPineappleRepublic(SockPairUnisex):
     """
@@ -141,9 +181,13 @@ class SockPairUnisexPineappleRepublic(SockPairUnisex):
     a garment factory makes.
     """
 
-    def __init__(self, style, size, colour, textile, require_drycleaning):
+    def __init__(self, style, size, colour, textile, dry_cleaning):
         super().__init__(style, size, colour, textile)
-        self.require_drycleaning = require_drycleaning
+        self.dry_cleaning = dry_cleaning
+
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Dry Cleaning: {self.dry_cleaning}"
 
 
 class SockPairUnisexNika(SockPairUnisex):
@@ -155,6 +199,11 @@ class SockPairUnisexNika(SockPairUnisex):
         super().__init__(style, size, colour, textile)
         self.articulated = articulated
         self.length = length
+        
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Articulated: {self.articulated}, " \
+               f"Length: {self.length}"
 
 
 class Order:
@@ -288,6 +337,15 @@ class OrderProcessor:
     }
     order_list = {}
 
+    @staticmethod
+    def get_product_type(order):
+        """
+        Return the product type.
+        :param order: an Order object
+        :return: String
+        """
+        return order.garment
+
     def get_factory(self, order: Order) -> BrandFactory:
         """
         Retrieves the associated factory for the specified BrandEnum
@@ -334,14 +392,58 @@ class GarmentMaker:
         self.shirts_men = []
         self.shirts_women = []
         self.socks_unisex = []
+        self.product_map = {
+            "ShirtMen": self.shirts_men,
+            "ShirtWomen": self.shirts_women,
+            "SockPairUnisex": self.socks_unisex
+        }
 
     def shirt_men_maker(self, order):
         """
-        Make men's shirts with the specified character factory.
+        Make men's shirts with the specified brand factory.
         :param order: an Order
         """
         factory = self.order_processor.get_factory(order)
         factory.create_shirt_men(order)
+
+    def shirt_women_maker(self, order):
+        """
+        Make women's shirts with the specified brand factory.
+        :param order: an Order
+        """
+        factory = self.order_processor.get_factory(order)
+        factory.create_shirt_women(order)
+
+    def socks_unisex_maker(self, order):
+        """
+        Make unisex socks with the specified brand factory.
+        :param order: an Order
+        """
+        factory = self.order_processor.get_factory(order)
+        factory.create_socks_unisex(order)
+
+    def place_orders(self):
+        """
+        Iterate each order in the order list, and add it
+        to a corresponding list.
+        """
+        for order in self.order_processor.order_list:
+            product = self.order_processor.get_product_type(order)
+            self.product_map.get(product).append(order)
+
+    def send_orders(self):
+        for order in self.shirts_men:
+            self.shirt_men_maker(order)
+
+        for order in self.shirts_women:
+            self.shirt_men_maker(order)
+
+        for order in self.socks_unisex:
+            self.socks_unisex_maker(order)
+
+
+
+
 
 
 
