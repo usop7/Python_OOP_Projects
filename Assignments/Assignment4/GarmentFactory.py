@@ -6,7 +6,6 @@ various garments of various brands.
 import abc
 import enum
 import pandas as pd
-import xlrd
 
 
 class BrandEnum(enum.Enum):
@@ -44,7 +43,7 @@ class ShirtMenLuluLime(ShirtMen):
 
     def __str__(self):
         return f"{self.__class__.__name__}:: " \
-               f"{super().__str__()}, Sport: {self.sport_type}," \
+               f"{super().__str__()}, Sport: {self.sport_type}, " \
                f"Hidden Zipper Pockets: {self.num_hidden_pockets}"
 
 
@@ -62,7 +61,7 @@ class ShirtMenPineappleRepublic(ShirtMen):
 
     def __str__(self):
         return f"{self.__class__.__name__}:: " \
-               f"{super().__str__()}, Dry Cleaning: {self.req_ironing}," \
+               f"{super().__str__()}, Dry Cleaning: {self.req_ironing}, " \
                f"Buttons: {self.num_buttons}"
 
 
@@ -110,7 +109,7 @@ class ShirtWomenLuluLime(ShirtWomen):
 
     def __str__(self):
         return f"{self.__class__.__name__}:: " \
-               f"{super().__str__()}, Sport: {self.sport_type}," \
+               f"{super().__str__()}, Sport: {self.sport_type}, " \
                f"Hidden Zipper Pockets: {self.num_hidden_pockets}"
 
 
@@ -120,11 +119,16 @@ class ShirtWomenPineappleRepublic(ShirtWomen):
     a garment factory makes.
     """
 
-    def __init__(self, style, size, colour, textile, require_ironing,
+    def __init__(self, style, size, colour, textile, req_ironing,
                  num_buttons):
         super().__init__(style, size, colour, textile)
-        self.require_ironing = require_ironing
+        self.req_ironing = req_ironing
         self.num_buttons = num_buttons
+
+    def __str__(self):
+        return f"{self.__class__.__name__}:: " \
+               f"{super().__str__()}, Requires Ironing: {self.req_ironing}, " \
+               f"Buttons: {self.num_buttons}"
 
 
 class ShirtWomenNika(ShirtWomen):
@@ -199,7 +203,7 @@ class SockPairUnisexNika(SockPairUnisex):
         super().__init__(style, size, colour, textile)
         self.articulated = articulated
         self.length = length
-        
+
     def __str__(self):
         return f"{self.__class__.__name__}:: " \
                f"{super().__str__()}, Articulated: {self.articulated}, " \
@@ -232,6 +236,9 @@ class Order:
         self.length = length
         self.contain_silver = contain_silver
         self.stripe = stripe
+
+    def __str__(self):
+        return f"{self.number}, {self.brand}, {self.garment}"
 
 
 class BrandFactory(abc.ABC):
@@ -270,7 +277,7 @@ class LululimeFactory(BrandFactory):
     def create_shirt_women(self, order: Order) -> ShirtWomen:
         return ShirtWomenLuluLime(order.style, order.size, order.colour,
                                   order.textile, order.sport_type,
-                                order.num_hidden_pockets)
+                                  order.num_hidden_pockets)
 
     def create_socks_unisex(self, order: Order) -> SockPairUnisex:
         return SockPairUnisexLuluLime(order.style, order.size, order.colour,
@@ -338,13 +345,12 @@ class OrderProcessor:
     order_list = {}
 
     @staticmethod
-    def get_product_type(order):
+    def get_order_number(order):
         """
-        Return the product type.
-        :param order: an Order object
-        :return: String
+        :param order: Order object
+        :return: int
         """
-        return order.garment
+        return order.number
 
     def get_factory(self, order: Order) -> BrandFactory:
         """
@@ -361,7 +367,7 @@ class OrderProcessor:
         """
         #file_path = input("Please enter the excel file name: ")
         file_path = "COMP_3522_A4_orders.xlsx"
-        df = pd.read_excel(file_path)
+        df = pd.read_excel(file_path).fillna("")
         for _, row in df.iterrows():
             self.process_next_order(row)
 
@@ -380,6 +386,30 @@ class OrderProcessor:
                       row['Silver'], row['Stripe'])
         self.order_list[row['Order Number']] = order
 
+    def get_garment(self, order_number):
+        """
+        Return a Garment of the given order number.
+        :param order_number: an int
+        :return: String
+        """
+        return self.order_list[order_number].garment
+
+    def get_order_count(self, order_number):
+        """
+        Return a count of the given order number.
+        :param order_number: an int
+        :return: int
+        """
+        return self.order_list[order_number].count
+
+    def get_brand(self, order_number):
+        """
+        Return a brand of the given order number.
+        :param order_number: an int
+        :return: String
+        """
+        return self.order_list[order_number].brand
+
 
 class GarmentMaker:
     """
@@ -397,6 +427,7 @@ class GarmentMaker:
             "ShirtWomen": self.shirts_women,
             "SockPairUnisex": self.socks_unisex
         }
+        self.produced_garments = {}
 
     def shirt_men_maker(self, order):
         """
@@ -404,7 +435,13 @@ class GarmentMaker:
         :param order: an Order
         """
         factory = self.order_processor.get_factory(order)
-        factory.create_shirt_men(order)
+        product = factory.create_shirt_men(order)
+        order_number = self.order_processor.get_order_number(order)
+        count = self.order_processor.get_order_count(order_number)
+        garment_list = []
+        for i in range(int(count)):
+            garment_list.append(product)
+        self.produced_garments[order_number] = garment_list
 
     def shirt_women_maker(self, order):
         """
@@ -412,7 +449,13 @@ class GarmentMaker:
         :param order: an Order
         """
         factory = self.order_processor.get_factory(order)
-        factory.create_shirt_women(order)
+        product = factory.create_shirt_women(order)
+        order_number = self.order_processor.get_order_number(order)
+        count = self.order_processor.get_order_count(order_number)
+        garment_list = []
+        for i in range(int(count)):
+            garment_list.append(product)
+        self.produced_garments[order_number] = garment_list
 
     def socks_unisex_maker(self, order):
         """
@@ -420,15 +463,21 @@ class GarmentMaker:
         :param order: an Order
         """
         factory = self.order_processor.get_factory(order)
-        factory.create_socks_unisex(order)
+        product = factory.create_socks_unisex(order)
+        order_number = self.order_processor.get_order_number(order)
+        count = self.order_processor.get_order_count(order_number)
+        garment_list = []
+        for i in range(int(count)):
+            garment_list.append(product)
+        self.produced_garments[order_number] = garment_list
 
     def place_orders(self):
         """
         Iterate each order in the order list, and add it
         to a corresponding list.
         """
-        for order in self.order_processor.order_list:
-            product = self.order_processor.get_product_type(order)
+        for num, order in self.order_processor.order_list.items():
+            product = self.order_processor.get_garment(num)
             self.product_map.get(product).append(order)
 
     def send_orders(self):
@@ -436,12 +485,16 @@ class GarmentMaker:
             self.shirt_men_maker(order)
 
         for order in self.shirts_women:
-            self.shirt_men_maker(order)
+            self.shirt_women_maker(order)
 
         for order in self.socks_unisex:
             self.socks_unisex_maker(order)
 
-
+    def generate_report(self):
+        for num, products in sorted(self.produced_garments.items()):
+            print(f"\nOrder {num}: {self.order_processor.get_brand(num)} "
+                  f"{self.order_processor.get_garment(num)}")
+            print(*products, sep=' ')
 
 
 
@@ -450,6 +503,9 @@ class GarmentMaker:
 def main():
     garment_maker = GarmentMaker()
     garment_maker.order_processor.open_order_sheet()
+    garment_maker.place_orders()
+    garment_maker.send_orders()
+    garment_maker.generate_report()
 
 
 if __name__ == '__main__':
