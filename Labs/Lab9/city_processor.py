@@ -105,7 +105,7 @@ class CityOverheadTimes:
     - passes: a list of OverheadPass objects
     """
 
-    def __init__(self, city: City, *args):
+    def __init__(self, city: City, args):
         """
         Initializes a CityOverheadTimes object which stores the various
         times the ISS will pass over a city.
@@ -142,17 +142,15 @@ class ISSDataRequest:
     def get_overhead_pass(cls, city: City) -> CityOverheadTimes:
         pass
         # Write request code here!
-        params = {"lat": city.lat, "lon": city.lng, "n": 10}
+        params = {"lat": city.lat, "lon": city.lng, "n": 1}
         response = requests.get(ISSDataRequest.OPEN_NOTIFY_OVERHEAD_PASS_URL
                                 , params=params)
         # DEBUG:
-        jprint(response.json())
+        #jprint(response.json())
         # print(response)
 
         pass_times = response.json()['response']
-        event_list = [OverheadPassEvent(e.duration, e.risetime)
-                      for e in pass_times]
-        return CityOverheadTimes(city, event_list)
+        return CityOverheadTimes(city, pass_times)
 
 
 
