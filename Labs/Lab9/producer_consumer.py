@@ -1,12 +1,11 @@
-"""This module """
+"""This module contains the queue for CityOverheadTimes objects
+and and produce/consumer threads to process the cities."""
 
 import threading
 import time
-from city_processor import CityOverheadTimes
 from city_processor import CityDatabase
 from city_processor import ISSDataRequest
 from city_processor import CityOverheadTimes
-from city_processor import OverheadPassEvent
 
 
 class CityOverheadTimeQueue:
@@ -15,14 +14,17 @@ class CityOverheadTimeQueue:
 
     def __init__(self):
         self.data_queue = []
+        self.access_queue_lock = threading.Lock()
 
     def put(self, overhead_times: CityOverheadTimes) -> None:
-        self.data_queue.append(overhead_times)
+        with self.access_queue_lock:
+            self.data_queue.append(overhead_times)
 
     def get(self) -> CityOverheadTimes:
-        first = self.data_queue[0]
-        del self.data_queue[0]
-        return first
+        with self.access_queue_lock:
+            first = self.data_queue[0]
+            del self.data_queue[0]
+            return first
 
     def __len__(self) -> int:
         return len(self.data_queue)
@@ -64,18 +66,28 @@ class ConsumerThread(threading.Thread):
         or the queue is not empty."""
         while self.data_incoming is True or len(self.queue) > 0:
             print(self.queue.get())
-        if len(self.queue) == 0:
-            time.sleep(0.75)
+            time.sleep(0.5)
+            if len(self.queue) == 0:
+                time.sleep(0.75)
+            if len(self.queue) == 0:
+                self.data_incoming = False
 
 
 def main():
-    q = CityOverheadTimeQueue()
-    db = CityDatabase('city_locations.xlsx')
+    db = CityDatabase('city_locations_test.xlsx')
+    cities = db.city_db
+    count = len(cities)
     queue = CityOverheadTimeQueue()
-    producer_thread = ProducerThread(db.city_db, queue)
+
+    # create 3 producer threads
+    producer_thread = ProducerThread(cities[:count//3], queue)
+    producer_thread2 = ProducerThread(cities[count//3:count//3*2], queue)
+    producer_thread3 = ProducerThread(cities[count//3*2:], queue)
+
     consumer_thread = ConsumerThread(queue)
     producer_thread.start()
-    consumer_thread.start()
+    producer_thread2.start()
+    producer_thread3.start()
     producer_thread.join()
     consumer_thread.start()
 
