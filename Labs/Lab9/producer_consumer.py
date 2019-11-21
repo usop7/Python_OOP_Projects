@@ -34,10 +34,23 @@ class ProducerThread(threading.Thread):
     """This thread class is responsible for looping over each city
     and pass it to the get_overhead_pass method."""
 
+    id = 0
+
+    @classmethod
+    def increment_id(cls):
+        """
+        Increments the unique id and returns it. Should be used to provide
+        each thread a unique id.
+        :return:
+        """
+        cls.id += 1
+        return cls.id
+
     def __init__(self, cities: list, queue: CityOverheadTimeQueue):
         super().__init__()
         self.cities = cities
         self.queue = queue
+        self.id = self.increment_id()
 
     def run(self) -> None:
         """It loops over each city and pass it to the get_overhead_pass
@@ -46,6 +59,7 @@ class ProducerThread(threading.Thread):
         count = 0
         for city in self.cities:
             count += 1
+            print(f"Producer Thread {self.id}: Adding {city}")
             self.queue.put(dr.get_overhead_pass(city))
             if count % 5 == 0:
                 time.sleep(1)
@@ -55,22 +69,33 @@ class ConsumerThread(threading.Thread):
     """This thread class is responsible for consuming data from the
     queue and printing it out to the console."""
 
+    id = 0
+
+    @classmethod
+    def increment_id(cls):
+        """
+        Increments the unique id and returns it. Should be used to provide
+        each thread a unique id.
+        :return:
+        """
+        cls.id += 1
+        return cls.id
+
     def __init__(self, queue: CityOverheadTimeQueue):
         super().__init__()
         self.queue = queue
         self.data_incoming = True
+        self.id = self.increment_id()
 
     def run(self) -> None:
         """It gets an item from the queue and print it to the console
         and then sleep for 0.5 seconds, while data_incoming is true
         or the queue is not empty."""
         while self.data_incoming is True or len(self.queue) > 0:
-            print(self.queue.get())
+            print(f"Consumer Thread {self.id}: {self.queue.get()}")
             time.sleep(0.5)
             if len(self.queue) == 0:
                 time.sleep(0.75)
-            if len(self.queue) == 0:
-                self.data_incoming = False
 
 
 def main():
@@ -90,6 +115,11 @@ def main():
     producer_thread3.start()
     producer_thread.join()
     consumer_thread.start()
+    producer_thread2.join()
+    producer_thread3.join()
+    consumer_thread.data_incoming = False
+    consumer_thread.join()
+    print("end of process")
 
 
 if __name__ == '__main__':
