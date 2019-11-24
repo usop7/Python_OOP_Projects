@@ -6,12 +6,19 @@ various garments of various brands.
 import abc
 import enum
 import pandas as pd
+from input_handler import InputHandler
 
 
 class BrandEnum(enum.Enum):
     LULULIME = "LuluLime"
-    PINEAPPLE_REPUBLIC = "Pineapple Republic"
+    PINEAPPLE_REPUBLIC = "PineappleRepublic"
     NIKA = "Nika"
+
+
+class GarmentEnum(enum.Enum):
+    SHIRT_MEN = "ShirtMen"
+    SHIRT_WOMEN = "ShirtWomen"
+    SOCK_UNISEX = "SockPairUnisex"
 
 
 class ShirtMen(abc.ABC):
@@ -211,30 +218,30 @@ class SockPairUnisexNika(SockPairUnisex):
 
 
 class Order:
-    def __init__(self, number=None, date=None, brand=None, garment=None,
+    def __init__(self, order_number=None, date=None, brand=None, garment=None,
                  count=None, style=None, size=None, colour=None, textile=None,
-                 sport_type=None, num_hidden_pockets=None,
-                 require_drycleaning=None, in_or_out=None,
-                 require_ironing=None, num_buttons=None, articulated=None,
-                 length=None, contain_silver=None, stripe=None):
-        self.number = number
+                 sport=None, num_hidden_pockets=None,
+                 dry_cleaning=None, in_or_out=None,
+                 require_ironing=None, buttons=None, articulated=None,
+                 length=None, silver=None, stripe=None):
+        self.number = order_number
         self.date = date
-        self.brand = brand
-        self.garment = garment
+        self.brand = BrandEnum(brand)
+        self.garment = GarmentEnum(garment)
         self.count = count
         self.style = style
         self.size = size
         self.colour = colour
         self.textile = textile
-        self.sport_type = sport_type
+        self.sport_type = sport
         self.num_hidden_pockets = num_hidden_pockets
-        self.require_drycleaning = require_drycleaning
+        self.dry_cleaning = dry_cleaning
         self.in_or_out = in_or_out
         self.require_ironing = require_ironing
-        self.num_buttons = num_buttons
+        self.num_buttons = buttons
         self.articulated = articulated
         self.length = length
-        self.contain_silver = contain_silver
+        self.contain_silver = silver
         self.stripe = stripe
 
     def __str__(self):
@@ -306,7 +313,7 @@ class PineappleRepublicFactory(BrandFactory):
     def create_socks_unisex(self, order: Order) -> SockPairUnisex:
         return SockPairUnisexPineappleRepublic(order.style, order.size,
                                                order.colour, order.textile,
-                                               order.require_drycleaning)
+                                               order.dry_cleaning)
 
 
 class NikaFactory(BrandFactory):
@@ -338,9 +345,9 @@ class OrderProcessor:
 
     # Map Brand types to their respective factories
     brand_map = {
-        "Lululime": LululimeFactory,
-        "PineappleRepublic": PineappleRepublicFactory,
-        "Nika": NikaFactory
+        BrandEnum.LULULIME: LululimeFactory,
+        BrandEnum.PINEAPPLE_REPUBLIC: PineappleRepublicFactory,
+        BrandEnum.NIKA: NikaFactory
     }
     order_list = {}
 
@@ -367,24 +374,30 @@ class OrderProcessor:
         """
         #file_path = input("Please enter the excel file name: ")
         file_path = "COMP_3522_A4_orders.xlsx"
-        df = pd.read_excel(file_path).fillna("")
+        InputHandler.validate_file(file_path)
+        df = pd.read_excel(file_path).fillna(0)
+        df.columns = [column.lower() for column in df.columns]
+        df.rename(columns={'order number': 'order_number',
+                           'style name': 'style',
+                           'hidden zipper pockets': 'num_hidden_pockets',
+                           'dry cleaning': 'dry_cleaning',
+                           'indoor/outdoor': 'in_or_out',
+                           'requires ironing': 'require_ironing'},
+                  inplace=True)
         for _, row in df.iterrows():
             self.process_next_order(row)
 
     def process_next_order(self, row):
         """
-        Convert each row to an Order object and store it
+        Validate data and convert each row to an Order object and store it
         in the order_list dictionary as {Order Number: Order object}
         :param row: data frame row
         """
-        order = Order(row['Order Number'], row['Date'], row['Brand'],
-                      row['Garment'], row['Count'], row['Style name'],
-                      row['Size'], row['Colour'], row['Textile'], row['Sport'],
-                      row['Hidden Zipper Pockets'], row['Dry Cleaning'],
-                      row['Indoor/Outdoor'], row['Requires Ironing'],
-                      row['Buttons'], row['Articulated'], row['Length'],
-                      row['Silver'], row['Stripe'])
-        self.order_list[row['Order Number']] = order
+        # Validate Integer types
+        InputHandler.validate_int(row['count'])
+        InputHandler.validate_int(row['num_hidden_pockets'])
+        InputHandler.validate_int(row['buttons'])
+        self.order_list[row['order_number']] = Order(**row.to_dict())
 
     def get_garment(self, order_number):
         """
@@ -408,7 +421,7 @@ class OrderProcessor:
         :param order_number: an int
         :return: String
         """
-        return self.order_list[order_number].brand
+        return self.order_list[order_number].brand.value
 
 
 class GarmentMaker:
@@ -419,15 +432,12 @@ class GarmentMaker:
 
     def __init__(self):
         self.order_processor = OrderProcessor()
-        self.shirts_men = []
-        self.shirts_women = []
-        self.socks_unisex = []
-        self.product_map = {
-            "ShirtMen": self.shirts_men,
-            "ShirtWomen": self.shirts_women,
-            "SockPairUnisex": self.socks_unisex
+        self.garment_map = {
+            GarmentEnum.SHIRT_MEN: self.shirt_men_maker,
+            GarmentEnum.SHIRT_WOMEN: self.shirt_women_maker,
+            GarmentEnum.SOCK_UNISEX: self.socks_unisex_maker
         }
-        self.produced_garments = {}
+        self.garment_list = {}
 
     def shirt_men_maker(self, order):
         """
@@ -435,13 +445,11 @@ class GarmentMaker:
         :param order: an Order
         """
         factory = self.order_processor.get_factory(order)
-        product = factory.create_shirt_men(order)
         order_number = self.order_processor.get_order_number(order)
         count = self.order_processor.get_order_count(order_number)
-        garment_list = []
-        for i in range(int(count)):
-            garment_list.append(product)
-        self.produced_garments[order_number] = garment_list
+        garment_list = [factory.create_shirt_men(order)
+                        for _ in range(int(count))]
+        self.garment_list[order_number] = garment_list
 
     def shirt_women_maker(self, order):
         """
@@ -449,13 +457,11 @@ class GarmentMaker:
         :param order: an Order
         """
         factory = self.order_processor.get_factory(order)
-        product = factory.create_shirt_women(order)
         order_number = self.order_processor.get_order_number(order)
         count = self.order_processor.get_order_count(order_number)
-        garment_list = []
-        for i in range(int(count)):
-            garment_list.append(product)
-        self.produced_garments[order_number] = garment_list
+        garment_list = [factory.create_shirt_women(order)
+                        for _ in range(int(count))]
+        self.garment_list[order_number] = garment_list
 
     def socks_unisex_maker(self, order):
         """
@@ -463,49 +469,46 @@ class GarmentMaker:
         :param order: an Order
         """
         factory = self.order_processor.get_factory(order)
-        product = factory.create_socks_unisex(order)
         order_number = self.order_processor.get_order_number(order)
         count = self.order_processor.get_order_count(order_number)
-        garment_list = []
-        for i in range(int(count)):
-            garment_list.append(product)
-        self.produced_garments[order_number] = garment_list
+        garment_list = [factory.create_socks_unisex(order)
+                        for _ in range(int(count))]
+        self.garment_list[order_number] = garment_list
 
-    def place_orders(self):
+    def send_orders(self):
         """
-        Iterate each order in the order list, and add it
-        to a corresponding list.
+        Iterate each order in the order list, and send it to a garment maker
+        by mapping each garment type to a corresponding garment maker.
         """
         for num, order in self.order_processor.order_list.items():
             product = self.order_processor.get_garment(num)
-            self.product_map.get(product).append(order)
-
-    def send_orders(self):
-        for order in self.shirts_men:
-            self.shirt_men_maker(order)
-
-        for order in self.shirts_women:
-            self.shirt_women_maker(order)
-
-        for order in self.socks_unisex:
-            self.socks_unisex_maker(order)
+            self.garment_map.get(product)(order)
 
     def generate_report(self):
-        for num, products in sorted(self.produced_garments.items()):
+        """
+        Prints a report summarizing the day's work. The report contains
+        a single line per order that includes a brand, a garment type,
+        and a list of garments.
+        """
+        for num, products in sorted(self.garment_list.items()):
             print(f"\nOrder {num}: {self.order_processor.get_brand(num)} "
-                  f"{self.order_processor.get_garment(num)}")
+                  f"{self.order_processor.get_garment(num).value}")
             print(*products, sep=' ')
-
-
-
 
 
 def main():
     garment_maker = GarmentMaker()
-    garment_maker.order_processor.open_order_sheet()
-    garment_maker.place_orders()
-    garment_maker.send_orders()
-    garment_maker.generate_report()
+    try:
+        garment_maker.order_processor.open_order_sheet()
+    except FileNotFoundError as e:
+        print(f"{e}")
+    except ValueError as e:
+        print(f"{e}")
+    except Exception as e:
+        print(f"Unknown exception occurred!\n{e}")
+    else:
+        garment_maker.send_orders()
+        garment_maker.generate_report()
 
 
 if __name__ == '__main__':
