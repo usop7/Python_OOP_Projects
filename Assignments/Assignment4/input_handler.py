@@ -1,6 +1,14 @@
+"""
+This module embodies class(es) that are used to handle user input values.
+"""
+
 import os.path
 
+
 class InputHandler:
+    """
+    This class is responsible to validate input value and input file.
+    """
 
     @staticmethod
     def validate_int(value):

@@ -218,6 +218,10 @@ class SockPairUnisexNika(SockPairUnisex):
 
 
 class Order:
+    """
+    This class represents an order of a garment with the details.
+    """
+
     def __init__(self, order_number=None, date=None, brand=None, garment=None,
                  count=None, style=None, size=None, colour=None, textile=None,
                  sport=None, num_hidden_pockets=None,
@@ -276,17 +280,17 @@ class LululimeFactory(BrandFactory):
     for the brand LuluLime.
     """
 
-    def create_shirt_men(self, order: Order) -> ShirtMen:
+    def create_shirt_men(self, order: Order) -> ShirtMenLuluLime:
         return ShirtMenLuluLime(order.style, order.size, order.colour,
                                 order.textile, order.sport_type,
                                 order.num_hidden_pockets)
 
-    def create_shirt_women(self, order: Order) -> ShirtWomen:
+    def create_shirt_women(self, order: Order) -> ShirtWomenLuluLime:
         return ShirtWomenLuluLime(order.style, order.size, order.colour,
                                   order.textile, order.sport_type,
                                   order.num_hidden_pockets)
 
-    def create_socks_unisex(self, order: Order) -> SockPairUnisex:
+    def create_socks_unisex(self, order: Order) -> SockPairUnisexLuluLime:
         return SockPairUnisexLuluLime(order.style, order.size, order.colour,
                                       order.textile, order.contain_silver,
                                       order.stripe)
@@ -299,18 +303,19 @@ class PineappleRepublicFactory(BrandFactory):
     for the brand Pineapple Republic.
     """
 
-    def create_shirt_men(self, order: Order) -> ShirtMen:
+    def create_shirt_men(self, order: Order) -> ShirtMenPineappleRepublic:
         return ShirtMenPineappleRepublic(order.style, order.size, order.colour,
                                          order.textile, order.sport_type,
                                          order.num_hidden_pockets)
 
-    def create_shirt_women(self, order: Order) -> ShirtWomen:
+    def create_shirt_women(self, order: Order) -> ShirtWomenPineappleRepublic:
         return ShirtWomenPineappleRepublic(order.style, order.size,
                                            order.colour, order.textile,
                                            order.require_ironing,
                                            order.num_buttons)
 
-    def create_socks_unisex(self, order: Order) -> SockPairUnisex:
+    def create_socks_unisex(self, order: Order) \
+            -> SockPairUnisexPineappleRepublic:
         return SockPairUnisexPineappleRepublic(order.style, order.size,
                                                order.colour, order.textile,
                                                order.dry_cleaning)
@@ -323,15 +328,15 @@ class NikaFactory(BrandFactory):
     for the brand Nika.
     """
 
-    def create_shirt_men(self, order: Order) -> ShirtMen:
+    def create_shirt_men(self, order: Order) -> ShirtMenNika:
         return ShirtMenNika(order.style, order.size, order.colour,
                             order.textile, order.in_or_out)
 
-    def create_shirt_women(self, order: Order) -> ShirtWomen:
+    def create_shirt_women(self, order: Order) -> ShirtWomenNika:
         return ShirtWomenNika(order.style, order.size, order.colour,
                               order.textile, order.in_or_out)
 
-    def create_socks_unisex(self, order: Order) -> SockPairUnisex:
+    def create_socks_unisex(self, order: Order) -> SockPairUnisexNika:
         return SockPairUnisexNika(order.style, order.size, order.colour,
                                   order.textile, order.articulated,
                                   order.length)
@@ -349,6 +354,7 @@ class OrderProcessor:
         BrandEnum.PINEAPPLE_REPUBLIC: PineappleRepublicFactory,
         BrandEnum.NIKA: NikaFactory
     }
+    # Hold all the orders as a dictionary {order number: Order object}
     order_list = {}
 
     @staticmethod
@@ -370,8 +376,7 @@ class OrderProcessor:
         Aks users the name of the excel spreadsheet and read the spreadsheet.
         Iterate each row and process the order.
         """
-        #file_path = input("Please enter the excel file name: ")
-        file_path = "COMP_3522_A4_orders.xlsx"
+        file_path = input("Please enter the excel file name: ")
         InputHandler.validate_file(file_path)
         df = pd.read_excel(file_path).fillna(0)
         df.columns = [column.lower() for column in df.columns]
@@ -392,6 +397,7 @@ class OrderProcessor:
         :param row: data frame row
         """
         # Validate Integer types
+        InputHandler.validate_int(row['order_number'])
         InputHandler.validate_int(row['count'])
         InputHandler.validate_int(row['num_hidden_pockets'])
         InputHandler.validate_int(row['buttons'])
@@ -495,6 +501,11 @@ class GarmentMaker:
 
 
 def main():
+    """
+    Instantiate a GarmentMaker, process each order in the order sheet,
+    and prints out the report.
+    """
+
     garment_maker = GarmentMaker()
     try:
         garment_maker.order_processor.open_order_sheet()
