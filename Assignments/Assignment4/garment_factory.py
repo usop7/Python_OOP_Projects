@@ -10,7 +10,7 @@ from input_handler import InputHandler
 
 
 class BrandEnum(enum.Enum):
-    LULULIME = "LuluLime"
+    LULULIME = "Lululime"
     PINEAPPLE_REPUBLIC = "PineappleRepublic"
     NIKA = "Nika"
 
@@ -228,17 +228,17 @@ class Order:
         self.date = date
         self.brand = BrandEnum(brand)
         self.garment = GarmentEnum(garment)
-        self.count = count
+        self.count = int(count)
         self.style = style
         self.size = size
         self.colour = colour
         self.textile = textile
         self.sport_type = sport
-        self.num_hidden_pockets = num_hidden_pockets
+        self.num_hidden_pockets = int(num_hidden_pockets)
         self.dry_cleaning = dry_cleaning
         self.in_or_out = in_or_out
         self.require_ironing = require_ironing
-        self.num_buttons = buttons
+        self.num_buttons = int(buttons)
         self.articulated = articulated
         self.length = length
         self.contain_silver = silver
@@ -252,7 +252,7 @@ class BrandFactory(abc.ABC):
     """
     The base factory class. All brands expect this factory class to populate
     the brand. The BrandFactory class defines an interface to create a
-    Product famiily consisting of Men's shirts, Women's shirts, and Socks.
+    Product family consisting of Men's shirts, Women's shirts, and Socks.
     These vary by Brand.
     """
 
@@ -363,9 +363,7 @@ class OrderProcessor:
         """
         Retrieves the associated factory for the specified BrandEnum
         """
-        brand_type = order.brand
-        factory_class = self.brand_map.get(brand_type, None)
-        return factory_class()
+        return self.brand_map.get(order.brand, None)()
 
     def open_order_sheet(self):
         """
@@ -403,7 +401,7 @@ class OrderProcessor:
         """
         Return a Garment of the given order number.
         :param order_number: an int
-        :return: String
+        :return: GarmentEnum
         """
         return self.order_list[order_number].garment
 
