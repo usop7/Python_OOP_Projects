@@ -25,11 +25,15 @@ Garment Factory is a simple console app that reads orders from an excel file, an
   - add 'BrandEnum' GOOSIE of "Goosie"
   - create 'ShirtMenGoosie(ShirtMen)', 'ShirtWomenGoosie(ShirtWomen)', 'SockPairUnisexGoosie(SockPairUnisex)' classes.
   - create 'GoosieFactory' class that implements the BrandFactory interface: it will have three methods (create_shirt_men, create_shirt_women, create_socks_unisex) that return a product family of Goosie above.
-  - add 'GOOSIE' brand type in OrderProcessor's brand_map dictionary so that its get_factory(Order) can return GoosieFactory.
+  - add 'GOOSIE' brand type in OrderProcessor's brand_map dictionary so that its get_factory(Order) can return GoosieFactory:
+    {BrandEnum.GOOSIE: GoosieFactory}
 
 - For new garment type Women's activewear pants for each of the three brands:
   - add 'GarmentEnum' ACTIVEWEAR_WOMEN of "ActiveWearWomen"
   - create 'ActiveWearWomen' interface.
-  - create child classes of 'ActiveWearWomen' interface for the three brands:
+  - create three child classes of 'ActiveWearWomen' interface for the three brands:
     -  ActiveWearWomenLuluLime, ActiveWearWomenPineappleRepublic, ActiveWearWomenNika
-  - add 'ACTIVEWEAR_WOMEN' garment type in GarmentMaker's garment_map dictionary so that each order can be mapped to a corresponding garment maker methods.
+  - create 'create_activewear_women(self, order: Order) -> ActiveWearWomen' method in BrandFactory interface and all the concrete brand's factories.
+  - create 'activewear_women_maker(self, order: Order)' method in GarmentMaker that uses BrandFactory's 'create_activewear_women' method.
+  - add 'ACTIVEWEAR_WOMEN' garment type in GarmentMaker's garment_map dictionary so that each order can be mapped to a corresponding garment maker methods:
+    {GarmentEnum.ACTIVEWEAR_WOMEN: self.activewear_women_maker}
