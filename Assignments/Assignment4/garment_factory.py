@@ -228,7 +228,7 @@ class Order:
                  dry_cleaning=None, in_or_out=None,
                  require_ironing=None, buttons=None, articulated=None,
                  length=None, silver=None, stripe=None):
-        self.number = order_number
+        self.number = int(order_number)
         self.date = date
         self.brand = BrandEnum(brand)
         self.garment = GarmentEnum(garment)
@@ -238,11 +238,11 @@ class Order:
         self.colour = colour
         self.textile = textile
         self.sport_type = sport
-        self.num_hidden_pockets = int(num_hidden_pockets)
+        self.num_hidden_pockets = num_hidden_pockets
         self.dry_cleaning = dry_cleaning
         self.in_or_out = in_or_out
         self.require_ironing = require_ironing
-        self.num_buttons = int(buttons)
+        self.num_buttons = buttons
         self.articulated = articulated
         self.length = length
         self.contain_silver = silver
@@ -283,12 +283,12 @@ class LululimeFactory(BrandFactory):
     def create_shirt_men(self, order: Order) -> ShirtMenLuluLime:
         return ShirtMenLuluLime(order.style, order.size, order.colour,
                                 order.textile, order.sport_type,
-                                order.num_hidden_pockets)
+                                int(order.num_hidden_pockets))
 
     def create_shirt_women(self, order: Order) -> ShirtWomenLuluLime:
         return ShirtWomenLuluLime(order.style, order.size, order.colour,
                                   order.textile, order.sport_type,
-                                  order.num_hidden_pockets)
+                                  int(order.num_hidden_pockets))
 
     def create_socks_unisex(self, order: Order) -> SockPairUnisexLuluLime:
         return SockPairUnisexLuluLime(order.style, order.size, order.colour,
@@ -306,13 +306,13 @@ class PineappleRepublicFactory(BrandFactory):
     def create_shirt_men(self, order: Order) -> ShirtMenPineappleRepublic:
         return ShirtMenPineappleRepublic(order.style, order.size, order.colour,
                                          order.textile, order.sport_type,
-                                         order.num_hidden_pockets)
+                                         int(order.num_hidden_pockets))
 
     def create_shirt_women(self, order: Order) -> ShirtWomenPineappleRepublic:
         return ShirtWomenPineappleRepublic(order.style, order.size,
                                            order.colour, order.textile,
                                            order.require_ironing,
-                                           order.num_buttons)
+                                           int(order.num_buttons))
 
     def create_socks_unisex(self, order: Order) \
             -> SockPairUnisexPineappleRepublic:
