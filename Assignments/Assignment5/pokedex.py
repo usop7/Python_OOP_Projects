@@ -5,23 +5,38 @@ This module embodies a driver class that will run the program.
 import argparse
 import aiohttp
 import asyncio
+import enum
+from input_handler import FileHandler
+
+
+class Mode(enum.Enum):
+    """
+    List the various query modes that the pokedex can execute.
+    """
+    POKEMON = "pokemon"
+    ABILITY = "ability"
+    MOVE = "move"
 
 
 class Request:
     """
     The request object represents a request to get a data from the API.
     The request object comes with certain accompanying configuration options:
-     - mode: {'pokemon' | 'ability' | 'move}
+     - mode: Mode enum
      - input: { 'filename.txt' | 'name or id' }, filename must end with
         .txt extension.
+     - expanded: boolean
+      - output: 'filename.txt' or 'print' by default
     """
 
-    def __init__(self, mode, input):
+    def __init__(self, mode: Mode, input: list, expanded: bool, output: str):
         self.mode = mode
         self.input = input
+        self.expanded = expanded
+        self.output = output
 
     def __str__(self):
-        return f"{self.mode} {self.input}"
+        return f"{self.mode.value} {self.input} {self.expanded} {self.output}"
 
 
 class Pokedex:
@@ -46,15 +61,26 @@ class Pokedex:
         in it.
         """
         parser = argparse.ArgumentParser()
-        parser.add_argument("mode", help="The mode should be among"
-                                         "Pokemon, Ability, or Move.")
-        parser.add_argument("input", help="The input that you want to"
+        parser.add_argument("mode", help="The mode specifies which information"
+                                         "to query. This needs to be among"
+                                         "pokemon, ability, or move.")
+        parser.add_argument("input", help="The id or name that you want to"
                                           "search for. It must be a file name"
                                           "that ends with '.txt' extension"
-                                          "or a name/id.")
+                                          "or a string or an int.")
+        parser.add_argument("--expanded", action="store_true",
+                            help="With the expanded flag, pokedex will query "
+                                 "more information. It only applies to"
+                                 "to 'pokemon' mode.")
+        parser.add_argument("--output", default="print",
+                            help="The output of the program. This is 'print'"
+                                 "by default, but can be set to a file name"
+                                 "that ends with .txt extension.")
         try:
             args = parser.parse_args()
-            request = Request(args.mode, args.input)
+            input_data = FileHandler.load_input(args.input)
+            request = Request(Mode(args.mode.lower()), input_data,
+                              args.expanded, args.output)
             print(request)
             return request
         except Exception as e:
@@ -81,7 +107,7 @@ class Pokedex:
 def main():
     pokedex = Pokedex()
     request = pokedex.setup_request_commandline()
-    asyncio.run(pokedex.get_data(request.input))
+    #asyncio.run(pokedex.get_data(request.input))
 
 
 if __name__ == '__main__':
