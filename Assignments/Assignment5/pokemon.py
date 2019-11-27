@@ -1,5 +1,5 @@
 """
-This module emobides classes that represent a pokemon, an ability, and
+This module embodies classes that represent a pokemon, an ability, and
 a move.
 """
 
@@ -52,4 +52,39 @@ class Pokemon:
         self.types = types
         self.abilities = abilities
         self.moves = moves
+
+
+class Ability:
+    """
+    This class represents an ability.
+    """
+
+    def __init__(self, name: str, ability_id: int, generation: str,
+                 effect: str, effect_short: str, pokemon: list):
+        self.name = name
+        self.ability_id = ability_id
+        self.generation = generation
+        self.effect = effect
+        self.effect_short = effect_short
+        self.pokemon = pokemon
+
+
+class Move:
+    """
+    This class represents a Move effect.
+    """
+
+    def __init__(self, name: str, move_id: int, generation: str,
+                 accuracy: int, pp: int, power: int, move_type: str,
+                 damage_class: str, effect_short: str):
+        self.name = name
+        self.move_id = move_id
+        self.generation = generation
+        self.accuracy = accuracy
+        self.pp = pp
+        self.power = power
+        self.move_type = move_type
+        self.damage_class = damage_class
+        self.effect_short = effect_short
+
 
