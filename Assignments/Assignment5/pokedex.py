@@ -38,10 +38,14 @@ class Pokedex:
         Then it creates a corresponding object based on its query mode.
         """
         target_url = Pokedex.BASE_URL.format(self.request.mode.value, param)
-        response = await session.request(method="GET", url=target_url)
-        json_dict = await response.json()
-        obj = self.query_map[self.request.mode](json_dict)
-        self.results.append(obj)
+        try:
+            response = await session.request(method="GET", url=target_url)
+            json_dict = await response.json()
+        except Exception as e:
+            print(f"Error! Could not finish the query!\n{e}")
+        else:
+            obj = self.query_map[self.request.mode](json_dict)
+            self.results.append(obj)
 
     async def process_requests(self):
         """
@@ -50,10 +54,7 @@ class Pokedex:
         async with aiohttp.ClientSession() as session:
             tasks = [asyncio.create_task(self.handle_task(param, session))
                      for param in self.request.params]
-            try:
-                await asyncio.gather(*tasks)
-            except Exception as e:
-                print(f"Error! Requested input was not found!\n{e}")
+            await asyncio.gather(*tasks)
 
     def create_pokemon_stat_list(self, data: list) -> list:
         """
