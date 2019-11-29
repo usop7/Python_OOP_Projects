@@ -38,7 +38,7 @@ class Request:
         self.output = output
 
     def __str__(self):
-        return f"\n{'-'*19}Request Summary{'-'*19}\n" \
+        return f"\n{'='*29} Request Summary {'='*29}\n" \
                f"\nMode: {self.mode.value}" \
                f"\nInput Value: {self.params}" \
                f"\nExpanded: {self.expanded}" \
@@ -90,7 +90,7 @@ class IOHandler:
         :param data: list of objects
         """
         # Open a file for writing and create if it doesn't exist.
-        with open(path, mode='w+') as file:
+        with open(path, mode='w+', encoding='utf-8') as file:
             file.write(data)
 
     @staticmethod
@@ -125,7 +125,6 @@ class IOHandler:
                                  "In that case, the file must end with '.txt'")
         try:
             args = parser.parse_args()
-            print(args.__dict__)
             # convert input data into a list
             input_data = IOHandler.load_input(args.mode, args.input)
 

@@ -17,43 +17,9 @@ class PokemonStat:
     def __str__(self):
         url = ""
         if self.url is not None:
-            url = f"\tURL: {self.url}\n"
-        return f"\tName: {self.name}\n" \
-               f"\tBase Stat: {self.base_stat}\n{url}"
-
-
-class PokemonAbility:
-    """
-    This class represents an ability of a pokemon.
-    """
-
-    def __init__(self, name: str, url: str = None):
-        self.name = name
-        self.url = url
-
-    def __str__(self):
-        url = ""
-        if self.url is not None:
-            url = f"\tURL: {self.url}\n"
-        return f"\tName: {self.name}\n{url}"
-
-
-class PokemonMove:
-    """
-    This class represents a move of a pokemon.
-    """
-
-    def __init__(self, name: str, level: int, url: str = None):
-        self.name = name
-        self.level = level
-        self.url = url
-
-    def __str__(self):
-        url = ""
-        if self.url is not None:
-            url = f"\tURL: {self.url}\n"
-        return f"\tName: {self.name}\n" \
-               f"\tLevel: {self.level}\n{url}"
+            url = f"URL: {self.url}\n"
+        return f"Name: {self.name}\n" \
+               f"Base Stat: {self.base_stat}\n{url}"
 
 
 class Pokemon:
@@ -73,18 +39,18 @@ class Pokemon:
         self.moves = moves
 
     def __str__(self):
-        stats = "\n".join(map(str, self.stats))
+        stats = f"\n{'-'*60}\n".join(map(str, self.stats))
         types = ", ".join(self.types)
-        abilities = "\n".join(map(str, self.abilities))
-        moves = "\n".join(map(str, self.moves))
+        abilities = f"\n{'-'*60}\n".join(map(str, self.abilities))
+        moves = f"\n{'-'*60}\n".join(map(str, self.moves))
         return f"\nName: {self.name}\n" \
                f"\nId: {self.pokemon_id}\n" \
                f"\nHeight: {self.height}\n" \
                f"\nWeight: {self.weight}\n" \
                f"\nTypes: {types}\n" \
-               f"\nStats:\n{stats}\n" \
-               f"\nAbilities:\n{abilities}\n" \
-               f"\nMoves:\n{moves}"
+               f"\n{'-'*60}\nStats\n{'-'*60}\n{stats}\n" \
+               f"\n{'-'*60}\nAbilities\n{'-'*60}\n{abilities}\n" \
+               f"\n{'-'*60}\nMoves\n{'-'*60}\n{moves}"
 
 
 class Ability:
@@ -92,9 +58,11 @@ class Ability:
     This class represents an ability.
     """
 
-    def __init__(self, name: str, ability_id: int, generation: str,
-                 effect: str, effect_short: str, pokemon: list):
+    def __init__(self, name: str, url: str = None, ability_id: int = None,
+                 generation: str = None, effect: str = None,
+                 effect_short: str = None, pokemon: list = None):
         self.name = name
+        self.url = url
         self.ability_id = ability_id
         self.generation = generation
         self.effect = effect
@@ -102,13 +70,19 @@ class Ability:
         self.pokemon = pokemon
 
     def __str__(self):
-        pokemon = ", ".join(self.pokemon)
-        return f"\nName: {self.name}\n" \
-               f"\nID: {self.ability_id}\n" \
-               f"\nGeneration: {self.generation}\n" \
-               f"\nEffect:\n{self.effect}\n" \
-               f"\nEffect (Short): {self.effect_short}\n" \
-               f"\nPokemon:\n{pokemon}"
+        # regular mode (not expanded)
+        if self.url is not None:
+            return f"\nName: {self.name}" \
+                   f"\nURL: {self.url}"
+        # expanded mode
+        else:
+            pokemon = ", ".join(self.pokemon)
+            return f"\nName: {self.name}\n" \
+                   f"\nID: {self.ability_id}\n" \
+                   f"\nGeneration: {self.generation}\n" \
+                   f"\nEffect:\n{self.effect}\n" \
+                   f"\nEffect (Short): {self.effect_short}\n" \
+                   f"\nPokemon:\n{pokemon}"
 
 
 class Move:
@@ -116,10 +90,14 @@ class Move:
     This class represents a Move effect.
     """
 
-    def __init__(self, name: str, move_id: int, generation: str,
-                 accuracy: int, pp: int, power: int, move_type: str,
-                 damage_class: str, effect_short: str):
+    def __init__(self, name: str, level: int = None, url: str = None,
+                 move_id: int = None, generation: str = None,
+                 accuracy: int = None, pp: int = None, power: int = None,
+                 move_type: str = None, damage_class: str = None,
+                 effect_short: str = None):
         self.name = name
+        self.level = level
+        self.url = url
         self.move_id = move_id
         self.generation = generation
         self.accuracy = accuracy
@@ -130,14 +108,18 @@ class Move:
         self.effect_short = effect_short
 
     def __str__(self):
-        return f"\nName: {self.name}\n" \
-               f"\nID: {self.move_id}\n" \
-               f"\nGeneration: {self.generation}\n" \
-               f"\nAccuracy: {self.accuracy}\n" \
-               f"\nPP: {self.pp}\n"\
-               f"\nPower: {self.power}\n" \
-               f"\nType: {self.move_type}\n" \
-               f"\nDamage Class: {self.damage_class}\n" \
-               f"\nEffect (Short): {self.effect_short}\n"
-
-
+        # regular mode (not expanded)
+        if self.url is not None:
+            return f"\nName: {self.name}" \
+                   f"\nURL: {self.url}"
+        # expanded mode
+        else:
+            return f"\nName: {self.name}\n" \
+                   f"\nID: {self.move_id}\n" \
+                   f"\nGeneration: {self.generation}\n" \
+                   f"\nAccuracy: {self.accuracy}\n" \
+                   f"\nPP: {self.pp}\n"\
+                   f"\nPower: {self.power}\n" \
+                   f"\nType: {self.move_type}\n" \
+                   f"\nDamage Class: {self.damage_class}\n" \
+                   f"\nEffect (Short): {self.effect_short}\n"
