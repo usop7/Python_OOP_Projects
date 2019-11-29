@@ -60,10 +60,9 @@ class IOHandler:
         Input value can be the given parameter itself or read from the file
         based on the mode, and input value type.
 
-        1. If an input value ends with '.txt' check the followings:
-         1) The mode should be 'pokemon', otherwise raise an exception.
-         2) Check if the file path exists, otherwise raise an exception.
-        Then, read lines in the file and append them to a list.
+        1. If an input value ends with '.txt' check if the file path exists,
+          if not, raise an exception.
+          Then, read lines in the file and append them to a list.
         2. If an input value doesn't end with '.txt' append it to a list.
 
         Then return the list.
@@ -73,15 +72,11 @@ class IOHandler:
         """
         data = []
         if IOHandler.is_txt_file(input_value):
-            if mode != Mode.POKEMON.value:
-                raise ValueError("Only 'pokemon' mode can have a file "
-                                 "as an input source.")
-            elif not os.path.exists(input_value):
+            if not os.path.exists(input_value):
                 raise FileNotFoundError("File not found!")
             else:
                 with open(input_value, mode='r', encoding='utf-8') as file:
-                    for line in file:
-                        data.append(line.strip().lower())
+                    data = [line.strip().lower() for line in file]
         else:
             data.append(input_value)
         return data
@@ -116,8 +111,8 @@ class IOHandler:
                                  " {pokemon | ability | move}")
         parser.add_argument("input",
                             help="The id or name that you want to search for. "
-                                 "For 'pokemon' mode, it can be set to a "
-                                 "file name that ends with '.txt' as well. "
+                                 "Or it can be set to a file name that ends "
+                                 "with '.txt' as well. "
                                  "{filename.txt | name or id}")
         parser.add_argument("--expanded", action="store_true",
                             help="With the expanded flag, pokedex will query "
@@ -130,7 +125,7 @@ class IOHandler:
                                  "In that case, the file must end with '.txt'")
         try:
             args = parser.parse_args()
-
+            print(args.__dict__)
             # convert input data into a list
             input_data = IOHandler.load_input(args.mode, args.input)
 
