@@ -18,6 +18,20 @@ class Mode(enum.Enum):
     POKEMON = "pokemon"
     ABILITY = "ability"
     MOVE = "move"
+    STAT = "stat"
+
+    @staticmethod
+    def is_valid_mode(mode: str):
+        """
+        Check if the query mode is among {pokemon, ability, or move}
+        and return true. If not, raise an exception.
+        :param mode: String
+        :return: bool
+        """
+        valid = [Mode.POKEMON.value, Mode.ABILITY.value, Mode.MOVE.value]
+        if mode.lower() not in valid:
+            raise ValueError("Invalid query mode.")
+        return True
 
 
 class Request:
@@ -54,11 +68,10 @@ class IOHandler:
         return Path(path).suffix == ".txt"
 
     @staticmethod
-    def load_input(mode: str, input_value: str) -> list:
+    def load_input(input_value: str) -> list:
         """
         Read an input value and append it to a list and return it.
-        Input value can be the given parameter itself or read from the file
-        based on the mode, and input value type.
+        Input value can be the given parameter itself or read from the file.
 
         1. If an input value ends with '.txt' check if the file path exists,
           if not, raise an exception.
@@ -66,7 +79,6 @@ class IOHandler:
         2. If an input value doesn't end with '.txt' append it to a list.
 
         Then return the list.
-        :param mode: String
         :param input_value: String
         :return: list of string
         """
@@ -82,12 +94,24 @@ class IOHandler:
         return data
 
     @staticmethod
+    def validate_output_arg(output: str) -> bool:
+        """
+        Check if output argument ends with '.txt' extension, and return True.
+        If not, raise an exception.
+        :param output:
+        :return:
+        """
+        if output != "print" and not IOHandler.is_txt_file(output):
+            raise ValueError("Output file must end with '.txt'")
+        return True
+
+    @staticmethod
     def write_data(path: str, data: str):
         """
         It writes the given data to a text file in the path.
         If the file doesn't exist, create it.
         :param path: String
-        :param data: list of objects
+        :param data: String
         """
         # Open a file for writing and create if it doesn't exist.
         with open(path, mode='w+', encoding='utf-8') as file:
@@ -125,13 +149,15 @@ class IOHandler:
                                  "In that case, the file must end with '.txt'")
         try:
             args = parser.parse_args()
-            # convert input data into a list
-            input_data = IOHandler.load_input(args.mode, args.input)
 
-            # check if the output file (if specified) is txt file.
-            if args.output != "print" and \
-                    not IOHandler.is_txt_file(args.output):
-                raise ValueError("Output file must end with '.txt'")
+            # check the mode's validity
+            Mode.is_valid_mode(args.mode)
+
+            # convert input data into a list
+            input_data = IOHandler.load_input(args.input)
+
+            # check if the output file (if specified) ends with '.txt'.
+            IOHandler.validate_output_arg(args.output)
 
             # create a Request object
             request = Request(Mode(args.mode), input_data,
