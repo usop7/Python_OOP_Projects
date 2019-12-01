@@ -4,24 +4,6 @@ a move.
 """
 
 
-class PokemonStat:
-    """
-    This class represents stats of a pokemon.
-    """
-
-    def __init__(self, name: str, base_stat: int, url: str = None):
-        self.name = name
-        self.base_stat = base_stat
-        self.url = url
-
-    def __str__(self):
-        url = ""
-        if self.url is not None:
-            url = f"URL: {self.url}\n"
-        return f"Name: {self.name}\n" \
-               f"Base Stat: {self.base_stat}\n{url}"
-
-
 class Pokemon:
     """
     This class represents a pokemon.
@@ -70,6 +52,11 @@ class Ability:
         self.pokemon = pokemon
 
     def __str__(self):
+        """
+        When the url attribute is not None, return only name and url.
+        It None, return all other attributes except for url.
+        :return: string
+        """
         # regular mode (not expanded)
         if self.url is not None:
             return f"\nName: {self.name}" \
@@ -80,9 +67,9 @@ class Ability:
             return f"\nName: {self.name}\n" \
                    f"\nID: {self.ability_id}\n" \
                    f"\nGeneration: {self.generation}\n" \
-                   f"\nEffect:\n{self.effect}\n" \
+                   f"\nEffect: {self.effect}\n" \
                    f"\nEffect (Short): {self.effect_short}\n" \
-                   f"\nPokemon:\n{pokemon}"
+                   f"\nPokemon: {pokemon}"
 
 
 class Move:
@@ -108,9 +95,15 @@ class Move:
         self.effect_short = effect_short
 
     def __str__(self):
+        """
+        When the url attribute is not None, return only name, level and url.
+        It None, return all other attributes except for level and url.
+        :return: string
+        """
         # regular mode (not expanded)
         if self.url is not None:
             return f"\nName: {self.name}" \
+                   f"\nLevel: {self.level}" \
                    f"\nURL: {self.url}"
         # expanded mode
         else:
@@ -123,3 +116,34 @@ class Move:
                    f"\nType: {self.move_type}\n" \
                    f"\nDamage Class: {self.damage_class}\n" \
                    f"\nEffect (Short): {self.effect_short}\n"
+
+
+class Stat:
+    """
+    This class represents stats of a pokemon.
+    """
+
+    def __init__(self, name: str, base_stat: int = None, url: str = None,
+                 stat_id: int = None, is_battle_only: bool = None):
+        self.name = name
+        self.base_stat = base_stat
+        self.url = url
+        self.stat_id = stat_id
+        self.is_battle_only = is_battle_only
+
+    def __str__(self):
+        """
+        When the url attribute is not None, return name, base stat and url.
+        It None, return all other attributes except for url and base stat.
+        :return: string
+        """
+        # regular mode (not expanded)
+        if self.url is not None:
+            return f"Name: {self.name}\n" \
+                   f"Base Stat: {self.base_stat}\n" \
+                   f"URL: {self.url}\n"
+        # expanded mode
+        else:
+            return f"Name: {self.name}\n" \
+                   f"ID: {self.stat_id}\n" \
+                   f"Is Battle Only: {self.is_battle_only}\n"
