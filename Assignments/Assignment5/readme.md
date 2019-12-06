@@ -21,6 +21,8 @@ python pokedex.py {"pokemon" | "ability" | "move"} {"filename.txt" | "name or id
     - The new object will be stored in a corresponding result list based on the query mode.
 3. When completed, a report will be printed out either to a console or a file if specified.
 
+    
+
 
 
 

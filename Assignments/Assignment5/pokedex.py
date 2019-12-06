@@ -71,8 +71,12 @@ class Pokedex:
             response = await session.request(method="GET", url=target_url)
             json_dict = await response.json()
         except aiohttp.ContentTypeError:
-            self.error_msg.append(f"Input Error! Could not finish the query "
-                                  f"for the input '{param}'\n")
+            self.error_msg.append(f"Input Error! Could not find the input "
+                                  f"value '{param}'\n")
+        except aiohttp.ClientConnectorError:
+            self.error_msg.append(f"Connection Error! Please check your "
+                                  f"network status. Could not finish the"
+                                  f"query for the input '{param}'\n")
         except Exception:
             self.error_msg.append(f"Unknown Error! Could not finish the query "
                                   f"for the input '{param}'\n")
