@@ -22,6 +22,12 @@ python pokedex.py {"pokemon" | "ability" | "move"} {"filename.txt" | "name or id
 3. When completed, a report will be printed out either to a console or a file if specified.
 
     
+### Expanded mode for pokemon
+1. 'create_pokemon' method will call 3 helper methods to create stats, abilities and moves.
+2. Each method will call 'process_async_tasks' with a list of URL parameters.
+3. 'process_task' will query for a single URL and will create an expanded version of object based on the query result, and append it to a corresponding list.
+4. When all tasks are completed, 3 methods will return a list of objects(Stat, Ability, Move).
+5. Then 'create_pokemon' method will create a Pokemon object with those returned lists. 
 
 
 

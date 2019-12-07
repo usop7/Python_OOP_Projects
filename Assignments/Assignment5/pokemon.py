@@ -53,14 +53,13 @@ class Ability:
 
     def __str__(self):
         """
-        When the url attribute is not None, return only name and url.
+        When the url attribute is not None, return only name.
         It None, return all other attributes except for url.
         :return: string
         """
         # regular mode (not expanded)
         if self.url is not None:
-            return f"\nName: {self.name}" \
-                   f"\nURL: {self.url}"
+            return f"\nName: {self.name}"
         # expanded mode
         else:
             pokemon = ", ".join(self.pokemon)
@@ -96,15 +95,14 @@ class Move:
 
     def __str__(self):
         """
-        When the url attribute is not None, return only name, level and url.
+        When the url attribute is not None, return only name, level.
         It None, return all other attributes except for level and url.
         :return: string
         """
         # regular mode (not expanded)
         if self.url is not None:
             return f"\nName: {self.name}" \
-                   f"\nLevel: {self.level}" \
-                   f"\nURL: {self.url}"
+                   f"\nLevel: {self.level}"
         # expanded mode
         else:
             return f"\nName: {self.name}\n" \
@@ -133,15 +131,14 @@ class Stat:
 
     def __str__(self):
         """
-        When the url attribute is not None, return name, base stat and url.
+        When the url attribute is not None, return name, base stat.
         It None, return all other attributes except for url and base stat.
         :return: string
         """
         # regular mode (not expanded)
         if self.url is not None:
             return f"Name: {self.name}\n" \
-                   f"Base Stat: {self.base_stat}\n" \
-                   f"URL: {self.url}\n"
+                   f"Base Stat: {self.base_stat}\n"
         # expanded mode
         else:
             return f"Name: {self.name}\n" \
